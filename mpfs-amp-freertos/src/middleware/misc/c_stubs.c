@@ -257,3 +257,9 @@ __attribute__((weak)) void free(void* ptr) {
     free_block_list_head.next = block;
 }
 
+__attribute__((weak)) int rand(void)
+{
+    return 0;
+}
+
+

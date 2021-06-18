@@ -12,7 +12,7 @@
 
 #include <stdio.h>
 #include "mpfs_hal/mss_hal.h"
-#include "drivers/mss_mmuart/mss_uart.h"
+#include "drivers/mss/mss_mmuart/mss_uart.h"
 #include <inc/application.h>
 
 uint8_t g_message[] =
@@ -28,16 +28,16 @@ void uart_tx_with_mutex (mss_uart_instance_t * this_uart,
                                 uint64_t mutex_addr,
                                 const uint8_t * pbuff)
 {
-    mss_take_mutex(mutex_addr);
+    //mss_take_mutex(mutex_addr);
     MSS_UART_polled_tx_string(this_uart, pbuff);
-    mss_release_mutex(mutex_addr);
+    //mss_release_mutex(mutex_addr);
 }
 
 /* Main function for the hart0(E51 processor).
  * Application code running on hart0 is placed here. */
 void e51(void)
 {
-    mss_init_mutex((uint64_t)&uart_lock);
+    //mss_init_mutex((uint64_t)&uart_lock);
 
     /* Turn on peripheral clocks */
     SYSREG->SOFT_RESET_CR &= ~(SOFT_RESET_CR_MMUART0_MASK |\
@@ -47,11 +47,11 @@ void e51(void)
     SYSREG->SUBBLK_CLOCK_CR |= (SUBBLK_CLOCK_CR_MMUART0_MASK |\
             SUBBLK_CLOCK_CR_CFM_MASK);
 
-    mss_take_mutex(uart_lock);
+    //mss_take_mutex(uart_lock);
     MSS_UART_init(&g_mss_uart0_lo,
             MSS_UART_115200_BAUD,
             MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY | MSS_UART_ONE_STOP_BIT);
-    mss_release_mutex(uart_lock);
+   // mss_release_mutex(uart_lock);
 
     uart_tx_with_mutex(&g_mss_uart0_lo, (uint64_t)&uart_lock,
                        g_message);

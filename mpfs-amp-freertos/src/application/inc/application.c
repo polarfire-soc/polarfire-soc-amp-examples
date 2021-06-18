@@ -13,7 +13,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "mpfs_hal/mss_hal.h"
-#include "drivers/mss_mmuart/mss_uart.h"
+#include "drivers/mss/mss_mmuart/mss_uart.h"
 #include <inc/application.h>
 
 #include "FreeRTOS.h"
@@ -21,12 +21,12 @@
 #include "queue.h"
 #include "timers.h"
 
-#define UART_DEMO &g_mss_uart3_lo
+#define UART_DEMO &g_mss_uart2_lo
 
 const uint8_t g_message1[] =
 "\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP FreeRTOS example  ****\r\n\r\n\r\n";
 
-void freertos_task( void *pvParameters );
+void freertos_task_one( void *pvParameters );
 
 void start_application()
 {
@@ -37,7 +37,7 @@ void start_application()
     MSS_UART_init(UART_DEMO, MSS_UART_115200_BAUD,
                    MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY);
 
-    rtos_result = xTaskCreate( freertos_task, "task1", 4000, NULL, uartPRIMARY_PRIORITY, NULL );
+    rtos_result = xTaskCreate( freertos_task_one, "task1", 4000, NULL, uartPRIMARY_PRIORITY, NULL );
     if(1 != rtos_result)
     {
         int ix;
@@ -53,7 +53,7 @@ void start_application()
 volatile uint64_t* mtime = (volatile uint64_t*)0x0200bff8;
 volatile uint64_t* timecmp = ((volatile uint64_t*)0x02004000) + MPFS_HAL_FIRST_HART;
 
-void freertos_task( void *pvParameters )
+void freertos_task_one( void *pvParameters )
 {
     vPortSetupTimer();
 
@@ -63,7 +63,7 @@ void freertos_task( void *pvParameters )
 
     while(1){
         MSS_UART_polled_tx_string(UART_DEMO,
-                                  "\r\nRunning FreeRTOS task...\r\n");
+                                  "\r\nRunning FreeRTOS task 1...\r\n");
         vTaskDelay(300);
     }
 

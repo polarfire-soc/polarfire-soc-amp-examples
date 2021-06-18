@@ -67,7 +67,7 @@ ifndef MEMORY_LD
   LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-lim.ld
 else
   ifeq ($(MEMORY_LD),DDR)
-    LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr.ld
+    LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot-loader.ld
   else ifeq ($(MEMORY_LD),LIM)
     LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-lim.ld
   else

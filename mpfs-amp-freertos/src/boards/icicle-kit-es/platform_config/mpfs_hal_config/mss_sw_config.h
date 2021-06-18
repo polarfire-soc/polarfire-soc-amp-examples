@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019-2020 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -110,9 +110,9 @@
  * - will start other harts, see text describing MPFS_HAL_FIRST_HART,
  *   MPFS_HAL_LAST_HART above
  */
-//#ifndef MPFS_HAL_HW_CONFIG
-//#define MPFS_HAL_HW_CONFIG
-//#endif
+#if (IMAGE_LOADED_BY_BOOTLOADER == 0)
+#define MPFS_HAL_HW_CONFIG
+#endif
 
 /*
  * If not using item, comment out line below

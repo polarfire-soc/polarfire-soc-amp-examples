@@ -28,7 +28,6 @@
 
 ASM_SRCS += \
 	src/platform/mpfs_hal/startup_gcc/mss_entry.S \
-	src/platform/mpfs_hal/startup_gcc/mss_mutex.S \
  	src/platform/mpfs_hal/startup_gcc/mss_utils.S \
 	src/platform/hal/hw_reg_access.S \
 
@@ -51,13 +50,14 @@ EXTRA_SRCS-$(CONFIG_PLATFORM_MPFS) += \
 	src/platform/mpfs_hal/common/mss_mpu.c \
 	src/platform/mpfs_hal/common/mss_mtrap.c \
 	src/platform/mpfs_hal/common/mss_plic.c \
+	src/platform/mpfs_hal/common/mss_peripherals.c \
 	src/platform/mpfs_hal/common/mss_pmp.c \
 	src/platform/mpfs_hal/common/mss_util.c \
 	src/platform/hal/hal_irq.c \
 
 EXTRA_SRCS-$(CONFIG_PLATFORM_MPFS) += \
-	src/platform/drivers/mss_gpio/mss_gpio.c \
-	src/platform/drivers/mss_mmuart/mss_uart.c \
+	src/platform/drivers/mss/mss_gpio/mss_gpio.c \
+	src/platform/drivers/mss/mss_mmuart/mss_uart.c \
 	
 INCLUDES += \
 	-Isrc/platform \
@@ -69,8 +69,8 @@ INCLUDES += \
 	-Isrc/platform/platform_config_reference \
 	-Isrc/platform/platform_config_reference/mpfs_hal_config \
 
-src/platform/drivers/mss_gpio/mss_gpio.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/drivers/mss_mmuart/mss_uart.o: CFLAGS=$(CFLAGS_GCCEXT)
+src/platform/drivers/mss/mss_gpio/mss_gpio.o: CFLAGS=$(CFLAGS_GCCEXT)
+src/platform/drivers/mss/mss_mmuart/mss_uart.o: CFLAGS=$(CFLAGS_GCCEXT)
 
 src/platform/hal/hal_irq.o: CFLAGS=$(CFLAGS_GCCEXT)
 
@@ -82,6 +82,7 @@ src/platform/mpfs_hal/common/mss_l2_cache.o: CFLAGS=$(CFLAGS_GCCEXT)
 src/platform/mpfs_hal/common/mpu.o: CFLAGS=$(CFLAGS_GCCEXT)
 src/platform/mpfs_hal/common/mss_mtrap.o: CFLAGS=$(CFLAGS_GCCEXT)
 src/platform/mpfs_hal/common/mss_plic.o: CFLAGS=$(CFLAGS_GCCEXT)
+src/platform/mpfs_hal/common/mss_peripherals.o: CFLAGS=$(CFLAGS_GCCEXT)
 src/platform/mpfs_hal/common/mss_pmp.o: CFLAGS=$(CFLAGS_GCCEXT)
 src/platform/mpfs_hal/common/mss_util.o: CFLAGS=$(CFLAGS_GCCEXT)
 

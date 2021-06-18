@@ -39,51 +39,50 @@ BOARD_DIR=src/boards/icicle-kit-es
 INCLUDES += \
     -I$(BOARD_DIR)/platform_config/ \
     -I$(BOARD_DIR)/platform_config/mpfs_hal_config \
-	-I$(BOARD_DIR)/fpga_config/ \
-	-I$(BOARD_DIR)/ \
-	-Iplatform \
+    -I$(BOARD_DIR)/ \
+    -Iplatform \
 
 #
 # Extra dependency rules for auto-generated configuration files (from Libero XML)
 #
 
 SOC_CONFIG_FILES =  \
-	$(BOARD_DIR)/fpga_config/clocks/hw_clk_ddr_pll.h \
-	$(BOARD_DIR)/fpga_config/clocks/hw_clk_mss_cfm.h \
-	$(BOARD_DIR)/fpga_config/clocks/hw_clk_mss_pll.h \
-	$(BOARD_DIR)/fpga_config/clocks/hw_clk_sgmii_cfm.h \
-	$(BOARD_DIR)/fpga_config/clocks/hw_clk_sgmii_pll.h \
-	$(BOARD_DIR)/fpga_config/clocks/hw_clk_sysreg.h \
-	$(BOARD_DIR)/fpga_config/clocks/hw_mss_clks.h \
-	$(BOARD_DIR)/fpga_config/ddr/hw_ddr_io_bank.h \
-	$(BOARD_DIR)/fpga_config/ddr/hw_ddr_mode.h \
-	$(BOARD_DIR)/fpga_config/ddr/hw_ddr_off_mode.h \
-	$(BOARD_DIR)/fpga_config/ddr/hw_ddr_options.h \
-	$(BOARD_DIR)/fpga_config/ddr/hw_ddr_segs.h \
-	$(BOARD_DIR)/fpga_config/ddr/hw_ddrc.h \
-	$(BOARD_DIR)/fpga_config/general/hw_gen_peripherals.h \
-	$(BOARD_DIR)/fpga_config/hw_platform.h \
-	$(BOARD_DIR)/fpga_config/io/hw_hsio_mux.h \
-	$(BOARD_DIR)/fpga_config/io/hw_mssio_mux.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_apb_split.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_cache.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_memory.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_crypto.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_fic0.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_fic1.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_fic2.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_gem0.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_gem1.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_mmc.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_scb.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_trace.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_mpu_usb.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_pmp_hart0.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_pmp_hart1.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_pmp_hart2.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_pmp_hart3.h \
-	$(BOARD_DIR)/fpga_config/memory_map/hw_pmp_hart4.h \
-	$(BOARD_DIR)/fpga_config/sgmii/hw_sgmii_tip.h \
+	$(BOARD_DIR)/fpga_design_config/clocks/hw_clk_ddr_pll.h \
+	$(BOARD_DIR)/fpga_design_config/clocks/hw_clk_mss_cfm.h \
+	$(BOARD_DIR)/fpga_design_config/clocks/hw_clk_mss_pll.h \
+	$(BOARD_DIR)/fpga_design_config/clocks/hw_clk_sgmii_cfm.h \
+	$(BOARD_DIR)/fpga_design_config/clocks/hw_clk_sgmii_pll.h \
+	$(BOARD_DIR)/fpga_design_config/clocks/hw_clk_sysreg.h \
+	$(BOARD_DIR)/fpga_design_config/clocks/hw_mss_clks.h \
+	$(BOARD_DIR)/fpga_design_config/ddr/hw_ddr_io_bank.h \
+	$(BOARD_DIR)/fpga_design_config/ddr/hw_ddr_mode.h \
+	$(BOARD_DIR)/fpga_design_config/ddr/hw_ddr_off_mode.h \
+	$(BOARD_DIR)/fpga_design_config/ddr/hw_ddr_options.h \
+	$(BOARD_DIR)/fpga_design_config/ddr/hw_ddr_segs.h \
+	$(BOARD_DIR)/fpga_design_config/ddr/hw_ddrc.h \
+	$(BOARD_DIR)/fpga_design_config/general/hw_gen_peripherals.h \
+	$(BOARD_DIR)/fpga_design_config/hw_platform.h \
+	$(BOARD_DIR)/fpga_design_config/io/hw_hsio_mux.h \
+	$(BOARD_DIR)/fpga_design_config/io/hw_mssio_mux.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_apb_split.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_cache.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_memory.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_crypto.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_fic0.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_fic1.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_fic2.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_gem0.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_gem1.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_mmc.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_scb.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_trace.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_mpu_usb.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_pmp_hart0.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_pmp_hart1.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_pmp_hart2.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_pmp_hart3.h \
+	$(BOARD_DIR)/fpga_design_config/memory_map/hw_pmp_hart4.h \
+	$(BOARD_DIR)/fpga_design_config/sgmii/hw_sgmii_tip.h \
 
 
 pre-build:

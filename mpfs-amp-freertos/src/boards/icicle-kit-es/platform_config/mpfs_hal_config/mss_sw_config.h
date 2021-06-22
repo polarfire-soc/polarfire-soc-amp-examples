@@ -42,11 +42,11 @@
  * through some other method
  */
 #ifndef MPFS_HAL_FIRST_HART
-#define MPFS_HAL_FIRST_HART  0
+#define MPFS_HAL_FIRST_HART  1
 #endif
 
 #ifndef MPFS_HAL_LAST_HART
-#define MPFS_HAL_LAST_HART   4
+#define MPFS_HAL_LAST_HART   1
 #endif
 
 /*------------------------------------------------------------------------------
@@ -110,6 +110,7 @@
  * - will start other harts, see text describing MPFS_HAL_FIRST_HART,
  *   MPFS_HAL_LAST_HART above
  */
+#define IMAGE_LOADED_BY_BOOTLOADER 1
 #if (IMAGE_LOADED_BY_BOOTLOADER == 0)
 #define MPFS_HAL_HW_CONFIG
 #endif

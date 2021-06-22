@@ -35,8 +35,8 @@ extern  "C" {
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPCFG0)
 /*PMP configuration for 8 adress regions, bit 0 read, bit 1 write, bit 2
 execute, bit 7 disable, bits 3,4 address format (0x18 => NAPOT) */
-#define LIBERO_SETTING_HART3_CSR_PMPCFG0    0x0000000000000000ULL
-    /* PMP0CFG                           [0:8]   RW value= 0x0 */
+#define LIBERO_SETTING_HART3_CSR_PMPCFG0    0x000000000000009FULL
+    /* PMP0CFG                           [0:8]   RW value= 0x9F */
     /* PMP1CFG                           [8:8]   RW value= 0x0 */
     /* PMP2CFG                           [16:8]  RW value= 0x0 */
     /* PMP3CFG                           [24:8]  RW value= 0x0 */
@@ -61,8 +61,8 @@ execute, bit 7 disable, bits 3,4 address format (0x18 => NAPOT) */
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR0)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte
 in CSR_PMPCFGx */
-#define LIBERO_SETTING_HART3_CSR_PMPADDR0    0x0000000000000000ULL
-    /* CSR_PMPADDR0                      [0:64]  RW value= 0x0 */
+#define LIBERO_SETTING_HART3_CSR_PMPADDR0    0xFFFFFFFFFFFFFFFFULL
+    /* CSR_PMPADDR0                      [0:64]  RW value= 0xFFFFFFFFFFFFFFFF */
 #endif
 #if !defined (LIBERO_SETTING_HART3_CSR_PMPADDR1)
 /*PMP ADRESS and size, format determined from bit 3 and 4 of configuration byte

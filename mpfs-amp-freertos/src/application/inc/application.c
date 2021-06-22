@@ -81,8 +81,6 @@ void start_application()
             ix++;
     }
 
-    vPortSetupTimer();
-
     xSemaphore = xSemaphoreCreateMutex();
 
     /* Start the kernel.  From here on, only tasks and interrupts will run. */
@@ -96,6 +94,7 @@ volatile uint64_t* timecmp = ((volatile uint64_t*)0x02004000) + MPFS_HAL_FIRST_H
 void freertos_task_one( void *pvParameters )
 {
     
+    vPortSetupTimer();
 
     if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE){
         MSS_UART_polled_tx(UART_DEMO, g_message1, sizeof(g_message1));

@@ -87,6 +87,16 @@ extern  "C" {
 #define LIBERO_SETTING_DDR_64_WCB    0x1800000000
 #define LIBERO_SETTING_DDR_64_WCB_SIZE    0x100000    /* Length of memory block*/ 
 #endif
+#if !defined (LIBERO_SETTING_RESERVED_SNVM)
+/*Offset and size of reserved sNVM. (Not available to MSS) */
+#define LIBERO_SETTING_RESERVED_SNVM    0x00000000
+#define LIBERO_SETTING_RESERVED_SNVM_SIZE    0x00000000    /* Length of memory block*/ 
+#endif
+#if !defined (LIBERO_SETTING_RESERVED_ENVM)
+/*Offset and size of reserved eNVM  (Not available to MSS) */
+#define LIBERO_SETTING_RESERVED_ENVM    0x00000000
+#define LIBERO_SETTING_RESERVED_ENVM_SIZE    0x00000000    /* Length of memory block*/ 
+#endif
 
 #ifdef __cplusplus
 }

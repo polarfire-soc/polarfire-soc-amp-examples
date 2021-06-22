@@ -35,25 +35,28 @@ extern  "C" {
 #if !defined (LIBERO_SETTING_IOMUX0_CR)
 /*Selects whether the peripheral is connected to the Fabric or IOMUX structure.
 */
-#define LIBERO_SETTING_IOMUX0_CR    0x000007C9UL
+#define LIBERO_SETTING_IOMUX0_CR    0x00000F9DUL
     /* SPI0_FABRIC                       [0:1]   RW value= 0x1 */
     /* SPI1_FABRIC                       [1:1]   RW value= 0x0 */
-    /* I2C0_FABRIC                       [2:1]   RW value= 0x0 */
+    /* I2C0_FABRIC                       [2:1]   RW value= 0x1 */
     /* I2C1_FABRIC                       [3:1]   RW value= 0x1 */
-    /* CAN0_FABRIC                       [4:1]   RW value= 0x0 */
+    /* CAN0_FABRIC                       [4:1]   RW value= 0x1 */
     /* CAN1_FABRIC                       [5:1]   RW value= 0x0 */
-    /* QSPI_FABRIC                       [6:1]   RW value= 0x1 */
+    /* QSPI_FABRIC                       [6:1]   RW value= 0x0 */
     /* MMUART0_FABRIC                    [7:1]   RW value= 0x1 */
     /* MMUART1_FABRIC                    [8:1]   RW value= 0x1 */
     /* MMUART2_FABRIC                    [9:1]   RW value= 0x1 */
     /* MMUART3_FABRIC                    [10:1]  RW value= 0x1 */
-    /* MMUART4_FABRIC                    [11:1]  RW value= 0x0 */
+    /* MMUART4_FABRIC                    [11:1]  RW value= 0x1 */
     /* MDIO0_FABRIC                      [12:1]  RW value= 0x0 */
     /* MDIO1_FABRIC                      [13:1]  RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_IOMUX1_CR)
-/*Configures the IO Mux structure for each IO pad. See the MSS MAS
-specification for for description. */
+/*Configures the IO Mux structure for each IO pad. 0 implies SD/SDIO, 1 implies
+EMMC, 2 implies QSPI, 3 implies SPI,4 implies USB,5 implies MMUART,6 implies
+I2C,7 implies CAN,8 implies MDIO,9 implies Miscellaneous,0xA implies Reserved
+(Equivalent to Tristate),0xB implies GPIO ,0xC implies Fabric-test,0xD implies
+Logic 0,0xE implies Logic 1, 0xF implies Tristate */
 #define LIBERO_SETTING_IOMUX1_CR    0x11111111UL
     /* PAD0                              [0:4]   RW value= 0x1 */
     /* PAD1                              [4:4]   RW value= 0x1 */
@@ -65,8 +68,11 @@ specification for for description. */
     /* PAD7                              [28:4]  RW value= 0x1 */
 #endif
 #if !defined (LIBERO_SETTING_IOMUX2_CR)
-/*Configures the IO Mux structure for each IO pad. See the MSS MAS
-specification for for description. */
+/*Configures the IO Mux structure for each IO pad. 0 implies SD/SDIO, 1 implies
+EMMC, 2 implies QSPI, 3 implies SPI,4 implies USB,5 implies MMUART,6 implies
+I2C,7 implies CAN,8 implies MDIO,9 implies Miscellaneous,0xA implies Reserved
+(Equivalent to Tristate),0xB implies GPIO ,0xC implies Fabric-test,0xD implies
+Logic 0,0xE implies Logic 1, 0xF implies Tristate */
 #define LIBERO_SETTING_IOMUX2_CR    0x00FF1111UL
     /* PAD8                              [0:4]   RW value= 0x1 */
     /* PAD9                              [4:4]   RW value= 0x1 */
@@ -76,8 +82,11 @@ specification for for description. */
     /* PAD13                             [20:4]  RW value= 0xF */
 #endif
 #if !defined (LIBERO_SETTING_IOMUX3_CR)
-/*Configures the IO Mux structure for each IO pad. See the MSS MAS
-specification for for description. */
+/*Configures the IO Mux structure for each IO pad. 0 implies SD/SDIO, 1 implies
+EMMC, 2 implies QSPI, 3 implies SPI,4 implies USB,5 implies MMUART,6 implies
+I2C,7 implies CAN,8 implies MDIO,9 implies Miscellaneous,0xA implies Reserved
+(Equivalent to Tristate),0xB implies GPIO ,0xC implies Fabric-test,0xD implies
+Logic 0,0xE implies Logic 1, 0xF implies Tristate */
 #define LIBERO_SETTING_IOMUX3_CR    0x44444444UL
     /* PAD14                             [0:4]   RW value= 0x4 */
     /* PAD15                             [4:4]   RW value= 0x4 */
@@ -89,8 +98,11 @@ specification for for description. */
     /* PAD21                             [28:4]  RW value= 0x4 */
 #endif
 #if !defined (LIBERO_SETTING_IOMUX4_CR)
-/*Configures the IO Mux structure for each IO pad. See the MSS MAS
-specification for for description. */
+/*Configures the IO Mux structure for each IO pad. 0 implies SD/SDIO, 1 implies
+EMMC, 2 implies QSPI, 3 implies SPI,4 implies USB,5 implies MMUART,6 implies
+I2C,7 implies CAN,8 implies MDIO,9 implies Miscellaneous,0xA implies Reserved
+(Equivalent to Tristate),0xB implies GPIO ,0xC implies Fabric-test,0xD implies
+Logic 0,0xE implies Logic 1, 0xF implies Tristate */
 #define LIBERO_SETTING_IOMUX4_CR    0x88CC4444UL
     /* PAD22                             [0:4]   RW value= 0x4 */
     /* PAD23                             [4:4]   RW value= 0x4 */
@@ -102,16 +114,19 @@ specification for for description. */
     /* PAD29                             [28:4]  RW value= 0x8 */
 #endif
 #if !defined (LIBERO_SETTING_IOMUX5_CR)
-/*Configures the IO Mux structure for each IO pad. See the MSS MAS
-specification for for description. */
-#define LIBERO_SETTING_IOMUX5_CR    0xFFFF3333UL
-    /* PAD30                             [0:4]   RW value= 0x3 */
-    /* PAD31                             [4:4]   RW value= 0x3 */
-    /* PAD32                             [8:4]   RW value= 0x3 */
-    /* PAD33                             [12:4]  RW value= 0x3 */
-    /* PAD34                             [16:4]  RW value= 0xF */
-    /* PAD35                             [20:4]  RW value= 0xF */
-    /* PAD36                             [24:4]  RW value= 0xF */
+/*Configures the IO Mux structure for each IO pad. 0 implies SD/SDIO, 1 implies
+EMMC, 2 implies QSPI, 3 implies SPI,4 implies USB,5 implies MMUART,6 implies
+I2C,7 implies CAN,8 implies MDIO,9 implies Miscellaneous,0xA implies Reserved
+(Equivalent to Tristate),0xB implies GPIO ,0xC implies Fabric-test,0xD implies
+Logic 0,0xE implies Logic 1, 0xF implies Tristate */
+#define LIBERO_SETTING_IOMUX5_CR    0xF7772222UL
+    /* PAD30                             [0:4]   RW value= 0x2 */
+    /* PAD31                             [4:4]   RW value= 0x2 */
+    /* PAD32                             [8:4]   RW value= 0x2 */
+    /* PAD33                             [12:4]  RW value= 0x2 */
+    /* PAD34                             [16:4]  RW value= 0x7 */
+    /* PAD35                             [20:4]  RW value= 0x7 */
+    /* PAD36                             [24:4]  RW value= 0x7 */
     /* PAD37                             [28:4]  RW value= 0xF */
 #endif
 #if !defined (LIBERO_SETTING_IOMUX6_CR)
@@ -130,55 +145,55 @@ IOMUX structure */
 #endif
 #if !defined (LIBERO_SETTING_MSSIO_BANK4_CFG_CR)
 /*Configures the MSSIO block using SCB write */
-#define LIBERO_SETTING_MSSIO_BANK4_CFG_CR    0x00080907UL
-    /* BANK_PCODE                        [0:6]   RW value= 0x7 */
+#define LIBERO_SETTING_MSSIO_BANK4_CFG_CR    0x00040A0DUL
+    /* BANK_PCODE                        [0:6]   RW value= 0xD */
     /* RESERVED0                         [6:2]   RW value= 0x00 */
-    /* BANK_NCODE                        [8:6]   RW value= 0x9 */
+    /* BANK_NCODE                        [8:6]   RW value= 0xA */
     /* RESERVED1                         [14:2]  RW value= 0x0 */
-    /* VS                                [16:4]  RW value= 0x8 */
+    /* VS                                [16:4]  RW value= 0x4 */
     /* RESERVED2                         [20:12] RW value= 0x0 */
 #endif
 #if !defined (LIBERO_SETTING_MSSIO_BANK4_IO_CFG_0_1_CR)
 /*IO electrical configuration for MSSIO pad */
-#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_0_1_CR    0x08290829UL
-    /* IO_CFG_0                          [0:16]  RW value= 0x0829 */
-    /* IO_CFG_1                          [16:16] RW value= 0x0829 */
+#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_0_1_CR    0x09280928UL
+    /* IO_CFG_0                          [0:16]  RW value= 0x0928 */
+    /* IO_CFG_1                          [16:16] RW value= 0x0928 */
 #endif
 #if !defined (LIBERO_SETTING_MSSIO_BANK4_IO_CFG_2_3_CR)
 /*IO electrical configuration for MSSIO pad */
-#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_2_3_CR    0x08290829UL
-    /* IO_CFG_2                          [0:16]  RW value= 0x0829 */
-    /* IO_CFG_3                          [16:16] RW value= 0x0829 */
+#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_2_3_CR    0x09280928UL
+    /* IO_CFG_2                          [0:16]  RW value= 0x0928 */
+    /* IO_CFG_3                          [16:16] RW value= 0x0928 */
 #endif
 #if !defined (LIBERO_SETTING_MSSIO_BANK4_IO_CFG_4_5_CR)
 /*IO electrical configuration for MSSIO pad */
-#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_4_5_CR    0x08290829UL
-    /* IO_CFG_4                          [0:16]  RW value= 0x0829 */
-    /* IO_CFG_5                          [16:16] RW value= 0x0829 */
+#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_4_5_CR    0x09280928UL
+    /* IO_CFG_4                          [0:16]  RW value= 0x0928 */
+    /* IO_CFG_5                          [16:16] RW value= 0x0928 */
 #endif
 #if !defined (LIBERO_SETTING_MSSIO_BANK4_IO_CFG_6_7_CR)
 /*IO electrical configuration for MSSIO pad */
-#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_6_7_CR    0x08290829UL
-    /* IO_CFG_6                          [0:16]  RW value= 0x0829 */
-    /* IO_CFG_7                          [16:16] RW value= 0x0829 */
+#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_6_7_CR    0x09280928UL
+    /* IO_CFG_6                          [0:16]  RW value= 0x0928 */
+    /* IO_CFG_7                          [16:16] RW value= 0x0928 */
 #endif
 #if !defined (LIBERO_SETTING_MSSIO_BANK4_IO_CFG_8_9_CR)
 /*IO electrical configuration for MSSIO pad */
-#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_8_9_CR    0x08290829UL
-    /* IO_CFG_8                          [0:16]  RW value= 0x0829 */
-    /* IO_CFG_9                          [16:16] RW value= 0x0829 */
+#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_8_9_CR    0x09280928UL
+    /* IO_CFG_8                          [0:16]  RW value= 0x0928 */
+    /* IO_CFG_9                          [16:16] RW value= 0x0928 */
 #endif
 #if !defined (LIBERO_SETTING_MSSIO_BANK4_IO_CFG_10_11_CR)
 /*IO electrical configuration for MSSIO pad */
-#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_10_11_CR    0x08290829UL
-    /* IO_CFG_10                         [0:16]  RW value= 0x0829 */
-    /* IO_CFG_11                         [16:16] RW value= 0x0829 */
+#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_10_11_CR    0x09280928UL
+    /* IO_CFG_10                         [0:16]  RW value= 0x0928 */
+    /* IO_CFG_11                         [16:16] RW value= 0x0928 */
 #endif
 #if !defined (LIBERO_SETTING_MSSIO_BANK4_IO_CFG_12_13_CR)
 /*IO electrical configuration for MSSIO pad */
-#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_12_13_CR    0x08290829UL
-    /* IO_CFG_12                         [0:16]  RW value= 0x0829 */
-    /* IO_CFG_13                         [16:16] RW value= 0x0829 */
+#define LIBERO_SETTING_MSSIO_BANK4_IO_CFG_12_13_CR    0x09280928UL
+    /* IO_CFG_12                         [0:16]  RW value= 0x0928 */
+    /* IO_CFG_13                         [16:16] RW value= 0x0928 */
 #endif
 #if !defined (LIBERO_SETTING_MSSIO_BANK2_CFG_CR)
 /*Configures the MSSIO block using SCB write */
@@ -301,6 +316,19 @@ IOMUX structure */
     /* DPC_IO_CFG_LP_PERSIST_EN          [13:1]  RW value= 0x0 */
     /* DPC_IO_CFG_LP_BYPASS_EN           [14:1]  RW value= 0x0 */
     /* RESERVED                          [15:17] R */
+#endif
+#if !defined (LIBERO_SETTING_MSSIO_CONFIGURATION_OPTIONS)
+/*Indicates if eMMC is configured for use (bit 0 == 1), If SD is configued for
+use (bit 1 == 1). Bit 2 indicates which one should be used by default on MSS
+embedded software startup ( bit2 == 0, implies default is eMMC, bit2 == 1,
+implies default is SD). The eMMC configuration is always defined in xml tag
+(io_mux, the SD configuration is always defined in xml tag (io_mux_alt). All
+other elements in the (o_mux) and (io_mux_alt) not releating to eMMC/SD
+differences should be the same values. */
+#define LIBERO_SETTING_MSSIO_CONFIGURATION_OPTIONS    0x00000000UL
+    /* EMMC_CONFIGURED                   [0:1]   RW value= 0x0 */
+    /* SD_CONFIGURED                     [1:1]   RW value= 0x0 */
+    /* DEFAULT_ON_START                  [2:1]   RW value= 0x0 */
 #endif
 
 #ifdef __cplusplus

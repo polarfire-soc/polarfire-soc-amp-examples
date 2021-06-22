@@ -41,8 +41,8 @@ extern  "C" {
 #endif
 #if !defined (LIBERO_SETTING_MSS_RTC_CLOCK_CR)
 /*RTC clock divider */
-#define LIBERO_SETTING_MSS_RTC_CLOCK_CR    0x00000064UL
-    /* PERIOD                            [0:12]  RW value= 0x64 */
+#define LIBERO_SETTING_MSS_RTC_CLOCK_CR    0x0000007DUL
+    /* PERIOD                            [0:12]  RW value= 0x7D */
 #endif
 #if !defined (LIBERO_SETTING_MSS_ENVM_CR)
 /*ENVM AHB Controller setup - - Clock period = (Value+1) * (1000/AHBFREQMHZ)

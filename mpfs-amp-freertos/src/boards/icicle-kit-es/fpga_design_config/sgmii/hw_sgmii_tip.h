@@ -59,12 +59,12 @@ extern  "C" {
 #if !defined (LIBERO_SETTING_PLL_CNTL)
 /*PLL control register (SEU) */
 #define LIBERO_SETTING_PLL_CNTL    0x80140101UL
-    /* REG_PLL_POSTDIV                   [0:7]   RW value= 0x01 */
+    /* REG_PLL_POSTDIV                   [0:7]   RW value= 0x1 */
     /* ARO_PLL0_LOCK                     [7:1]   RO */
-    /* REG_PLL_RFDIV                     [8:6]   RW value= 0x01 */
+    /* REG_PLL_RFDIV                     [8:6]   RW value= 0x1 */
     /* REG_PLL_REG_RFCLK_SEL             [14:1]  RW value= 0x0 */
     /* REG_PLL_LP_REQUIRES_LOCK          [15:1]  RW value= 0x0 */
-    /* REG_PLL_INTIN                     [16:12] RW value= 0x014 */
+    /* REG_PLL_INTIN                     [16:12] RW value= 0x14 */
     /* REG_PLL_BWI                       [28:2]  RW value= 0x0 */
     /* REG_PLL_BWP                       [30:2]  RW value= 0x2 */
 #endif
@@ -179,7 +179,7 @@ extern  "C" {
 #if !defined (LIBERO_SETTING_SPARE_CNTL)
 /*Spare control register */
 #define LIBERO_SETTING_SPARE_CNTL    0xFF000000UL
-    /* REG_SPARE                         [0:32]  RW value= 0xff000000 */
+    /* REG_SPARE                         [0:32]  RW value= 0xFF000000 */
 #endif
 #if !defined (LIBERO_SETTING_SPARE_STAT)
 /*Spare status register */

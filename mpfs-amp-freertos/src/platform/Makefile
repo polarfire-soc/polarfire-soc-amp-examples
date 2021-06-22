@@ -31,7 +31,7 @@ ASM_SRCS += \
  	src/platform/mpfs_hal/startup_gcc/mss_utils.S \
 	src/platform/hal/hw_reg_access.S \
 
-EXTRA_SRCS-$(CONFIG_PLATFORM_MPFS) += \
+SRCS += \
 	src/platform/mpfs_hal/startup_gcc/newlib_stubs.c \
 	src/platform/mpfs_hal/startup_gcc/system_startup.c \
 	src/platform/mpfs_hal/common/nwc/mss_cfm.c \
@@ -55,7 +55,7 @@ EXTRA_SRCS-$(CONFIG_PLATFORM_MPFS) += \
 	src/platform/mpfs_hal/common/mss_util.c \
 	src/platform/hal/hal_irq.c \
 
-EXTRA_SRCS-$(CONFIG_PLATFORM_MPFS) += \
+SRCS += \
 	src/platform/drivers/mss/mss_gpio/mss_gpio.c \
 	src/platform/drivers/mss/mss_mmuart/mss_uart.c \
 	
@@ -69,32 +69,5 @@ INCLUDES += \
 	-Isrc/platform/platform_config_reference \
 	-Isrc/platform/platform_config_reference/mpfs_hal_config \
 
-src/platform/drivers/mss/mss_gpio/mss_gpio.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/drivers/mss/mss_mmuart/mss_uart.o: CFLAGS=$(CFLAGS_GCCEXT)
 
-src/platform/hal/hal_irq.o: CFLAGS=$(CFLAGS_GCCEXT)
-
-src/platform/mpfs_hal/common/mss_axiswitch.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mss_clint.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mss_h2f.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mss_irq_handler_stubs.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mss_l2_cache.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mpu.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mss_mtrap.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mss_plic.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mss_peripherals.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mss_pmp.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/mss_util.o: CFLAGS=$(CFLAGS_GCCEXT)
-
-src/platform/mpfs_hal/common/nwc/mss_cfm.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/nwc/mss_ddr_debug.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/nwc/mss_ddr_test_pattern.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/nwc/mss_ddr.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/nwc/mss_io.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/nwc/mss_nwc_init.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/nwc/mss_pll.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/common/nwc/mss_sgmii.o: CFLAGS=$(CFLAGS_GCCEXT)
-
-src/platform/mpfs_hal/startup_gcc/system_startup.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/platform/mpfs_hal/startup_gcc/newlib_stubs.o: CFLAGS=$(CFLAGS_GCCEXT)
 

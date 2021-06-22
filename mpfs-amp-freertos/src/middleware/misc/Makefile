@@ -26,23 +26,13 @@
 #
 # Miscellaneous Functionality
 
-EXTRA_SRCS-y += \
+SRCS += \
         src/middleware/misc/assert.c \
         src/middleware/misc/c_stubs.c \
 
 INCLUDES +=\
 
-src/middleware/misc/c_stubs.o: src/middleware/misc/c_stubs.c
-	@$(ECHO) " CC        $@";
-	$(CMD_PREFIX)$(CC) $(CFLAGS_GCCEXT) $(OPT-y) $(INCLUDES) -c -o $@ $<
 
-src/middleware/misc/assert.o: src/middleware/misc/assert.c
-	@$(ECHO) " CC        $@";
-	$(CMD_PREFIX)$(CC) $(CFLAGS_GCCEXT) $(OPT-y) $(INCLUDES) -c -o $@ $<
-
-src/middleware/misc/stack_guard.o: src/middleware/misc/stack_guard.c
-	@$(ECHO) " CC        $@";
-	$(CMD_PREFIX)$(CC) $(CFLAGS_GCCEXT) $(OPT-y) $(INCLUDES) -c -o $@ $<
 
 
 

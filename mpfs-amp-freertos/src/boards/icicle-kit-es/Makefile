@@ -61,7 +61,7 @@ SOC_CONFIG_FILES =  \
 	$(BOARD_DIR)/fpga_design_config/ddr/hw_ddr_segs.h \
 	$(BOARD_DIR)/fpga_design_config/ddr/hw_ddrc.h \
 	$(BOARD_DIR)/fpga_design_config/general/hw_gen_peripherals.h \
-	$(BOARD_DIR)/fpga_design_config/hw_platform.h \
+	$(BOARD_DIR)/fpga_design_config/fpga_design_config.h \
 	$(BOARD_DIR)/fpga_design_config/io/hw_hsio_mux.h \
 	$(BOARD_DIR)/fpga_design_config/io/hw_mssio_mux.h \
 	$(BOARD_DIR)/fpga_design_config/memory_map/hw_apb_split.h \
@@ -84,8 +84,8 @@ SOC_CONFIG_FILES =  \
 	$(BOARD_DIR)/fpga_design_config/memory_map/hw_pmp_hart4.h \
 	$(BOARD_DIR)/fpga_design_config/sgmii/hw_sgmii_tip.h \
 
-
-pre-build:
+$(SOC_CONFIG_FILES): $(BOARD_DIR)/fpga_design/design_description/ICICLE_MSS_0.xml
 	@$(ECHO) " CFGGEN $<";
 	@$(CMD_PREFIX)python3 src/platform/soc_config_generator/mpfs_configuration_generator.py $(BOARD_DIR)/fpga_design/design_description/ICICLE_MSS_0.xml $(BOARD_DIR)
 
+$(RISCV_TARGET): $(SOC_CONFIG_FILES)

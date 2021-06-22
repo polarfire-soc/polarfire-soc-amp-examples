@@ -27,8 +27,6 @@
 # Defines build targets
 #
 
-all: pre-build $(TARGET)
-
 ##############################################################################
 #
 # Build Targets
@@ -37,10 +35,7 @@ all: pre-build $(TARGET)
 .PHONY: clean
 
 clean:
-	$(CMD_PREFIX)$(RM) $(TARGET) $(TARGET) \
-	$(OBJS) $(EXTRA_OBJS) output.map \
-    $(TARGET:.elf=.hex) $(TARGET:.elf=.lss) $(TARGET:.elf=.sym) $(TARGET:.elf=.bin)
-	$(CMD_PREFIX)$(RM) *.lss *.hex *.sym
+	$(CMD_PREFIX)$(RM) $(TARGET) $(OBJS) $(DEPENDENCIES)
 	$(CMD_PREFIX)$(RM) -r $(BINDIR)/*
 		
 .PHONY: clean

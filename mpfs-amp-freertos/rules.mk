@@ -40,7 +40,7 @@ NM=$(CROSS_COMPILE)nm
 ECHO=echo
 MAKE=make
 CP=cp
-MAKEDEP=makedepend
+
 
 PLATFORM_RISCV_ABI=lp64d
 PLATFORM_RISCV_ISA=rv64gc
@@ -53,15 +53,10 @@ endif
 
 CORE_CFLAGS+= $(EXT_CFLAGS) -DUSING_FREERTOS -no-pie -fno-PIE 
 
-
 CORE_CFLAGS+=-msmall-data-limit=8 -mstrict-align -mno-save-restore -O0 \
     -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections  -g3
 
 CFLAGS=-std=gnu11 $(CORE_CFLAGS) $(PLATFORM_CFLAGS)
-
-# separate flags for C files that need GCC Extensions...
-CFLAGS_GCCEXT=$(CORE_CFLAGS) $(PLATFORM_CFLAGS)
-
 
 ##############################################################################
 #
@@ -76,36 +71,22 @@ else
   CMD_PREFIX := $(CMD_PREFIX_DEFAULT)
 endif
 
-OBJS = $(addprefix Debug/,$(SRCS-y:.c=.o))
+OBJS = $(addprefix Debug/,$(ASM_SRCS:.S=.o) $(SRCS:.c=.o))
 
-%.S: %.c 
-	@$(ECHO) " CC -S $@";
-	$(CMD_PREFIX)$(CC) $(CFLAGS_GCCEXT) $(OPT-y) $(INCLUDES) -c -Wa,-adhln -g  $<  > $@
-
-$(BINDIR)/%.o: %.c
+$(BINDIR)/%.o: %.c $(BINDIR)/%.d
 	@$(ECHO) " CC $@";
 	@mkdir -p $(@D)
-	$(CMD_PREFIX)$(CC) $(CFLAGS) $(OPT-y) $(INCLUDES) -c -o $@ $<
+	$(CMD_PREFIX)$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 $(BINDIR)/%.o: %.S
 	@$(ECHO) " CC  $@";
 	@mkdir -p $(@D)
 	$(CMD_PREFIX)$(CC) $(CFLAGS) $(defs) -D__ASSEMBLY__=1 -c $(INCLUDES) $< -o $@
 
-%.hex: %.elf
-	@$(ECHO) " HEX       $@";
-	$(CMD_PREFIX)$(OBJCOPY) -O ihex $< $@
-	$(CMD_PREFIX)$(OBJCOPY) -O ihex $< Debug/$@
+$(BINDIR)/%.d: %.c
+	@$(ECHO) " MAKEDEP   $@"
+	@mkdir -p $(@D)
+	$(CMD_PREFIX)$(CC) $(CFLAGS) $(INCLUDES) -MM -MT"Debug/$(<:.c=.o)" "$<" > $@
 
-%.lss: %.elf
-	@$(ECHO) " LSS       $@";
-	$(CMD_PREFIX)$(OBJDUMP) -h -S -z $< > $@
 
-%.sym: %.elf
-	@$(ECHO) " NM        $@";
-	$(CMD_PREFIX)$(NM) -n $< > $@
-
-%.bin: %.elf
-	@$(ECHO) " BIN       $@";
-	$(CMD_PREFIX)$(OBJCOPY) -O binary $< $@
 

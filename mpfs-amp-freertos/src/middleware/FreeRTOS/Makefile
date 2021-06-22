@@ -26,7 +26,7 @@
 #
 # FreeRTOS support
 
-EXTRA_SRCS-y += \
+SRCS += \
 	src/middleware/FreeRTOS/croutine.c \
 	src/middleware/FreeRTOS/event_groups.c \
 	src/middleware/FreeRTOS/list.c \
@@ -45,11 +45,3 @@ INCLUDES += \
 	-Isrc/middleware/config \
 	-Isrc/middleware/FreeRTOS/portable/GCC/RISCV \
 
-src/middleware/FreeRTOS/croutine.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/middleware/FreeRTOS/event_groups.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/middleware/FreeRTOS/list.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/middleware/FreeRTOS/queue.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/middleware/FreeRTOS/tasks.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/middleware/FreeRTOS/timers.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/middleware/FreeRTOS/portable/GCC/RISCV/port.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/middleware/FreeRTOS/portable/MemMang/heap_3.o: CFLAGS=$(CFLAGS_GCCEXT)

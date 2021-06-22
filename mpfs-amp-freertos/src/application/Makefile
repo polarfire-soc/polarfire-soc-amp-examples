@@ -26,7 +26,7 @@
 #
 # Application code
 
-EXTRA_SRCS-y += \
+SRCS += \
 	src/application/hart0/e51.c \
 	src/application/hart1/u54_1.c \
 	src/application/hart2/u54_2.c \
@@ -37,9 +37,3 @@ EXTRA_SRCS-y += \
 INCLUDES += \
 	-Isrc/application \
 
-src/application/hart0/e51.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/application/hart1/u54_1.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/application/hart2/u54_2.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/application/hart3/u54_3.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/application/hart4/u54_4.o: CFLAGS=$(CFLAGS_GCCEXT)
-src/application/inc/application.o: CFLAGS=$(CFLAGS_GCCEXT)

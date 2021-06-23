@@ -195,7 +195,7 @@ SECTIONS
         .heap : ALIGN(0x10)
         {
         __heap_start = .;
-        . += HEAP_SIZE;
+        *(.FreeRTOSheap)
         __heap_end = .;
         . = ALIGN(0x10);
         _heap_end = __heap_end;

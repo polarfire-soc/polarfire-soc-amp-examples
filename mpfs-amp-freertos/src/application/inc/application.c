@@ -25,6 +25,9 @@
 
 #define UART_DEMO &g_mss_uart3_lo
 
+/* FreeRTOS heap */
+uint8_t __attribute__ ((section (".FreeRTOSheap"))) ucHeap[configTOTAL_HEAP_SIZE];
+
 const uint8_t g_message1[] =
 "\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP FreeRTOS example  ****\r\n\r\n\r\n";
 

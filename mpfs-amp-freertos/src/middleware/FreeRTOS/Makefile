@@ -34,7 +34,7 @@ SRCS += \
 	src/middleware/FreeRTOS/tasks.c \
 	src/middleware/FreeRTOS/timers.c \
 	src/middleware/FreeRTOS/portable/GCC/RISCV/port.c \
-	src/middleware/FreeRTOS/portable/MemMang/heap_3.c \
+	src/middleware/FreeRTOS/portable/MemMang/heap_2.c \
 
 ASM_SRCS += \
 	src/middleware/FreeRTOS/portable/GCC/RISCV/portasm.S \

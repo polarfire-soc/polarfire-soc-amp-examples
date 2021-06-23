@@ -19,9 +19,9 @@ This project is automatically built by Yocto when using the icicle-kit-es-amp ma
 
 The application is configured to run from DDR on U54_3 application core.
 
-Instructions on how to build Yocto icicle-kit-es-amp machine are described [here](https://github.com/polarfire-soc/meta-polarfire-soc-yocto-bsp)
+Instructions on how to build Yocto icicle-kit-es-amp machine are described [here]()
 
-Instructions on how to build Buildroot with AMP configuration are described [here](https://github.com/polarfire-soc/polarfire-soc-buildroot-sdk)
+Instructions on how to build Buildroot with AMP configuration are described [here]()
 
 On connecting Icicle kit J11 to the host PC, you should see 4 COM port interfaces connected. To use this project configure the COM port interface 3 as below:
 
@@ -36,9 +36,9 @@ This project can also be used in a custom AMP software configuration (i.e. FreeR
 
 To generate an HSS payload for a custom AMP software architecture:
 
-1. (Optional) modify the MPFS_HAL_FIRST_HART and MPFS_HAL_LAST_START macros in the mss_sw_config.h header file if targetting the application to another hart. Default hart is U54-1
+1. (Optional) modify the start address of your application using the ddr_cached_32bit memory section in the mpfs-ddr-loaded-by-boot-loader.ld linker script
 
-2. (Optional) modify the start address of your application using the ddr_cached_32bit memory section in the mpfs-ddr-loaded-by-boot-loader.ld linker script
+2. (Optional) modify the MPFS_HAL_FIRST_HART and MPFS_HAL_LAST_START macros in the mss_sw_config.h header file if targetting the application to another hart. Default hart is U54-1
 
 3. Build this example project using Softconsole or the provided makefile
 
@@ -55,24 +55,21 @@ The MPFS HAL ddr demo program is useful for this while developing and debugging.
 
 1. Build the project with the following configurations:
 
-1.1 set both MPFS_HAL_FIRST_HART and MPFS_HAL_LAST_START to 1 in mss_sw_config.h
+    1.1. Set both MPFS_HAL_FIRST_HART and MPFS_HAL_LAST_START to 1 in mss_sw_config.h
 
-2. modify the start address of your application to 0x80000000 using the ddr_cached_32bit memory section in the mpfs-ddr-loaded-by-boot-loader.ld linker script
-
-3. Build the project using Softconsole or makefile provided
-
-4. Load the [MPFS HAL DDR demo](https://github.com/polarfire-soc/polarfire-soc-bare-metal-library/tree/master/examples/mpfs-hal/mpfs-hal-ddr-demo)  program to eNVM. This boots the Icicle kit and prints information on UART0
+    1.2. Modify the start address of your application to 0x80000000 using the ddr_cached_32bit memory section in the mpfs-ddr-loaded-by-boot-loader.ld linker script
 
 
+2. Load the [MPFS HAL DDR demo](https://github.com/polarfire-soc/polarfire-soc-bare-metal-library/tree/master/examples/mpfs-hal/mpfs-hal-ddr-demo)  program to eNVM. This boots the Icicle kit and prints information on UART0
 
-5. Use Ymodem to load this program to DDR (use bin file located in the Debug directory of this example project)
+3. Use Ymodem to load this program to DDR (use bin file located in the Debug directory of this example project)
 
-6. Connect using "mpfs-uart-mac-freertos-lwip-DDR-Release" debug 
+4. Connect using "mpfs-uart-mac-freertos-lwip-DDR-Release" debug 
 
-7. Add any break-points as desired desire
+5. Add any break-points as desired
 
-8. Press resume button on the debugger
+6. Press resume button on the debugger
 
-9. Select option 7 "Start U54_1 from DDR @0x80000000" 
+7. Select option 7 "Start U54_1 from DDR @0x80000000" 
 
-10. The FreeRTOS AMP example project should start running and displaying messages over UART3.
+8. The FreeRTOS AMP example project should start running and displaying messages over UART3.

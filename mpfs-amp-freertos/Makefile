@@ -28,7 +28,7 @@
 #
 
 # All Target
-RISCV_TARGET:=amp-application.elf
+RISCV_TARGET:=mpfs-amp-freertos.elf
 TARGET:=$(RISCV_TARGET)
 
 all: ${TARGET}
@@ -47,7 +47,7 @@ endif
 
 LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot-loader.ld
 
-RISCV_TARGET=amp-application.elf
+RISCV_TARGET=mpfs-amp-freertos.elf
 BINDIR=Debug
 
 ifeq ("$(wildcard Debug)","")

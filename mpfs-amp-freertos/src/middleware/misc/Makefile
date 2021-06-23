@@ -29,6 +29,7 @@
 SRCS += \
         src/middleware/misc/assert.c \
         src/middleware/misc/c_stubs.c \
+        src/middleware/misc/ee_vsprintf.c \
 
 INCLUDES +=\
 

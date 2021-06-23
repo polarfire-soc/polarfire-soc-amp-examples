@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: MIT
  *
- * This file contains trivial C standard library routines for the
- * Hart Software Services, to allow it link without external dependencies.
+ * This file contains trivial C standard library routines to
+ * allow linking without external dependencies.
  *
  */
 

@@ -23,10 +23,7 @@
 #include "timers.h"
 #include "semphr.h"
 
-#define UART_DEMO &g_mss_uart3_lo
-
-/* FreeRTOS heap */
-uint8_t __attribute__ ((section (".FreeRTOSheap"))) ucHeap[configTOTAL_HEAP_SIZE];
+#define UART_APP &g_mss_uart3_lo
 
 const uint8_t g_message1[] =
 "\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP FreeRTOS example  ****\r\n\r\n\r\n";
@@ -52,10 +49,10 @@ void start_application()
     /* The hart is out of WFI, clear the SW interrupt. Hear onwards Application
      * can enable and use any interrupts as required */
     clear_soft_interrupt();
+#endif
 
     (void)mss_config_clk_rst(MSS_PERIPH_MMUART3, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
     (void)mss_config_clk_rst(MSS_PERIPH_GPIO2, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
-#endif
 
     PLIC_init();
 
@@ -65,7 +62,7 @@ void start_application()
                     MSS_GPIO_16,
                     MSS_GPIO_OUTPUT_MODE);
 
-    MSS_UART_init(UART_DEMO, MSS_UART_115200_BAUD,
+    MSS_UART_init(UART_APP, MSS_UART_115200_BAUD,
                    MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY);
 
     rtos_result = xTaskCreate( freertos_task_one, "task1", 4000, NULL, uartPRIMARY_PRIORITY, NULL );
@@ -93,34 +90,38 @@ void start_application()
 
 volatile uint64_t* mtime = (volatile uint64_t*)0x0200bff8;
 volatile uint64_t* timecmp = ((volatile uint64_t*)0x02004000) + MPFS_HAL_FIRST_HART;
+uint8_t __attribute__ ((section (".FreeRTOSheap"))) ucHeap[configTOTAL_HEAP_SIZE];
 
 void freertos_task_one( void *pvParameters )
 {
-    
+    int8_t info_string[50];
     vPortSetupTimer();
 
     if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE){
-        MSS_UART_polled_tx(UART_DEMO, g_message1, sizeof(g_message1));
+        MSS_UART_polled_tx(UART_APP, g_message1, sizeof(g_message1));
         xSemaphoreGive( xSemaphore );
     }
 
     while(1){
         if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE){
-            MSS_UART_polled_tx_string(UART_DEMO,"\r\nRunning FreeRTOS task 1...\r\n");
+            sprintf(info_string,"\r\nRunning FreeRTOS task 1 from hart %d\r\n", read_csr(mhartid));
+            MSS_UART_polled_tx(UART_APP, info_string, strlen(info_string));
             xSemaphoreGive( xSemaphore );
         }
-        vTaskDelay(200);
+        vTaskDelay(300);
     }
 
 }
 
 void freertos_task_two( void *pvParameters )
 {
+    int8_t info_string[50];
     static volatile uint8_t value = 0u;
 
     while(1){
         if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE){
-            MSS_UART_polled_tx_string(UART_DEMO,"\r\nRunning FreeRTOS task 2...\r\n");
+            sprintf(info_string,"\r\nRunning FreeRTOS task 2 from hart %d\r\n", read_csr(mhartid));
+            MSS_UART_polled_tx(UART_APP, info_string, strlen(info_string));
             xSemaphoreGive( xSemaphore );
         }
 

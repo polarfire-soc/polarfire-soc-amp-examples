@@ -71,22 +71,19 @@ else
   CMD_PREFIX := $(CMD_PREFIX_DEFAULT)
 endif
 
-OBJS = $(addprefix Debug/,$(ASM_SRCS:.S=.o) $(SRCS:.c=.o))
+OBJS = $(addprefix $(BINDIR)/,$(ASM_SRCS:.S=.o) $(SRCS:.c=.o))
 
 $(BINDIR)/%.o: %.c $(BINDIR)/%.d
 	@$(ECHO) " CC $@";
-	@mkdir -p $(@D)
 	$(CMD_PREFIX)$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 $(BINDIR)/%.o: %.S
 	@$(ECHO) " CC  $@";
-	@mkdir -p $(@D)
 	$(CMD_PREFIX)$(CC) $(CFLAGS) $(defs) -D__ASSEMBLY__=1 -c $(INCLUDES) $< -o $@
 
 $(BINDIR)/%.d: %.c
-	@$(ECHO) " MAKEDEP   $@"
 	@mkdir -p $(@D)
-	$(CMD_PREFIX)$(CC) $(CFLAGS) $(INCLUDES) -MM -MT"Debug/$(<:.c=.o)" "$<" > $@
+	$(CMD_PREFIX)$(CC) $(CFLAGS) $(INCLUDES) -MM -MT"$(BINDIR)/$(<:.c=.o)" "$<" > $@
 
 
 

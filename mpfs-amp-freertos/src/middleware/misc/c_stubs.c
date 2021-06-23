@@ -206,60 +206,6 @@ __attribute__((weak)) int strncmp(const char *s1, const char *s2, size_t n)
     return result;
 }
 
-__attribute__((weak)) void * sbrk (int  incr)
-{
-    extern char __heap_start;//set by linker
-    extern char __heap_end;//set by linker
 
-    static char *heap_end;		/* Previous end of heap or 0 if none */
-    char        *prev_heap_end;
-
-    if (0 == heap_end) {
-        heap_end = &__heap_start;			/* Initialize first time round */
-    }
-
-    prev_heap_end  = heap_end;
-    heap_end      += incr;
-
-    if( heap_end < (&__heap_end)) {
-
-    } else {
-        return (char*)-1;
-    }
-    return (void *) prev_heap_end;
-
-}
-
-__attribute__((weak)) void* malloc(size_t size) {
-
-    size = (size + sizeof(size_t) + (align_to - 1)) & ~ (align_to - 1);
-    free_block* block = free_block_list_head.next;
-    free_block** head = &(free_block_list_head.next);
-    while (block != 0) {
-        if (block->size >= size) {
-            *head = block->next;
-            return ((char*)block) + sizeof(size_t);
-        }
-        head = &(block->next);
-        block = block->next;
-    }
-
-    block = (free_block*)sbrk(size);
-    block->size = size;
-
-    return ((char*)block) + sizeof(size_t);
-}
-
-__attribute__((weak)) void free(void* ptr) {
-    
-    free_block* block = (free_block*)(((char*)ptr) - sizeof(size_t));
-    block->next = free_block_list_head.next;
-    free_block_list_head.next = block;
-}
-
-__attribute__((weak)) int rand(void)
-{
-    return 0;
-}
 
 

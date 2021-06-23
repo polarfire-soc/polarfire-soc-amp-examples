@@ -97,13 +97,16 @@ void freertos_task_one( void *pvParameters )
     int8_t info_string[50];
     vPortSetupTimer();
 
-    if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE){
+    if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE)
+    {
         MSS_UART_polled_tx(UART_APP, g_message1, sizeof(g_message1));
         xSemaphoreGive( xSemaphore );
     }
 
-    while(1){
-        if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE){
+    while(1)
+    {
+        if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE)
+        {
             sprintf(info_string,"\r\nRunning FreeRTOS task 1 from hart %d\r\n", read_csr(mhartid));
             MSS_UART_polled_tx(UART_APP, info_string, strlen(info_string));
             xSemaphoreGive( xSemaphore );
@@ -118,8 +121,10 @@ void freertos_task_two( void *pvParameters )
     int8_t info_string[50];
     static volatile uint8_t value = 0u;
 
-    while(1){
-        if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE){
+    while(1)
+    {
+        if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE)
+        {
             sprintf(info_string,"\r\nRunning FreeRTOS task 2 from hart %d\r\n", read_csr(mhartid));
             MSS_UART_polled_tx(UART_APP, info_string, strlen(info_string));
             xSemaphoreGive( xSemaphore );

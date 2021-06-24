@@ -2,7 +2,7 @@
 <launchConfiguration type="ilg.gnumcueclipse.debug.gdbjtag.openocd.launchConfigurationType">
     <booleanAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.doContinue" value="true"/>
     <booleanAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.doDebugInRam" value="false"/>
-    <booleanAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.doFirstReset" value="true"/>
+    <booleanAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.doFirstReset" value="false"/>
     <booleanAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.doGdbServerAllocateConsole" value="true"/>
     <booleanAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.doGdbServerAllocateTelnetConsole" value="false"/>
     <booleanAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.doSecondReset" value="false"/>
@@ -16,18 +16,18 @@
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerExecutable" value="${openocd_path}/${openocd_executable}"/>
     <intAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerGdbPortNumber" value="3333"/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerLog" value=""/>
-    <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerOther" value="--command &quot;set DEVICE MPFS&quot;&#13;&#10;--file board/microsemi-riscv.cfg"/>
+    <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerOther" value="-c &quot;set COREID 3&quot; &#10;--command &quot;set DEVICE MPFS&quot;&#13;&#10;--file board/microsemi-riscv.cfg"/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerTclPortNumber" value="6666"/>
     <intAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerTelnetPortNumber" value="4444"/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.otherInitCommands" value=""/>
-    <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.otherRunCommands" value="thread apply all set $pc=_start"/>
+    <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.otherRunCommands" value=""/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.secondResetType" value=""/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.svdPath" value=""/>
     <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageFileName" value=""/>
     <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.imageOffset" value=""/>
     <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.ipAddress" value="localhost"/>
     <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.jtagDevice" value="GNU MCU OpenOCD"/>
-    <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.loadImage" value="true"/>
+    <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.loadImage" value="false"/>
     <booleanAttribute key="org.eclipse.cdt.debug.gdbjtag.core.loadSymbols" value="true"/>
     <stringAttribute key="org.eclipse.cdt.debug.gdbjtag.core.pcRegister" value=""/>
     <intAttribute key="org.eclipse.cdt.debug.gdbjtag.core.portNumber" value="3333"/>
@@ -46,7 +46,7 @@
     <booleanAttribute key="org.eclipse.cdt.dsf.gdb.UPDATE_THREADLIST_ON_SUSPEND" value="false"/>
     <intAttribute key="org.eclipse.cdt.launch.ATTR_BUILD_BEFORE_LAUNCH_ATTR" value="2"/>
     <stringAttribute key="org.eclipse.cdt.launch.COREFILE_PATH" value=""/>
-    <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="${config_name:mpfs-amp-freertos}/amp-application.elf"/>
+    <stringAttribute key="org.eclipse.cdt.launch.PROGRAM_NAME" value="${config_name:mpfs-amp-freertos}/mpfs-amp-freertos.elf"/>
     <stringAttribute key="org.eclipse.cdt.launch.PROJECT_ATTR" value="mpfs-amp-freertos"/>
     <booleanAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_AUTO_ATTR" value="false"/>
     <stringAttribute key="org.eclipse.cdt.launch.PROJECT_BUILD_CONFIG_ID_ATTR" value=""/>

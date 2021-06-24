@@ -48,7 +48,7 @@ endif
 LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot-loader.ld
 
 RISCV_TARGET=mpfs-amp-freertos.elf
-BINDIR=Debug
+BINDIR=Default
 
 ifeq ("$(wildcard $(BINDIR))","")
   $(info $(shell mkdir -p $(BINDIR)))

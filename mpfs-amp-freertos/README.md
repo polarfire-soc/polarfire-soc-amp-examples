@@ -38,7 +38,7 @@ To generate an HSS payload for a custom AMP software architecture:
 
 1. (Optional) modify the start address of your application using the ddr_cached_32bit memory section in the mpfs-ddr-loaded-by-boot-loader.ld linker script
 
-2. (Optional) modify the MPFS_HAL_FIRST_HART and MPFS_HAL_LAST_START macros in the mss_sw_config.h header file if targetting the application to another hart. Default hart is U54-1
+2. (Optional) modify the MPFS_HAL_FIRST_HART and MPFS_HAL_LAST_START macros in the mss_sw_config.h header file if targetting the application to another hart. Default hart is U54_1
 
 3. Build this example project using Softconsole or the provided makefile
 

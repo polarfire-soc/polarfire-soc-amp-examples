@@ -37,7 +37,7 @@ ifneq ("$(wildcard src/boards/${BOARD}/Makefile)","")
   include src/boards/${BOARD}/Makefile
 else
   ifndef BOARD
-    $(warning BOARD not specified) # default to icicle if nothing found
+    $(info BOARD not specified) # default to icicle if nothing found
     BOARD:=icicle-kit-es
     include src/boards/${BOARD}/Makefile
   else
@@ -50,7 +50,7 @@ LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot
 RISCV_TARGET=mpfs-amp-freertos.elf
 BINDIR=Debug
 
-ifeq ("$(wildcard Debug)","")
+ifeq ("$(wildcard $(BINDIR))","")
   $(info $(shell mkdir -p $(BINDIR)))
 endif
 
@@ -63,7 +63,7 @@ include src/application/Makefile
 include src/middleware/Makefile
 
 
-DEPENDENCIES = $(addprefix Debug/, $(SRCS:.c=.d))
+DEPENDENCIES = $(addprefix $(BINDIR)/, $(SRCS:.c=.d))
 .PHONY: dep
 dep: $(DEPENDENCIES)
 

@@ -1,12 +1,12 @@
-# PolarFire SoC AMP FreeRTOS example
+# PolarFire SoC AMP (Asymmetric Multiprocessing) FreeRTOS example
 
-This example project provides a simple application running FreeRTOS. This application can be used in an AMP software architecture.
+This example project provides a simple application running FreeRTOS. This application can be used in an Asymmetric Multiprocessing (AMP) software architecture.
 
 The example project has two FreeRTOS tasks:
 
 Task1: displays messages over the UART3 console every 300ms
 
-Task2: displays messages over the UART3 console and toggles GPIO2 MSS_GPIO_16 (LED1) every 500ms
+Task2: displays messages over the UART3 console and toggles GPIO2 pin 16 (LED1) every 500ms
 
 The project can be compiled using SoftConsole or externally by using the provided makefile. 
 This allows to integrate and build the application in Yocto and Buildroot environments.
@@ -19,11 +19,11 @@ This project is automatically built by Yocto and Buildroot when using the AMP ma
 
 The application is configured to run from DDR on U54_3 application core.
 
-Instructions on how to build and run the Linux + FreeRTOS demo are described [here](https://bitbucket.microchip.com/projects/FPGA_PFSOC_ES/repos/polarfire-soc-documentation/browse/asymmetric-multiprocessing/amp.md?at=refs%2Fheads%2Fdevelop-amp).
+Instructions on how to build and run the Linux + FreeRTOS demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/tree/master/asymmetric-multiprocessing/amp.md).
 
 ### Other AMP configurations
 
-This project can also be used in a custom AMP software configuration (i.e. FreeRTOS + Bare metal) by using the HSS payload generator.
+This project can also be used in a custom AMP software configuration (i.e. FreeRTOS + Bare metal) by using the Hart Software Services (HSS) payload generator.
 
 To build the project and generate a HSS payload for a custom AMP software architecture:
 
@@ -33,7 +33,7 @@ To build the project and generate a HSS payload for a custom AMP software archit
 
 3. Build this example project using SoftConsole or the Makefile provided
 
-4. Generate a HSS payload containing the output ELF file of this FreeRTOS application and the additional binary of your second context
+4. Generate a HSS payload containing the output ELF file of this FreeRTOS application (mpfs-amp-freertos.elf) and the additional binary of your second context
 
 Instructions on how to generate an HSS payload are described [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/software-development/hss-payloads.md).
 

@@ -1,7 +1,7 @@
 #
 # MPFS Embedded Software
 #
-# Copyright 2019 Microchip Corporation.
+# Copyright 2019 Microchip FPGA Embedded Systems Solutions.
 #
 # SPDX-License-Identifier: MIT
 #

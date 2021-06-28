@@ -28,6 +28,8 @@
 const uint8_t g_message1[] =
 "\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP FreeRTOS example  ****\r\n\r\n\r\n";
 
+uint8_t __attribute__ ((section (".FreeRTOSheap"))) ucHeap[configTOTAL_HEAP_SIZE];
+
 SemaphoreHandle_t xSemaphore = NULL;
 
 void freertos_task_one( void *pvParameters );
@@ -90,7 +92,6 @@ void start_application()
 
 volatile uint64_t* mtime = (volatile uint64_t*)0x0200bff8;
 volatile uint64_t* timecmp = ((volatile uint64_t*)0x02004000) + MPFS_HAL_FIRST_HART;
-uint8_t __attribute__ ((section (".FreeRTOSheap"))) ucHeap[configTOTAL_HEAP_SIZE];
 
 void freertos_task_one( void *pvParameters )
 {

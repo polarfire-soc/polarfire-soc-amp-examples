@@ -26,6 +26,9 @@
 #
 # Defines build targets
 #
+all: $(SOC_CONFIG_FILES) $(TARGET)
+
+.DEFAULT_GOAL := all
 
 ##############################################################################
 #

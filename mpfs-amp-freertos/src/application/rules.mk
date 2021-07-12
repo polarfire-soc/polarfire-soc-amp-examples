@@ -40,6 +40,7 @@ NM=$(CROSS_COMPILE)nm
 ECHO=echo
 MAKE=make
 CP=cp
+MAKEDEP=makedepend
 
 
 PLATFORM_RISCV_ABI=lp64d
@@ -83,7 +84,10 @@ $(BINDIR)/%.o: %.S
 
 $(BINDIR)/%.d: %.c
 	@mkdir -p $(@D)
-	$(CMD_PREFIX)$(CC) $(CFLAGS) $(INCLUDES) -MM -MT"$(BINDIR)/$(<:.c=.o)" "$<" > $@
+	$(CMD_PREFIX)$(MAKEDEP) -f - $(INCLUDES) $< 2>/dev/null | sed 's,\($*\.o\)[ :]*\(.*\),$@ : $$\(wildcard \2\)\n$(BINDIR)/\1 : \2,g' > $(BINDIR)/$*.d
 
+$(BINDIR)/%.d: %.S
+	@mkdir -p $(@D)
+	$(CMD_PREFIX)$(MAKEDEP) -f - $(INCLUDES) $< 2>/dev/null | sed 's,\($*\.o\)[ :]*\(.*\),$@ : $$\(wildcard \2\)\n$(BINDIR)/\1 : \2,g' > $(BINDIR)/$*.d
 
 

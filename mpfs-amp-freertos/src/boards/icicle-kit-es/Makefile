@@ -27,19 +27,20 @@
 # Defines target-specific build-rules variables, extra sources and include paths
 #
 
-#
-# Confusingly, the MPFS-ICICLE-KIT-ES is platform MPFS
-#
-$(info MPFS-ICICLE-KIT-ES selected)
+$(info ICICLE-KIT-ES selected)
 
-CONFIG_PLATFORM_MPFS=y
-PLATFORM_CFLAGS += -DCONFIG_PLATFORM_MPFS=1
+BINDIR=Default
+RISCV_TARGET:=mpfs-amp-freertos.elf
+TARGET:=$(RISCV_TARGET)
+
+LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot-loader.ld
+
 BOARD_DIR=src/boards/icicle-kit-es
 
 INCLUDES += \
-    -I$(BOARD_DIR)/platform_config/ \
-    -I$(BOARD_DIR)/platform_config/mpfs_hal_config \
-    -I$(BOARD_DIR)/ \
+    -I$(BOARD_DIR)/platform_config \
+    -I$(BOARD_DIR)/fpga_design_config \
+    -I$(BOARD_DIR) \
     -Iplatform \
 
 #
@@ -86,6 +87,7 @@ SOC_CONFIG_FILES =  \
 
 $(SOC_CONFIG_FILES): $(BOARD_DIR)/fpga_design/design_description/ICICLE_MSS_eMMC_cfg.xml
 	@$(ECHO) " CFGGEN $<";
-	@$(CMD_PREFIX)python3 src/platform/soc_config_generator/mpfs_configuration_generator.py $(BOARD_DIR)/fpga_design/design_description/ICICLE_MSS_eMMC_cfg.xml $(BOARD_DIR)
+	@$(CMD_PREFIX)$(PYTHON) src/platform/soc_config_generator/mpfs_configuration_generator.py $(BOARD_DIR)/fpga_design/design_description/ICICLE_MSS_eMMC_cfg.xml $(BOARD_DIR)
 
 $(RISCV_TARGET): $(SOC_CONFIG_FILES)
+

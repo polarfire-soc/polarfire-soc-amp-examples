@@ -26,6 +26,8 @@
 #
 # Application code
 
+all: $(SOC_CONFIG_FILES) $(TARGET)
+
 SRCS += \
 	src/application/hart0/e51.c \
 	src/application/hart1/u54_1.c \

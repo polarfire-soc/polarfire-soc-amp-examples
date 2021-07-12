@@ -60,14 +60,14 @@ SRCS += \
 	src/platform/drivers/mss/mss_mmuart/mss_uart.c \
 	
 INCLUDES += \
+	-Isrc/platform/drivers/mss/mss_gpio \
+	-Isrc/platform/drivers/mss/mss_mmuart \
 	-Isrc/platform \
 	-Isrc/platform/hal \
 	-Isrc/platform/mpfs_hal/ \
 	-Isrc/platform/mpfs_hal/common \
 	-Isrc/platform/mpfs_hal/common/nwc \
 	-Isrc/platform/mpfs_hal/startup_gcc \
-	-Isrc/platform/platform_config_reference \
-	-Isrc/platform/platform_config_reference/mpfs_hal_config \
 
 
 

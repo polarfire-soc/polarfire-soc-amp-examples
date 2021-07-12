@@ -27,11 +27,34 @@
 # Toplevel Makefile
 #
 
-# All Target
-RISCV_TARGET:=mpfs-amp-freertos.elf
-TARGET:=$(RISCV_TARGET)
+SHELL=/bin/sh
+PYTHON?=python3
 
-all: ${TARGET}
+#
+# To build the HSS under SoftConsole on Windows, we need to use SoftConsole-provided
+# tools, and potentially to modify paths
+#
+
+.ONESHELL:
+
+ifeq ($(OS), Windows_NT)
+  #If we need to patch up path for Windows, we could do it here...
+  #TOOLPATH:=${SC_INSTALL_DIR}riscv-unknown-elf-gcc\bin
+  #export PATH:="$(TOOLPATH);$(PATH)"
+  $(info INFO: Windows detected)
+  HOST_WINDOWS:=true
+else
+  SYSTEM:=$(shell uname -s)
+  ifneq (, $(findstring Linux, $(SYSTEM)))         # Linux-specific mods
+    # Nothing special needed
+    $(info INFO: Linux detected)
+    HOST_LINUX:=true
+  else
+    $(error Unsupported build platform $(SYSTEM))
+  endif
+endif
+
+include src/application/Makefile
 
 ifneq ("$(wildcard src/boards/${BOARD}/Makefile)","")
   include src/boards/${BOARD}/Makefile
@@ -45,34 +68,28 @@ else
   endif
 endif
 
-LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot-loader.ld
-
-RISCV_TARGET=mpfs-amp-freertos.elf
-BINDIR=Default
-
 ifeq ("$(wildcard $(BINDIR))","")
   $(info $(shell mkdir -p $(BINDIR)))
 endif
 
 MCMODEL=-mcmodel=medany
 
-include rules.mk
-include targets.mk
+include src/application/rules.mk
+include src/application/targets.mk
 include src/platform/Makefile
-include src/application/Makefile
 include src/middleware/Makefile
-
 
 DEPENDENCIES = $(addprefix $(BINDIR)/, $(SRCS:.c=.d))
 .PHONY: dep
 dep: $(DEPENDENCIES)
 
+ifneq ($(MAKECMDGOALS), clean)
 -include $(DEPENDENCIES)
+endif
 
-
-$(RISCV_TARGET): $(OBJS)  $(DEPENDENCIES) $(LINKER_SCRIPT) $(LIBS)
+$(RISCV_TARGET): $(OBJS)  $(DEPENDENCIES) $(LINKER_SCRIPT)
 	@$(ECHO) " LD    $@";
-	$(CMD_PREFIX)$(CC) -T $(LINKER_SCRIPT) -nostdlib -nostartfiles -nodefaultlibs -Wl,-Map=$(BINDIR)/output.map -Wl,--gc-sections -o $(BINDIR)/$@ $(OBJS) $(LIBS)
+	$(CMD_PREFIX)$(CC) -T $(LINKER_SCRIPT) -nostdlib -nostartfiles -nodefaultlibs -Wl,-Map=$(BINDIR)/output.map -Wl,--gc-sections -o $(BINDIR)/$@ $(OBJS)
 	@$(ECHO) " NM        `basename $@ .elf`.sym";
 	$(CMD_PREFIX)$(NM) -n $(BINDIR)/$@ > $(BINDIR)/`basename $@ .elf`.sym
 	@$(ECHO) " BIN       `basename $@ .elf`.bin"
@@ -80,5 +97,3 @@ $(RISCV_TARGET): $(OBJS)  $(DEPENDENCIES) $(LINKER_SCRIPT) $(LIBS)
 	@$(ECHO) " HEX       `basename $@ .elf`.hex";
 	$(CMD_PREFIX)$(OBJCOPY) -O ihex $(BINDIR)/$@ $(BINDIR)/`basename $@ .elf`.hex
 	$(CMD_PREFIX)$(SIZE) $(BINDIR)/$@ 2>/dev/null
-
-

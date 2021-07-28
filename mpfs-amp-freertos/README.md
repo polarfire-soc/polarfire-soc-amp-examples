@@ -37,19 +37,28 @@ Instructions on how to generate an HSS payload are described [here](https://gith
 
 #### (Optional) Building the project using the Makefile<a name="makefile-build"></a>
 
-Note: If building the project outside of SoftConsole by using the provided Makefile, the system PATH must be configured to include the location of a RISC-V toolchain.
+If building the project outside of SoftConsole by using the provided Makefile, the system PATH must be configured to include the location of a RISC-V toolchain and Python version 3.x.
 
 For example, to use SoftConsole built-in RISC-V toolchain:
 
 On Linux:
 ```
-export PATH=$PATH:$HOME/Microchip/SoftConsole-v2021.1/riscv-unknown-elf-gcc/bin
+export PATH=$PATH:$HOME/Microchip/SoftConsole-v2021.1/python3/bin:$HOME/Microchip/SoftConsole-v2021.1/riscv-unknown-elf-gcc/bin
 make
 ```
 
 On Windows:
+
+If using Windows, Python version 3.x should be added to the system path. This could be achieved by installing Python 3 on Windows or by using SoftConsole built-in python.
+
+To use SoftConsole built-in python:
 ```
-path %SystemRoot%;%SystemRoot%;C:\Microchip\SoftConsole-v2021.1\build_tools\bin;C:\Microchip\SoftConsole-v2021.1\riscv-unknown-elf-gcc\bin
+copy C:\Microchip\SoftConsole-v2021.1\python\python.exe C:\Microchip\SoftConsole-v2021.1\python\python3.exe
+```
+
+To configure the path con Windows:
+```
+path %SystemRoot%;%SystemRoot%;C:\Microchip\SoftConsole-v2021.1\build_tools\bin;C:\Microchip\SoftConsole-v2021.1\python;C:\Microchip\SoftConsole-v2021.1\riscv-unknown-elf-gcc\bin
 make
 ```
 ## How to debug the application in DDR

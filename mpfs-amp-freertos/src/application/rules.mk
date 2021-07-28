@@ -79,7 +79,7 @@ $(BINDIR)/%.o: %.c $(BINDIR)/%.d
 	$(CMD_PREFIX)$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 $(BINDIR)/%.o: %.S
-	@$(ECHO) " CC  $@";
+	@$(ECHO) " CC $@";
 	$(CMD_PREFIX)$(CC) $(CFLAGS) $(defs) -D__ASSEMBLY__=1 -c $(INCLUDES) $< -o $@
 
 $(BINDIR)/%.d: %.c

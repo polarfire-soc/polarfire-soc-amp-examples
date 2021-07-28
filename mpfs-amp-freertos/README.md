@@ -8,11 +8,9 @@ Task1: displays messages over the UART3 console every 300ms
 
 Task2: displays messages over the UART3 console and toggles GPIO2 pin 16 (LED1) every 500ms
 
-The project can be compiled using SoftConsole or externally by using the provided makefile. 
+The project can be compiled using SoftConsole or externally by using the provided Makefile.
 This allows to integrate and build the application in Yocto and Buildroot environments.
-
 ## How to use this example
-
 ### Linux + FreeRTOS AMP configuration
 
 This project is automatically built by Yocto and Buildroot when using the AMP machine. 
@@ -31,13 +29,29 @@ To build the project and generate a HSS payload for a custom AMP software archit
 
 2. (Optional) modify the MPFS_HAL_FIRST_HART and MPFS_HAL_LAST_START macros in the mss_sw_config.h header file if targetting the application to another hart
 
-3. Build this example project using SoftConsole or the Makefile provided
+3. Build this example project using SoftConsole or the Makefile provided. Information on how to build using the makefile is provided [here](#makefile-build)
 
 4. Generate a HSS payload containing the output ELF file of this FreeRTOS application (mpfs-amp-freertos.elf) and the additional binary of your second context
 
 Instructions on how to generate an HSS payload are described [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/software-development/hss-payloads.md).
 
+#### (Optional) Building the project using the Makefile<a name="makefile-build"></a>
 
+Note: If building the project outside of SoftConsole by using the provided Makefile, the system PATH must be configured to include the location of a RISC-V toolchain.
+
+For example, to use SoftConsole built-in RISC-V toolchain:
+
+On Linux:
+```
+export PATH=$PATH:$HOME/Microchip/SoftConsole-v2021.1/riscv-unknown-elf-gcc/bin
+make
+```
+
+On Windows:
+```
+path %SystemRoot%;%SystemRoot%;C:\Microchip\SoftConsole-v2021.1\build_tools\bin;C:\Microchip\SoftConsole-v2021.1\riscv-unknown-elf-gcc\bin
+make
+```
 ## How to debug the application in DDR
 
 The application is configured to run from DDR. It must be loaded to DDR using a previous stage program such as the HSS.

@@ -65,7 +65,7 @@
 #endif
 
 #ifndef MPFS_HAL_LAST_HART
-#define MPFS_HAL_LAST_HART   1
+#define MPFS_HAL_LAST_HART   4
 #endif
 
 /*

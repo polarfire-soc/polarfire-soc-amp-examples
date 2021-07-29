@@ -391,17 +391,15 @@ trap_vector:
     srli  t0,t0,1
     addi  t0,t0,-7
     bne   t0,x0,.Le51_other /* Not Timer interrupt... */
-
     /* Interrupt is timer interrupt so let FreeRTOS handle it */
-
     LOAD    t0, 0x0(sp)     # Restore t0 for proper context save by FreeRTOS
     addi    sp, sp, REGBYTES
     j       TIMER_CMP_INT
     mret
 
 .Le51_other:                # Re-enter mainline here if not timer interrupt
-  LOAD    t0, 0x0(sp)       # Restore t0 for proper context save by HAL
-  addi    sp, sp, REGBYTES
+    LOAD    t0, 0x0(sp)       # Restore t0 for proper context save by HAL
+    addi    sp, sp, REGBYTES
 #endif
     # The mscratch register is an XLEN-bit read/write register dedicated for use by machine mode.
     # Typically, it is used to hold a pointer to a machine-mode hart-local context space and swapped

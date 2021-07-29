@@ -9,8 +9,8 @@
  *
  */
 
-#include <drivers/mss/mss_gpio/mss_gpio.h>
 #include "mpfs_hal/mss_hal.h"
+#include "mss_gpio.h"
 
 #ifdef __cplusplus
 extern "C" {

@@ -7,9 +7,9 @@
  * implementation.
  *
  */
-#include <drivers/mss/mss_mmuart/mss_uart.h>
-#include <drivers/mss/mss_mmuart/mss_uart_regs.h>
 #include "mpfs_hal/mss_hal.h"
+#include "mss_uart_regs.h"
+#include "mss_uart.h"
 
 #ifdef __cplusplus
 extern "C" {

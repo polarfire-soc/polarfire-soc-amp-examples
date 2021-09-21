@@ -44,6 +44,8 @@
 #include <stdarg.h>
 #include <stddef.h>
 
+#include "ee_vsprintf.h"
+
 #define MAX_TEXT_LENGTH   256
 
 #define ZEROPAD  	(1<<0)	/* Pad with zero */
@@ -55,6 +57,10 @@
 #define UPPERCASE   (1<<6)	/* 'ABCDEF' */
 
 #define is_digit(c) ((c) >= '0' && (c) <= '9')
+
+/* The following functions must be implemented somewhere else in your project: */
+int uart_putstring(int hartid, char *p);
+int uart_putstring_to(mss_uart_instance_t *this_uart, char *p);
 
 static char const * const digits = "0123456789abcdefghijklmnopqrstuvwxyz";
 static char const * const upper_digits = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -596,12 +602,40 @@ repeat:
   return str - buf;
 }
 
-int sprintf(char *buf, const char *fmt, ...)
+int ee_printf(const char *fmt, ...)
 {
-    int n = 0;
-    va_list args;
-    va_start(args, fmt);
-    n = ee_vsprintf(buf, fmt, args);
-    va_end(args);
-    return n;
+  int hartid;
+  int result=0;
+
+  {
+      char buf[MAX_TEXT_LENGTH];	//,*p;
+      va_list args;
+
+      va_start(args, fmt);
+      ee_vsprintf(buf, fmt, args);
+      va_end(args);
+
+      hartid = read_csr(mhartid);
+      result = uart_putstring(hartid, buf);
+  }
+
+  return result;
+}
+
+int ee_printf_to(mss_uart_instance_t *this_uart, const char *fmt, ...)
+{
+
+  int result=0;
+  {
+      char buf[MAX_TEXT_LENGTH];	//,*p;
+      va_list args;
+
+      va_start(args, fmt);
+      ee_vsprintf(buf, fmt, args);
+      va_end(args);
+
+      result = uart_putstring_to(this_uart, buf);
+  }
+
+  return result;
 }

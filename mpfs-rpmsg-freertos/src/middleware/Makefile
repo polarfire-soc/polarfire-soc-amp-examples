@@ -28,3 +28,4 @@
 
 include src/middleware/FreeRTOS/Makefile
 include src/middleware/misc/Makefile
+include src/middleware/rpmsg/Makefile

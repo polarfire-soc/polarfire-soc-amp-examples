@@ -206,6 +206,59 @@ __attribute__((weak)) int strncmp(const char *s1, const char *s2, size_t n)
     return result;
 }
 
+__attribute__((weak)) char* strncpy(char* destination, const char* source, size_t num)
+{
+    // return if no memory is allocated to the destination
+    if (destination == NULL) {
+        return NULL;
+    }
+
+    // take a pointer pointing to the beginning of the destination string
+    char* ptr = destination;
+
+    // copy first `num` characters of C-string pointed by source
+    // into the array pointed by destination
+    while (*source && num--)
+    {
+        *destination = *source;
+        destination++;
+        source++;
+    }
+
+    // null terminate destination string
+    *destination = '\0';
+
+    // the destination is returned by standard `strncpy()`
+    return ptr;
+}
+
+__attribute__((weak)) int strcmp(const char* s1, const char* s2)
+{
+    while(*s1 && (*s1 == *s2))
+    {
+        s1++;
+        s2++;
+    }
+    return *(const unsigned char*)s1 - *(const unsigned char*)s2;
+}
+
+__attribute__((weak)) char * strcpy(char *dst0, const char *src0)
+{
+  char *s = dst0;
+  while (*dst0++ = *src0++)
+    ;
+  return s;
+}
+
+__attribute__((weak)) char *strcat(char *s1, const char *s2)
+{
+  char *s = s1;
+  while (*s1)
+    s1++;
+  while (*s1++ = *s2++)
+    ;
+  return s;
+}
 
 
 

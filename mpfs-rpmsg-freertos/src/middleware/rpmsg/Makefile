@@ -1,7 +1,7 @@
 #
 # MPFS Embedded Software
 #
-# Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+# Copyright 2019 Microchip Corporation.
 #
 # SPDX-License-Identifier: MIT
 #
@@ -24,17 +24,17 @@
 # IN THE SOFTWARE.
 #
 #
-# Miscellaneous Functionality
+# RPMsg support
 
 SRCS += \
-        src/middleware/misc/assert.c \
-        src/middleware/misc/c_stubs.c \
-        src/middleware/misc/ee_vsprintf.c \
-        src/middleware/misc/uart_helper.c \
+	src/middleware/rpmsg/common/llist.c \
+	src/middleware/rpmsg/rpmsg_lite/rpmsg_lite.c \
+	src/middleware/rpmsg/rpmsg_lite/rpmsg_ns.c \
+	src/middleware/rpmsg/rpmsg_lite/rpmsg_queue.c \
+	src/middleware/rpmsg/rpmsg_lite/porting/environment/rpmsg_env_freertos.c \
+	src/middleware/rpmsg/rpmsg_lite/porting/platform/mpfs/rpmsg_platform.c \
+	src/middleware/rpmsg/virtio/virtqueue.c \
 
 INCLUDES += \
-	-Isrc/middleware/misc \
-
-
-
-
+	-Isrc/middleware/rpmsg/include \
+	-Isrc/middleware/rpmsg/include/platform/mpfs \

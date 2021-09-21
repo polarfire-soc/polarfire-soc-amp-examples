@@ -241,19 +241,19 @@
         		
         <configuration configurationName="Default">
             			
-            <resource resourceType="PROJECT" workspacePath="/mpfs-amp-freertos"/>
+            <resource resourceType="PROJECT" workspacePath="/mpfs-rpmsg-freertos"/>
             		
         </configuration>
         		
         <configuration configurationName="Debug">
             			
-            <resource resourceType="PROJECT" workspacePath="/mpfs-amp-freertos"/>
+            <resource resourceType="PROJECT" workspacePath="/mpfs-rpmsg-freertos"/>
             		
         </configuration>
         		
         <configuration configurationName="Release">
             			
-            <resource resourceType="PROJECT" workspacePath="/mpfs-amp-freertos"/>
+            <resource resourceType="PROJECT" workspacePath="/mpfs-rpmsg-freertos"/>
             		
         </configuration>
         	

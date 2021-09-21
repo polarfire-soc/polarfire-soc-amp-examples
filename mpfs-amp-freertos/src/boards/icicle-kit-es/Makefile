@@ -30,7 +30,7 @@
 $(info ICICLE-KIT-ES selected)
 
 BINDIR=Default
-RISCV_TARGET:=mpfs-amp-freertos.elf
+RISCV_TARGET:=mpfs-rpmsg-freertos.elf
 TARGET:=$(RISCV_TARGET)
 
 LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot-loader.ld

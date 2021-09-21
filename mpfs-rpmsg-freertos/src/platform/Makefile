@@ -56,10 +56,12 @@ SRCS += \
 	src/platform/hal/hal_irq.c \
 
 SRCS += \
+	src/platform/drivers/fpga_ip/CoreIHC/core_ihc.c \
 	src/platform/drivers/mss/mss_gpio/mss_gpio.c \
 	src/platform/drivers/mss/mss_mmuart/mss_uart.c \
 	
 INCLUDES += \
+	-Isrc/platform/drivers/fpga_ip/CoreIHC \
 	-Isrc/platform/drivers/mss/mss_gpio \
 	-Isrc/platform/drivers/mss/mss_mmuart \
 	-Isrc/platform \

@@ -37,6 +37,12 @@
 #define MSS_SW_CONFIG_H_
 
 /*
+ * Include any driver setup/over-rides you may require.
+ */
+#include "drivers/fpga_ip/CoreIHC/core_ihc_defines.h"
+#include "drivers_config/fpga_ip/CoreIHC/core_ihc_config.h"
+
+/*
  * MPFS_HAL_FIRST_HART and MPFS_HAL_LAST_HART defines are used to specify which
  * harts to actually start. The value and the actual hart it represents are
  * listed below:
@@ -168,6 +174,13 @@
 #define SGMII_SUPPORT
 #define DDR_SUPPORT
 #define MSSIO_SUPPORT
+
+/*
+ * Debugging IHC. This placed memory map in volatile memory and uses software
+ * state machine
+ */
+#define LIBERO_SETTING_CONTEXT_A_HART_EN    0x0000000EUL    /* harts 1 to 3 */
+#define LIBERO_SETTING_CONTEXT_B_HART_EN    0x00000010UL    /* hart 4 */
 
 /*
  * DDR software options

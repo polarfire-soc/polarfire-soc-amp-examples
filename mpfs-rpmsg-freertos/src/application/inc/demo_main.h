@@ -9,6 +9,6 @@
 /**
  * functions
  */
-void start_application(void);
+void start_demo(void);
 
 #endif /* APPLICATION_H_ */

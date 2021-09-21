@@ -34,7 +34,7 @@ SRCS += \
 	src/application/hart2/u54_2.c \
 	src/application/hart3/u54_3.c \
 	src/application/hart4/u54_4.c \
-	src/application/inc/application.c \
+	src/application/inc/demo_main.c \
 
 INCLUDES += \
 	-Isrc/application \

@@ -15,7 +15,7 @@
 #include "mpfs_hal/mss_hal.h"
 #include "drivers/mss/mss_mmuart/mss_uart.h"
 #include "drivers/mss/mss_gpio/mss_gpio.h"
-#include "inc/application.h"
+#include "inc/demo_main.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -35,7 +35,7 @@ SemaphoreHandle_t xSemaphore = NULL;
 void freertos_task_one( void *pvParameters );
 void freertos_task_two( void *pvParameters );
 
-void start_application()
+void start_demo()
 {
 	BaseType_t rtos_result;
 

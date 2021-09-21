@@ -10,7 +10,7 @@
  */
 
 #include "mpfs_hal/mss_hal.h"
-#include "inc/application.h"
+#include "inc/demo_main.h"
 
 volatile uint32_t count_sw_ints_h1 = 0U;
 
@@ -48,7 +48,7 @@ void u54_1(void)
 
     if(MPFS_HAL_FIRST_HART == hartid)
     {
-        start_application();
+        start_demo();
         /* Never return */
     }
 

@@ -142,7 +142,7 @@ standard names - or at least those used in the unmodified vector table. */
 #define xPortSysTickHandler SysTick_Handler
 
 /* Task priorities.  Allow these to be overridden. */
-#ifndef uartPRIMARY_PRIORITY
-#define uartPRIMARY_PRIORITY		( configMAX_PRIORITIES - 13 )
+#ifndef PRIMARY_PRIORITY
+#define PRIMARY_PRIORITY		( configMAX_PRIORITIES - 13 )
 #endif
 #endif /* FREERTOS_CONFIG_H */

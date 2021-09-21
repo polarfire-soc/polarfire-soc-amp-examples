@@ -54,6 +54,10 @@ endif
 
 CORE_CFLAGS+= $(EXT_CFLAGS) -DUSING_FREERTOS -no-pie -fno-PIE 
 
+ifdef MASTER
+CORE_CFLAGS+= -DRPMSG_MASTER
+endif
+
 CORE_CFLAGS+=-msmall-data-limit=8 -mstrict-align -mno-save-restore -O0 \
     -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections  -g3
 
@@ -79,7 +83,7 @@ $(BINDIR)/%.o: %.c $(BINDIR)/%.d
 	$(CMD_PREFIX)$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 $(BINDIR)/%.o: %.S
-	@$(ECHO) " CC $@";
+	@$(ECHO) " CC  $@";
 	$(CMD_PREFIX)$(CC) $(CFLAGS) $(defs) -D__ASSEMBLY__=1 -c $(INCLUDES) $< -o $@
 
 $(BINDIR)/%.d: %.c

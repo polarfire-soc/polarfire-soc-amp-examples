@@ -9,31 +9,49 @@
  *
  */
 
+/*******************************************************************************
+ * Include files
+ */
 
 #include <stdio.h>
 #include <string.h>
-#include "mpfs_hal/mss_hal.h"
-#include "drivers/mss/mss_mmuart/mss_uart.h"
 #include "drivers/mss/mss_gpio/mss_gpio.h"
 #include "inc/demo_main.h"
 
+/* FreeRTOS includes */
 #include "FreeRTOS.h"
 #include "task.h"
 #include "queue.h"
 #include "timers.h"
 #include "semphr.h"
 
-#define UART_APP &g_mss_uart3_lo
+/*******************************************************************************
+ * Macros
+ */
+#define RPMSG_SHARED_MEMORY_BASE  ((void*)0xafab0000)
+#define RPMSG_SHARED_MEMORY_SIZE (0x50000)
 
-const uint8_t g_message1[] =
-"\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP FreeRTOS example  ****\r\n\r\n\r\n";
+/*******************************************************************************
+ * Instance definition
+ */
+static void* rpmsg_lite_base = RPMSG_SHARED_MEMORY_BASE;
 
-uint8_t __attribute__ ((section (".FreeRTOSheap"))) ucHeap[configTOTAL_HEAP_SIZE];
+/*******************************************************************************
+ * Function prototypes
+ */
+static void freertos_task_one( void *pvParameters );
+#ifndef RPMSG_MASTER
+static void freertos_task_two( void *pvParameters );
+#endif
+static void rpmsg_setup(rpmsg_comm_stack_handle_t handle);
 
-SemaphoreHandle_t xSemaphore = NULL;
+#ifdef RPMSG_MASTER
+static void app_nameservice_isr_cb(uint32_t new_ept, const char *new_ept_name, uint32_t flags, void *user_data);
+#endif
 
-void freertos_task_one( void *pvParameters );
-void freertos_task_two( void *pvParameters );
+/*******************************************************************************
+ * Functions
+ *******************************************************************************/
 
 void start_demo()
 {
@@ -53,21 +71,25 @@ void start_demo()
     clear_soft_interrupt();
 #endif
 
+#ifdef RPMSG_MASTER
+    (void)mss_config_clk_rst(MSS_PERIPH_MMUART1, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
+#else
     (void)mss_config_clk_rst(MSS_PERIPH_MMUART3, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
     (void)mss_config_clk_rst(MSS_PERIPH_GPIO2, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
+#endif
 
     PLIC_init();
 
     MSS_GPIO_init(GPIO2_LO);
 
     MSS_GPIO_config(GPIO2_LO,
-                    MSS_GPIO_16,
+                    MSS_GPIO_19,
                     MSS_GPIO_OUTPUT_MODE);
 
     MSS_UART_init(UART_APP, MSS_UART_115200_BAUD,
                    MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY);
 
-    rtos_result = xTaskCreate( freertos_task_one, "task1", 4000, NULL, uartPRIMARY_PRIORITY, NULL );
+    rtos_result = xTaskCreate( freertos_task_one, "task1", configMINIMAL_STACK_SIZE, NULL, PRIMARY_PRIORITY, NULL );
     if(1 != rtos_result)
     {
         int ix;
@@ -75,63 +97,85 @@ void start_demo()
             ix++;
     }
 
-    rtos_result = xTaskCreate( freertos_task_two, "task2", 4000, NULL, uartPRIMARY_PRIORITY, NULL );
+#ifndef RPMSG_MASTER
+    rtos_result = xTaskCreate( freertos_task_two, "task2", configMINIMAL_STACK_SIZE, NULL, PRIMARY_PRIORITY, NULL );
     if(1 != rtos_result)
     {
         int ix;
         for(;;)
             ix++;
     }
-
-    xSemaphore = xSemaphoreCreateMutex();
+#endif
 
     /* Start the kernel.  From here on, only tasks and interrupts will run. */
     vTaskStartScheduler();
 
 }
 
-volatile uint64_t* mtime = (volatile uint64_t*)0x0200bff8;
-volatile uint64_t* timecmp = ((volatile uint64_t*)0x02004000) + MPFS_HAL_FIRST_HART;
-
 void freertos_task_one( void *pvParameters )
 {
-    int8_t info_string[50];
+    uint8_t rx_buff[1];
+    uint8_t rx_size = 0;
+
+    rpmsg_comm_stack_t my_rpmsg_instance;
+
+#ifdef RPMSG_MASTER
+    const uint8_t g_message[] =
+    "\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP RPMsg Master FreeRTOS example ****\r\n\r\n\r\n";
+#else
+    const uint8_t g_message[] =
+    "\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP RPMsg Remote FreeRTOS example ****\r\n\r\n\r\n";
+#endif
+
+    const uint8_t g_menu[] =
+    "\r\n\
+    Press 0 to show this menu\r\n\
+    Press 1 to run ping pong demo\r\n\
+    Press 2 to run console demo\r\n\
+    Press 3 to run sample echo demo\r\n";
+
     vPortSetupTimer();
 
-    if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE)
-    {
-        MSS_UART_polled_tx(UART_APP, g_message1, sizeof(g_message1));
-        xSemaphoreGive( xSemaphore );
-    }
+    MSS_UART_polled_tx(UART_APP, g_message, sizeof(g_message));
+
+    rpmsg_setup(&my_rpmsg_instance);
+
+    MSS_UART_polled_tx(UART_APP, g_menu, sizeof(g_menu));
 
     while(1)
     {
-        if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE)
+        rx_size = MSS_UART_get_rx(UART_APP, rx_buff, sizeof(rx_buff));
+        if (rx_size > 0)
         {
-            //sprintf(info_string,"\r\nRunning FreeRTOS task 1 from hart %d\r\n", read_csr(mhartid));
-            MSS_UART_polled_tx(UART_APP, info_string, strlen(info_string));
-            xSemaphoreGive( xSemaphore );
+            switch(rx_buff[0])
+            {
+                case '0':
+                    MSS_UART_polled_tx(UART_APP, g_menu, sizeof(g_menu));
+                    break;
+                case '1':
+                    rpmsg_pingpong_demo(&my_rpmsg_instance);
+                    break;
+                case '2':
+                    rpmsg_console_demo(&my_rpmsg_instance);
+                    break;
+                case '3':
+                    rpmsg_echo_demo(&my_rpmsg_instance);
+                    break;
+                default:
+                    break;
+            }
         }
-        vTaskDelay(300);
     }
-
 }
 
-void freertos_task_two( void *pvParameters )
+#ifndef RPMSG_MASTER
+void freertos_task_two(void *pvParameters)
 {
-    int8_t info_string[50];
     static volatile uint8_t value = 0u;
 
     while(1)
     {
-        if(xSemaphoreTake(xSemaphore, portMAX_DELAY)== pdTRUE)
-        {
-            //sprintf(info_string,"\r\nRunning FreeRTOS task 2 from hart %d\r\n", read_csr(mhartid));
-            MSS_UART_polled_tx(UART_APP, info_string, strlen(info_string));
-            xSemaphoreGive( xSemaphore );
-        }
-
-        if(0u == value)
+         if(0u == value)
         {
             value = 0x01u;
         }
@@ -140,12 +184,58 @@ void freertos_task_two( void *pvParameters )
             value = 0x00u;
         }
 
-        MSS_GPIO_set_output(GPIO2_LO, MSS_GPIO_16, value);
+        MSS_GPIO_set_output(GPIO2_LO, MSS_GPIO_19, value);
 
         vTaskDelay(500);
     }
-
 }
+#endif
+
+void rpmsg_setup(rpmsg_comm_stack_handle_t handle)
+{
+    rpmsg_comm_stack_t *rpmsgHandle;
+    rpmsgHandle = (rpmsg_comm_stack_t *)handle;
+
+    rpmsgHandle->remote_addr = 0xFFFFFFFF;
+
+#ifdef RPMSG_MASTER
+
+    /* RPMsg Master Mode */
+    rpmsgHandle->my_rpmsg = rpmsg_lite_master_init(rpmsg_lite_base, RPMSG_SHARED_MEMORY_SIZE, RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
+    rpmsgHandle->ctrl_q = rpmsg_queue_create(rpmsgHandle->my_rpmsg);
+    rpmsgHandle->ns_handle = rpmsg_ns_bind(rpmsgHandle->my_rpmsg, app_nameservice_isr_cb, (void *)&(rpmsgHandle->remote_addr));
+    MSS_UART_polled_tx_string(UART_APP, "\r\nWaiting for remote to send name service announcement..\r\n");
+
+    /* Wait until the second context issues the nameservice isr and the remote endpoint address is known. */
+    while (0xFFFFFFFF == rpmsgHandle->remote_addr);
+#else
+    /* RPMsg Remote Mode */
+    MSS_UART_polled_tx_string(UART_APP, "\r\nWaiting for master to get ready...\r\n");
+
+    rpmsgHandle->my_rpmsg = rpmsg_lite_remote_init(rpmsg_lite_base, RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
+    rpmsgHandle->ctrl_q = rpmsg_queue_create(rpmsgHandle->my_rpmsg);
+
+    while(!rpmsg_lite_is_link_up(rpmsgHandle->my_rpmsg))
+    {
+        MSS_UART_polled_tx_string(UART_APP,".");
+        vTaskDelay(300);
+    }
+
+    MSS_UART_polled_tx_string(UART_APP, "\r\nMaster is ready\r\n");
+#endif
+}
+
+#ifdef RPMSG_MASTER
+static void app_nameservice_isr_cb(uint32_t new_ept, const char *new_ept_name, uint32_t flags, void *user_data)
+{
+    uint32_t *data = (uint32_t *)user_data;
+    *data = new_ept;
+}
+#endif
+
+volatile uint64_t* mtime = (volatile uint64_t*)0x0200bff8;
+volatile uint64_t* timecmp = ((volatile uint64_t*)0x02004000) + MPFS_HAL_FIRST_HART;
+uint8_t __attribute__ ((section (".FreeRTOSheap"))) ucHeap[configTOTAL_HEAP_SIZE];
 
 void vApplicationMallocFailedHook( void )
 {

@@ -29,11 +29,21 @@
 
 $(info ICICLE-KIT-ES selected)
 
-BINDIR=Default
-RISCV_TARGET:=mpfs-rpmsg-freertos.elf
+ifdef MASTER
+BINDIR=Master-Default
+RISCV_TARGET:=mpfs-rpmsg-master.elf
+else
+BINDIR=Remote-Default
+RISCV_TARGET:=mpfs-rpmsg-remote.elf
+endif
+
 TARGET:=$(RISCV_TARGET)
 
-LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot-loader.ld
+ifdef MASTER
+LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot-loader-master.ld
+else
+LINKER_SCRIPT=src/boards/${BOARD}/platform_config/linker/mpfs-ddr-loaded-by-boot-loader-remote.ld
+endif
 
 BOARD_DIR=src/boards/icicle-kit-es
 

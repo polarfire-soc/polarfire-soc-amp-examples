@@ -89,7 +89,7 @@ endif
 
 $(RISCV_TARGET): $(OBJS)  $(DEPENDENCIES) $(LINKER_SCRIPT)
 	@$(ECHO) " LD    $@";
-	$(CMD_PREFIX)$(CC) -T $(LINKER_SCRIPT) -nostdlib -nostartfiles -nodefaultlibs -Wl,-Map=$(BINDIR)/output.map -Wl,--gc-sections -o $(BINDIR)/$@ $(OBJS)
+	$(CMD_PREFIX)$(CC) -T $(LINKER_SCRIPT) -static -nostdlib -nostartfiles -nodefaultlibs -Wl,-Map=$(BINDIR)/output.map -Wl,--gc-sections -o $(BINDIR)/$@ $(OBJS)
 	@$(ECHO) " NM        `basename $@ .elf`.sym";
 	$(CMD_PREFIX)$(NM) -n $(BINDIR)/$@ > $(BINDIR)/`basename $@ .elf`.sym
 	@$(ECHO) " BIN       `basename $@ .elf`.bin"

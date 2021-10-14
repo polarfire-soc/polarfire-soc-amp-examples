@@ -57,9 +57,9 @@ int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
             case RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID:
                 PLIC_init();
 #ifdef IHC_CHANNEL_SIDE_A
-                PLIC_SetPriority(FABRIC_F2H_62_PLIC, 2);
+                PLIC_SetPriority(IHCIA_hart1_INT, 2);
 #else
-                PLIC_SetPriority(FABRIC_F2H_59_PLIC, 2);
+                PLIC_SetPriority(IHCIA_hart4_INT, 2);
 #endif
                 break;
             default:
@@ -85,9 +85,9 @@ int32_t platform_deinit_interrupt(uint32_t vector_id)
         {
             case RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID:
 #ifdef IHC_CHANNEL_SIDE_A
-                PLIC_DisableIRQ(FABRIC_F2H_62_PLIC);
+                PLIC_DisableIRQ(IHCIA_hart1_INT);
 #else
-                PLIC_DisableIRQ(FABRIC_F2H_59_PLIC);
+                PLIC_DisableIRQ(IHCIA_hart4_INT);
 #endif
                 break;
             default:
@@ -234,9 +234,9 @@ int32_t platform_interrupt_disable(uint32_t vector_id)
         {
             case RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID:
 #ifdef IHC_CHANNEL_SIDE_A
-                PLIC_DisableIRQ(FABRIC_F2H_62_PLIC);
+                PLIC_DisableIRQ(IHCIA_hart1_INT);
 #else
-                PLIC_DisableIRQ(FABRIC_F2H_59_PLIC);
+                PLIC_DisableIRQ(IHCIA_hart4_INT);
 #endif
                 break;
             default:

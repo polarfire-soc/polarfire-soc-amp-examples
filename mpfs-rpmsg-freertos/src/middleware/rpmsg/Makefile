@@ -32,9 +32,9 @@ SRCS += \
 	src/middleware/rpmsg/rpmsg_lite/rpmsg_ns.c \
 	src/middleware/rpmsg/rpmsg_lite/rpmsg_queue.c \
 	src/middleware/rpmsg/rpmsg_lite/porting/environment/rpmsg_env_freertos.c \
-	src/middleware/rpmsg/rpmsg_lite/porting/platform/mpfs/rpmsg_platform.c \
+	src/middleware/rpmsg/rpmsg_lite/porting/platform/microchip/miv/rpmsg_platform.c \
 	src/middleware/rpmsg/virtio/virtqueue.c \
 
 INCLUDES += \
 	-Isrc/middleware/rpmsg/include \
-	-Isrc/middleware/rpmsg/include/platform/mpfs \
+	-Isrc/middleware/rpmsg/include/platform/microchip/miv \

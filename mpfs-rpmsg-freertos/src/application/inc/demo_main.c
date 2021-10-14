@@ -157,7 +157,7 @@ void rpmsg_setup(rpmsg_comm_stack_handle_t handle)
 #ifdef RPMSG_MASTER
 
     /* RPMsg Master Mode */
-    rpmsgHandle->my_rpmsg = rpmsg_lite_master_init(rpmsg_lite_base, RPMSG_SHARED_MEMORY_SIZE, RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
+    rpmsgHandle->my_rpmsg = rpmsg_lite_master_init(rpmsg_lite_base, RPMSG_SHARED_MEMORY_SIZE, RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
     rpmsgHandle->ctrl_q = rpmsg_queue_create(rpmsgHandle->my_rpmsg);
     rpmsgHandle->ns_handle = rpmsg_ns_bind(rpmsgHandle->my_rpmsg, app_nameservice_isr_cb, (void *)&(rpmsgHandle->remote_addr));
     MSS_UART_polled_tx_string(UART_APP, "\r\nWaiting for remote to send name service announcement..\r\n");
@@ -168,7 +168,7 @@ void rpmsg_setup(rpmsg_comm_stack_handle_t handle)
     /* RPMsg Remote Mode */
     MSS_UART_polled_tx_string(UART_APP, "\r\nWaiting for master to get ready...\r\n");
 
-    rpmsgHandle->my_rpmsg = rpmsg_lite_remote_init(rpmsg_lite_base, RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
+    rpmsgHandle->my_rpmsg = rpmsg_lite_remote_init(rpmsg_lite_base, RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
     rpmsgHandle->ctrl_q = rpmsg_queue_create(rpmsgHandle->my_rpmsg);
 
     while(!rpmsg_lite_is_link_up(rpmsgHandle->my_rpmsg))

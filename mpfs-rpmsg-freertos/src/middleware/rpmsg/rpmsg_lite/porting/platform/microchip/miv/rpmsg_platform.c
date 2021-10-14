@@ -54,7 +54,7 @@ int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
     {
         switch (RL_GET_LINK_ID(vector_id))
         {
-            case RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID:
+            case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
                 PLIC_init();
 #ifdef IHC_CHANNEL_SIDE_A
                 PLIC_SetPriority(IHCIA_hart1_INT, 2);
@@ -83,7 +83,7 @@ int32_t platform_deinit_interrupt(uint32_t vector_id)
     {
         switch (RL_GET_LINK_ID(vector_id))
         {
-            case RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID:
+            case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
 #ifdef IHC_CHANNEL_SIDE_A
                 PLIC_DisableIRQ(IHCIA_hart1_INT);
 #else
@@ -114,7 +114,7 @@ void platform_notify(uint32_t vector_id)
 
     switch (RL_GET_LINK_ID(vector_id))
     {
-        case RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID:
+        case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
 
             env_lock_mutex(platform_lock);
 #ifdef IHC_CHANNEL_SIDE_A
@@ -197,7 +197,7 @@ int32_t platform_interrupt_enable(uint32_t vector_id)
     {
         switch (RL_GET_LINK_ID(vector_id))
         {
-            case RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID:
+            case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
 #ifdef IHC_CHANNEL_SIDE_A
                 PLIC_EnableIRQ(FABRIC_F2H_62_PLIC);
 #else
@@ -232,7 +232,7 @@ int32_t platform_interrupt_disable(uint32_t vector_id)
     {
         switch (RL_GET_LINK_ID(vector_id))
         {
-            case RL_PLATFORM_MPFS_CONTEXT_A_B_LINK_ID:
+            case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
 #ifdef IHC_CHANNEL_SIDE_A
                 PLIC_DisableIRQ(IHCIA_hart1_INT);
 #else

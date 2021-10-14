@@ -39,8 +39,8 @@
 /*
  * Include any driver setup/over-rides you may require.
  */
-#include "drivers/fpga_ip/CoreIHC/core_ihc_defines.h"
-#include "drivers_config/fpga_ip/CoreIHC/core_ihc_config.h"
+#include "drivers/fpga_ip/miv_ihc/miv_ihc_defines.h"
+#include "drivers_config/fpga_ip/miv_ihc/miv_ihc_config.h"
 
 /*
  * MPFS_HAL_FIRST_HART and MPFS_HAL_LAST_HART defines are used to specify which

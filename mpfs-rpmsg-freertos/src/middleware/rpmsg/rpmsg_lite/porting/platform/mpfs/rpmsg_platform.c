@@ -12,7 +12,7 @@
 #include "rpmsg_platform.h"
 #include "rpmsg_env.h"
 #include "mpfs_hal/mss_hal.h"
-#include "core_ihc.h"
+#include "miv_ihc.h"
 
 #include "FreeRTOS.h"
 #include "task.h"
@@ -309,14 +309,14 @@ int32_t platform_init(void)
 {
     uint64_t hartid = read_csr(mhartid);
 
-    IHCA_local_context_init((uint32_t)hartid);
+    IHC_local_context_init((uint32_t)hartid);
 
 #ifdef IHC_CHANNEL_SIDE_A
         uint32_t remote_hart_id = CONTEXTB_HARTID;
 #else
         uint32_t remote_hart_id = CONTEXTA_HARTID;
 #endif
-        IHCA_local_remote_config((uint32_t)hartid, remote_hart_id, rx_handler, true, true);
+        IHC_local_remote_config((uint32_t)hartid, remote_hart_id, rx_handler, true, true);
     
     /* Create lock used in multi-instanced RPMsg */
     if (0 != env_create_mutex(&platform_lock, 1))

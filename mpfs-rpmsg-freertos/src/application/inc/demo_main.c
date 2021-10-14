@@ -15,7 +15,6 @@
 
 #include <stdio.h>
 #include <string.h>
-#include "drivers/mss/mss_gpio/mss_gpio.h"
 #include "inc/demo_main.h"
 
 /* FreeRTOS includes */
@@ -40,9 +39,6 @@ static void* rpmsg_lite_base = RPMSG_SHARED_MEMORY_BASE;
  * Function prototypes
  */
 static void freertos_task_one( void *pvParameters );
-#ifndef RPMSG_MASTER
-static void freertos_task_two( void *pvParameters );
-#endif
 static void rpmsg_setup(rpmsg_comm_stack_handle_t handle);
 
 #ifdef RPMSG_MASTER
@@ -75,16 +71,9 @@ void start_demo()
     (void)mss_config_clk_rst(MSS_PERIPH_MMUART1, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
 #else
     (void)mss_config_clk_rst(MSS_PERIPH_MMUART3, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
-    (void)mss_config_clk_rst(MSS_PERIPH_GPIO2, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
 #endif
 
     PLIC_init();
-
-    MSS_GPIO_init(GPIO2_LO);
-
-    MSS_GPIO_config(GPIO2_LO,
-                    MSS_GPIO_19,
-                    MSS_GPIO_OUTPUT_MODE);
 
     MSS_UART_init(UART_APP, MSS_UART_115200_BAUD,
                    MSS_UART_DATA_8_BITS | MSS_UART_NO_PARITY);
@@ -96,16 +85,6 @@ void start_demo()
         for(;;)
             ix++;
     }
-
-#ifndef RPMSG_MASTER
-    rtos_result = xTaskCreate( freertos_task_two, "task2", configMINIMAL_STACK_SIZE, NULL, PRIMARY_PRIORITY, NULL );
-    if(1 != rtos_result)
-    {
-        int ix;
-        for(;;)
-            ix++;
-    }
-#endif
 
     /* Start the kernel.  From here on, only tasks and interrupts will run. */
     vTaskStartScheduler();
@@ -167,29 +146,6 @@ void freertos_task_one( void *pvParameters )
         }
     }
 }
-
-#ifndef RPMSG_MASTER
-void freertos_task_two(void *pvParameters)
-{
-    static volatile uint8_t value = 0u;
-
-    while(1)
-    {
-         if(0u == value)
-        {
-            value = 0x01u;
-        }
-        else
-        {
-            value = 0x00u;
-        }
-
-        MSS_GPIO_set_output(GPIO2_LO, MSS_GPIO_19, value);
-
-        vTaskDelay(500);
-    }
-}
-#endif
 
 void rpmsg_setup(rpmsg_comm_stack_handle_t handle)
 {

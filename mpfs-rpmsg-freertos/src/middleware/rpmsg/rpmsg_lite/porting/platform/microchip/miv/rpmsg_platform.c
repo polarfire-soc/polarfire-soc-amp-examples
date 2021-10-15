@@ -122,7 +122,9 @@ void platform_notify(uint32_t vector_id)
 #else
             (void)IHC_tx_message(IHC_CHANNEL_TO_CONTEXTA, (uint32_t *) &ihc_tx_message);
 #endif
+#ifdef USING_FREERTOS
             xTaskNotifyWait(0, 0x0001, NULL, portMAX_DELAY);
+#endif
             env_unlock_mutex(platform_lock);
             break;
         default:
@@ -134,7 +136,9 @@ void rpmsg_handler(bool is_ack, uint32_t vring_idx)
 {
     if(is_ack)
     {
+#ifdef USING_FREERTOS
         (void)xTaskNotifyFromISR(task_handle, 0x0001, eSetBits, NULL);
+#endif
     }
     else
     {

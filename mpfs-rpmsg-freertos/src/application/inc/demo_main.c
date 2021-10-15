@@ -145,6 +145,10 @@ void freertos_task_one( void *pvParameters )
             }
         }
     }
+
+    rpmsg_lite_destroy_ept(my_rpmsg_instance.my_rpmsg, my_rpmsg_instance.ctrl_ept);
+    rpmsg_queue_destroy(my_rpmsg_instance.my_rpmsg, my_rpmsg_instance.ctrl_q);
+    rpmsg_lite_deinit(my_rpmsg_instance.my_rpmsg);
 }
 
 void rpmsg_setup(rpmsg_comm_stack_handle_t handle)

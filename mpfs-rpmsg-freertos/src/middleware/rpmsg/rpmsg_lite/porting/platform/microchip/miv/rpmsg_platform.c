@@ -1,6 +1,6 @@
 /*
- * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
  * Copyright 2016-2019 NXP
+ * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
  * All rights reserved.
  *
  *

@@ -5,7 +5,7 @@
  *
  * Application code running on E51
  *
- * FreeRTOS example project suitable for Asymmetric Multiprocessing (AMP) configuration
+ * FreeRTOS RPMsg example project suitable for Asymmetric Multiprocessing (AMP) configuration
  *
  */
 

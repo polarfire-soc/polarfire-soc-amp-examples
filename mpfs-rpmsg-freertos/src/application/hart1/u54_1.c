@@ -5,7 +5,7 @@
  *
  * Application code running on U54_1
  *
- * FreeRTOS example project suitable for Asymmetric Multiprocessing (AMP) configuration
+ * FreeRTOS RPMsg example project suitable for Asymmetric Multiprocessing (AMP) configuration
  *
  */
 

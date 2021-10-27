@@ -5,7 +5,7 @@
  *
  * Application code running on U54_2
  *
- * FreeRTOS example project suitable for Asymmetric Multiprocessing (AMP) configuration
+ * FreeRTOS RPMsg example project suitable for Asymmetric Multiprocessing (AMP) configuration
  *
  */
 
@@ -14,8 +14,8 @@
 
 volatile uint32_t count_sw_ints_h2 = 0U;
 
-/* Main function for the hart1(U54 processor).
- * Application code running on hart1 is placed here.
+/* Main function for the hart2(U54 processor).
+ * Application code running on hart2 is placed here.
  */
 void u54_2(void)
 {

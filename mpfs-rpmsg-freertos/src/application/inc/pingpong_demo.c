@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * RPMsg sample ping pong demo 
+ * 
+ * Example application demonstrating how to communicate with another software
+ * context over the RPMsg bus.
+ * 
+ * The RPMsg master sends chunks of data (payloads) of variable sizes to the
+ * software context configured as RPMsg remote. The remote side echoes the data
+ * back to the master side which then validates the data returned.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
@@ -31,6 +46,11 @@ static struct _payload r_payload;
 
 static bool pingpong_initialized = false;
 
+/* This function creates the RPMsg endpoint for the ping pong demo.
+ * When in master mode, it sends a name service announcement to the software
+   context configured as RPMsg remote to announce the existance of the ping pong
+   service.
+ */
 void rpmsg_pingpong_demo_setup(rpmsg_comm_stack_handle_t handle)
 {
     rpmsg_comm_stack_t *rpmsgHandle;
@@ -44,6 +64,15 @@ void rpmsg_pingpong_demo_setup(rpmsg_comm_stack_handle_t handle)
 #endif
 }
 
+/* This is the main function for the ping pong application demo.
+ * 
+ * When in RPMsg master mode, it sends payloads or variable size to the RPMsg
+ * remote context and validates the data echoed back by the software context
+ * configured as RPMsg remote.
+ * 
+ * When in RPMsg remote mode, this function received and echoes back payloads
+ * sent by the RPMsg master side.
+ */
 void rpmsg_pingpong_demo(rpmsg_comm_stack_handle_t handle)
 {
     uint32_t len;

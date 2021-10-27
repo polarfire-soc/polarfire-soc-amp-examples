@@ -1,3 +1,22 @@
+/*******************************************************************************
+ * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * RPMsg console demo
+ * 
+ * Example application demonstrating how to communicate with another software
+ * context over the RPMsg bus.
+ * 
+ * The software context configured as RPMsg master receives strings from the
+ * UART1 console and sends them to the software context configured as RPMsg
+ * remote using the RPMsg framework.
+ * 
+ * The software context configured as RPMsg remote receives the messages 
+ * and prints them on the UART3 console.
+ * 
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -19,6 +38,8 @@ static volatile uint8_t g_rx_size = 0U;
 static bool console_initialized = false;
 static bool message_available = false;
 
+/* This function builds a string from characters read from the UART console
+ */
 void uart_get_message(char *dest_buffer)
 {
     while (!message_available)
@@ -40,6 +61,11 @@ void uart_get_message(char *dest_buffer)
     }
 }
 
+/* This function creates the RPMsg endpoint for the console demo.
+ * When in master mode, it sends a name service announcement to the software
+   context configured as RPMsg remote to announce the existance of the console
+   service.
+ */
 void rpmsg_console_demo_setup(rpmsg_comm_stack_handle_t handle)
 {
     rpmsg_comm_stack_t *rpmsgHandle;
@@ -55,6 +81,15 @@ void rpmsg_console_demo_setup(rpmsg_comm_stack_handle_t handle)
 #endif
 }
 
+/* This is the main function for the console application demo.
+ * 
+ * The software context configured as RPMsg master receives strings from the
+ * UART1 console and sends them to the software context configured as RPMsg
+ * remote using the RPMsg framework.
+ * 
+ * The software context configured as RPMsg remote receives the messages 
+ * and prints them on the UART3 console.
+ */
 void rpmsg_console_demo(rpmsg_comm_stack_handle_t handle)
 {
     char buff[RPMSG_RX_MAX_BUFF_SIZE];

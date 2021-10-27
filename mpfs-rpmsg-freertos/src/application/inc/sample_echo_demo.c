@@ -1,3 +1,20 @@
+/*******************************************************************************
+ * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * RPMsg sample echo demo 
+ * 
+ * Example application demonstrating how to communicate with another software
+ * context over the RPMsg bus.
+ * 
+ * When in RPMsg remote mode, this application sends a configurable number of
+ * hello messages to the software context configured as RPMsg master 
+ * 
+ * When in RPMsg master mode, this application received and echoes back messages
+ * received by the software context configured as RPMsg master.
+ */
+
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
@@ -20,6 +37,11 @@ static int rnum = 0;
 static int err_cnt = 0;
 static char buff[RPMSG_RX_MAX_BUFF_SIZE];
 
+/* This function creates the RPMsg endpoint for the sample echo demo.
+ * When in master mode, it sends a name service announcement to the software
+   context configured as RPMsg remote to announce the existance of the echo demo
+   service.
+ */
 void rpmsg_echo_demo_setup(rpmsg_comm_stack_handle_t handle)
 {
     rpmsg_comm_stack_t *rpmsgHandle;
@@ -34,6 +56,10 @@ void rpmsg_echo_demo_setup(rpmsg_comm_stack_handle_t handle)
 #endif
 }
 
+/* This is a blocking function that receives a message using the
+ * RPMsg framework and then validates that the data received is a 
+ * hello world message string
+ */
 void wait_rx_message(rpmsg_comm_stack_handle_t handle)
 {
     uint32_t remote_addr;
@@ -58,6 +84,14 @@ void wait_rx_message(rpmsg_comm_stack_handle_t handle)
     rnum++;
 }
 
+/* This is the main function for the sample echo application demo.
+ * 
+ * When in RPMsg remote mode, this application sends a configurable number of
+ * hello messages to the software context configured as RPMsg master 
+ * 
+ * When in RPMsg master mode, this application received and echoes back messages
+ * received by the software context configured as RPMsg master.
+ */
 void rpmsg_echo_demo(rpmsg_comm_stack_handle_t handle)
 {
     uint32_t remote_addr;

@@ -23,6 +23,10 @@
 #error "This RPMsg-Lite port requires RL_USE_ENVIRONMENT_CONTEXT set to 0"
 #endif
 
+#if !defined(CONTEXTA_HARTID) && !defined(CONTEXTB_HARTID)
+#error "Mi-V IHC CONTEXTA_HARTID and CONTEXTB_HARTID configuration macros are not defined"
+#endif
+
 static int32_t isr_counter     = 0;
 static int32_t disable_counter = 0;
 static void *platform_lock;
@@ -57,9 +61,29 @@ int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
             case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
                 PLIC_init();
 #ifdef IHC_CHANNEL_SIDE_A
+    #if CONTEXTA_HARTID == 1
                 PLIC_SetPriority(IHCIA_hart1_INT, 2);
-#else
+    #elif CONTEXTA_HARTID == 2
+                PLIC_SetPriority(IHCIA_hart2_INT, 2);
+    #elif CONTEXTA_HARTID == 3
+                PLIC_SetPriority(IHCIA_hart3_INT, 2);
+    #elif CONTEXTA_HARTID == 4
                 PLIC_SetPriority(IHCIA_hart4_INT, 2);
+    #else
+        #error Unsupported CONTEXTA_HARTID configuration value
+    #endif
+#else
+    #if CONTEXTB_HARTID == 1
+                PLIC_SetPriority(IHCIA_hart1_INT, 2);
+    #elif CONTEXTB_HARTID == 2
+                PLIC_SetPriority(IHCIA_hart2_INT, 2);
+    #elif CONTEXTB_HARTID == 3
+                PLIC_SetPriority(IHCIA_hart3_INT, 2);
+    #elif CONTEXTB_HARTID == 4
+                PLIC_SetPriority(IHCIA_hart4_INT, 2);
+    #else
+        #error Unsupported CONTEXTB_HARTID configuration value
+    #endif
 #endif
                 break;
             default:
@@ -85,9 +109,29 @@ int32_t platform_deinit_interrupt(uint32_t vector_id)
         {
             case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
 #ifdef IHC_CHANNEL_SIDE_A
+    #if CONTEXTA_HARTID == 1
                 PLIC_DisableIRQ(IHCIA_hart1_INT);
-#else
+    #elif CONTEXTA_HARTID == 2
+                PLIC_DisableIRQ(IHCIA_hart2_INT);
+    #elif CONTEXTA_HARTID == 3
+                PLIC_DisableIRQ(IHCIA_hart3_INT);
+    #elif CONTEXTA_HARTID == 4
                 PLIC_DisableIRQ(IHCIA_hart4_INT);
+    #else
+        #error Unsupported CONTEXTA_HARTID configuration value
+    #endif
+#else
+    #if CONTEXTB_HARTID == 1
+                PLIC_DisableIRQ(IHCIA_hart1_INT);
+    #elif CONTEXTB_HARTID == 2
+                PLIC_DisableIRQ(IHCIA_hart2_INT);
+    #elif CONTEXTB_HARTID == 3
+                PLIC_DisableIRQ(IHCIA_hart3_INT);
+    #elif CONTEXTB_HARTID == 4
+                PLIC_DisableIRQ(IHCIA_hart4_INT);
+    #else
+        #error Unsupported CONTEXTB_HARTID configuration value
+    #endif
 #endif
                 break;
             default:
@@ -203,9 +247,29 @@ int32_t platform_interrupt_enable(uint32_t vector_id)
         {
             case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
 #ifdef IHC_CHANNEL_SIDE_A
-                PLIC_EnableIRQ(FABRIC_F2H_62_PLIC);
+    #if CONTEXTA_HARTID == 1
+                PLIC_EnableIRQ(IHCIA_hart1_INT);
+    #elif CONTEXTA_HARTID == 2
+                PLIC_EnableIRQ(IHCIA_hart2_INT);
+    #elif CONTEXTA_HARTID == 3
+                PLIC_EnableIRQ(IHCIA_hart3_INT);
+    #elif CONTEXTA_HARTID == 4
+                PLIC_EnableIRQ(IHCIA_hart4_INT);
+    #else
+        #error Unsupported CONTEXTA_HARTID configuration value
+    #endif
 #else
-                PLIC_EnableIRQ(FABRIC_F2H_59_PLIC);
+    #if CONTEXTB_HARTID == 1
+                PLIC_EnableIRQ(IHCIA_hart1_INT);
+    #elif CONTEXTB_HARTID == 2
+                PLIC_EnableIRQ(IHCIA_hart2_INT);
+    #elif CONTEXTB_HARTID == 3
+                PLIC_EnableIRQ(IHCIA_hart3_INT);
+    #elif CONTEXTB_HARTID == 4
+                PLIC_EnableIRQ(IHCIA_hart4_INT);
+    #else
+        #error Unsupported CONTEXTB_HARTID configuration value
+    #endif
 #endif
                 break;
             default:
@@ -238,9 +302,29 @@ int32_t platform_interrupt_disable(uint32_t vector_id)
         {
             case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
 #ifdef IHC_CHANNEL_SIDE_A
+    #if CONTEXTA_HARTID == 1
                 PLIC_DisableIRQ(IHCIA_hart1_INT);
-#else
+    #elif CONTEXTA_HARTID == 2
+                PLIC_DisableIRQ(IHCIA_hart2_INT);
+    #elif CONTEXTA_HARTID == 3
+                PLIC_DisableIRQ(IHCIA_hart3_INT);
+    #elif CONTEXTA_HARTID == 4
                 PLIC_DisableIRQ(IHCIA_hart4_INT);
+    #else
+        #error Unsupported CONTEXTA_HARTID configuration value
+    #endif
+#else
+    #if CONTEXTB_HARTID == 1
+                PLIC_DisableIRQ(IHCIA_hart1_INT);
+    #elif CONTEXTB_HARTID == 2
+                PLIC_DisableIRQ(IHCIA_hart2_INT);
+    #elif CONTEXTB_HARTID == 3
+                PLIC_DisableIRQ(IHCIA_hart3_INT);
+    #elif CONTEXTB_HARTID == 4
+                PLIC_DisableIRQ(IHCIA_hart4_INT);
+    #else
+        #error Unsupported CONTEXTB_HARTID configuration value
+    #endif
 #endif
                 break;
             default:

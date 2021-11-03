@@ -821,6 +821,7 @@ MSS_MMC_single_block_read
             /* Abort if any errors*/
             if ((SRS12_ERROR_STATUS_MASK & isr_errors) == MMC_CLEAR)
             {
+                mmc_delay(MASK_8BIT);
                 /*
                  * Ensure no error fields in Card Status register are set and
                  * that the device is idle before this function returns.
@@ -1701,7 +1702,49 @@ mss_mmc_status_t MSS_MMC_sdio_single_block_write
     }
     return (ret_status);
 }
+/*-------------------------------------------------------------------------*//**
+ * See "mss_mmc.h" for details of how to use this function.
+ */
+mss_mmc_status_t MSS_MMC_erase(uint32_t src, uint32_t size)
+{
+    uint32_t start_address = MMC_CLEAR;
+    uint32_t end_address = MMC_CLEAR;
 
+    cif_response_t response_status = TRANSFER_IF_FAIL;
+    mss_mmc_status_t ret_status = MSS_MMC_TRANSFER_FAIL;
+
+    start_address = src;
+    end_address = size - MMC_SET;
+
+    response_status = cif_send_cmd(start_address,
+                                    MMC_CMD_35_ERASE_GROUP_START,
+                                    MSS_MMC_RESPONSE_R1);
+
+    if (TRANSFER_IF_SUCCESS == response_status)
+    {
+        response_status = cif_send_cmd(end_address,
+                                    MMC_CMD_36_ERASE_GROUP_END,
+                                    MSS_MMC_RESPONSE_R1);
+        if (TRANSFER_IF_SUCCESS == response_status)
+        {
+            response_status = cif_send_cmd(MMC_CLEAR,
+                                    MMC_CMD_38_ERASE,
+                                    MSS_MMC_RESPONSE_R1B);
+
+            if (TRANSFER_IF_FAIL != response_status)
+            {
+                response_status = check_device_status(response_status);
+            }
+
+            if (TRANSFER_IF_SUCCESS == response_status)
+            {
+                ret_status = MSS_MMC_TRANSFER_SUCCESS;
+            }
+        }
+    }
+
+    return ret_status;
+}
 /*-------------------------------------------------------------------------*//**
  * See "mss_mmc.h" for details of how to use this function.
  */

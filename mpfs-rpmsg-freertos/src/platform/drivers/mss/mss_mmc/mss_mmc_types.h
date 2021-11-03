@@ -49,6 +49,9 @@ extern "C"
 #define MMC_CMD_1_SEND_OP_COND              1u     /* R3  Rsp       */
 #define MMC_CMD_39_FAST_IO                  39u    /* R4  Rsp       */
 #define MMC_CMD_40_GO_IRQ_STATE             40u    /* R5  Rsp       */
+#define MMC_CMD_35_ERASE_GROUP_START        35u    /* R1 Rsp        */
+#define MMC_CMD_36_ERASE_GROUP_END          36u    /* R1 Rsp        */
+#define MMC_CMD_38_ERASE                    38u    /* R1b Rsp        */
 
 #define SD_CMD_8_SEND_IF_COND               8u     /* R7 Rsp        */
 #define SD_ACMD_41_SEND_OP_COND             41u    /* R3 Rsp        */

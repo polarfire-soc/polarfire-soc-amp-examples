@@ -95,9 +95,9 @@ SOC_CONFIG_FILES =  \
 	$(BOARD_DIR)/fpga_design_config/memory_map/hw_pmp_hart4.h \
 	$(BOARD_DIR)/fpga_design_config/sgmii/hw_sgmii_tip.h \
 
-$(SOC_CONFIG_FILES): $(BOARD_DIR)/fpga_design/design_description/ICICLE_MSS_eMMC_cfg.xml
+$(SOC_CONFIG_FILES): $(BOARD_DIR)/fpga_design/design_description/ICICLE_MSS_cfg.xml
 	@$(ECHO) " CFGGEN $<";
-	@$(CMD_PREFIX)$(PYTHON) src/platform/soc_config_generator/mpfs_configuration_generator.py $(BOARD_DIR)/fpga_design/design_description/ICICLE_MSS_eMMC_cfg.xml $(BOARD_DIR)
+	@$(CMD_PREFIX)$(PYTHON) src/platform/soc_config_generator/mpfs_configuration_generator.py $(BOARD_DIR)/fpga_design/design_description/ICICLE_MSS_cfg.xml $(BOARD_DIR)
 
 $(RISCV_TARGET): $(SOC_CONFIG_FILES)
 

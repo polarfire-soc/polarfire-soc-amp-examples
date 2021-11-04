@@ -48,12 +48,6 @@ void rpmsg_echo_demo_setup(rpmsg_comm_stack_handle_t handle)
     rpmsgHandle = (rpmsg_comm_stack_t *)handle;
 
     rpmsgHandle->ctrl_ept = rpmsg_lite_create_ept(rpmsgHandle->my_rpmsg, RPMSG_ECHO_EPT_ADDR, rpmsg_queue_rx_cb, rpmsgHandle->ctrl_q);
-
-#ifndef RPMSG_MASTER
-    printf_to(UART_APP, "\r\nSending name service announcement\r\n");
-
-    rpmsg_ns_announce(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, RPMSG_ECHO_CHANNEL_NAME, RL_NS_CREATE);
-#endif
 }
 
 /* This is a blocking function that receives a message using the
@@ -105,45 +99,83 @@ void rpmsg_echo_demo(rpmsg_comm_stack_handle_t handle)
         rpmsg_echo_demo_setup(handle);
         echo_initialized = true;
     }
+    else
+    {
+        printf_to(UART_APP, "\r\nEnd of sample echo demo. Press 0 to show menu\r\n");
+        return;
+    }
+
+#ifndef RPMSG_MASTER
+        printf_to(UART_APP, "\r\nSending name service announcement\r\n");
+        printf_to(UART_APP, "\r\nPlease run sample echo demo on the RPMsg master context\r\n\r\n");
+        rpmsg_ns_announce(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, RPMSG_ECHO_CHANNEL_NAME, RL_NS_CREATE);
+#endif
 
 #ifdef RPMSG_MASTER
-    /* send hello world handshake to remote processor */
-    (void)rpmsg_lite_send(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, 
-        rpmsgHandle->remote_addr, HELLO_MSG, strlen(HELLO_MSG), RL_BLOCK);
+    printf_to(UART_APP, "\r\nPlease run sample echo on the RPMsg remote context\r\n\r\n");
+#endif
+
+#ifdef RPMSG_MASTER
+    while(rpmsgHandle->remote_addr != 6);
+#endif
+
+#ifdef RPMSG_MASTER
+        /* send hello world handshake to remote processor */
+        (void)rpmsg_lite_send(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, 
+            rpmsgHandle->remote_addr, HELLO_MSG, strlen(HELLO_MSG), RL_BLOCK);
+#else
+        /*receive hello world handshake message*/
+        rpmsg_queue_recv(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_q, 
+            (uint32_t *)&remote_addr, (char *)&buff, sizeof(buff), &len, RL_BLOCK);
+
+        rpmsgHandle->remote_addr = remote_addr;
+#endif
+
+#ifdef RPMSG_MASTER
 
     while(1)
     {
-        wait_rx_message(handle);
-
         if(rnum >= MSG_LIMIT)
         {
-            printf_to(UART_APP, "goodbye!\r\n");
-            break;
+            printf_to(UART_APP, "End of sample echo demo. Press 0 to show menu\r\n");
+            return;
         }
+
+        wait_rx_message(handle);
+
+        vTaskDelay(1);
 
         (void)rpmsg_lite_send(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, 
             rpmsgHandle->remote_addr, HELLO_MSG, strlen(HELLO_MSG), RL_BLOCK);
     }
 
 #else
-    /*receive hello world handshake message*/
-    rpmsg_queue_recv(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_q, 
-        (uint32_t *)&remote_addr, (char *)&buff, sizeof(buff), &len, RL_BLOCK);
+
+    if(rnum >= (MSG_LIMIT -1 ))
+    {
+            printf_to(UART_APP, "End of sample echo demo. Press 0 to show menu\r\n");
+            return;
+    }
 
     for (i = 1; i <= MSG_LIMIT; i++)
     {
+        vTaskDelay(1);
+
         (void)rpmsg_lite_send(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, 
-            remote_addr, HELLO_MSG, strlen(HELLO_MSG), RL_BLOCK);
+            rpmsgHandle->remote_addr, HELLO_MSG, strlen(HELLO_MSG), RL_BLOCK);
 
         printf_to(UART_APP, "rpmsg sample test: message %d sent\r\n", i);
 
         if(i < MSG_LIMIT)
+        {
             wait_rx_message(handle);
+        }
     }
 #endif
 
     printf_to(UART_APP, "**********************************\r\n");
     printf_to(UART_APP, " Test Results: Error count = %d\r\n", err_cnt);
     printf_to(UART_APP, "**********************************\r\n");
+    printf_to(UART_APP, "\r\nEnd of sample echo demo. Press 0 to show menu\r\n");
 
 }

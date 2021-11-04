@@ -73,12 +73,6 @@ void rpmsg_console_demo_setup(rpmsg_comm_stack_handle_t handle)
 
     rpmsgHandle->ctrl_ept = rpmsg_lite_create_ept(rpmsgHandle->my_rpmsg, RPMSG_CONSOLE_EPT_ADDR, 
                                                     rpmsg_queue_rx_cb, rpmsgHandle->ctrl_q);
-
-#ifndef RPMSG_MASTER
-    MSS_UART_polled_tx_string(UART_APP, "\r\nSending name service announcement\r\n");
-
-    rpmsg_ns_announce(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, RPMSG_TTY_CHANNEL_NAME, RL_NS_CREATE);
-#endif
 }
 
 /* This is the main function for the console application demo.
@@ -105,8 +99,26 @@ void rpmsg_console_demo(rpmsg_comm_stack_handle_t handle)
         rpmsg_console_demo_setup(handle);
         console_initialized = true;
     }
+    else
+    {
+        printf_to(UART_APP, "\r\nEnd of tty/console demo. Press 0 to show menu\r\n");
+        return;
+    }
 
-    MSS_UART_polled_tx_string(UART_APP, "\r\nRunning console demo\r\n");
+#ifndef RPMSG_MASTER
+    MSS_UART_polled_tx_string(UART_APP, "\r\nSending name service announcement\r\n");
+    printf_to(UART_APP, "\r\nPlease run console demo on the RPMsg master context\r\n\r\n");
+    rpmsg_ns_announce(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, RPMSG_TTY_CHANNEL_NAME, RL_NS_CREATE);
+#endif
+
+#ifdef RPMSG_MASTER
+    printf_to(UART_APP, "\r\nPlease run console demo on the RPMsg remote context\r\n\r\n");
+#endif
+
+#ifdef RPMSG_MASTER
+    while(rpmsgHandle->remote_addr != 4);
+#endif
+
     strcpy(buff,"");
 
 #ifdef RPMSG_MASTER
@@ -122,6 +134,7 @@ void rpmsg_console_demo(rpmsg_comm_stack_handle_t handle)
             if(!strncmp(buff, "quit", strlen("quit")))
             {
                 quit_message = 1;
+                printf_to(UART_APP, "\r\nEnd of console/tty demo. Press 0 to show menu\r\n");
             }
 
             (void)rpmsg_lite_send(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, 
@@ -146,6 +159,7 @@ void rpmsg_console_demo(rpmsg_comm_stack_handle_t handle)
             if(!strncmp(buff, "quit", len))
             {
                 quit_message = 1;
+                printf_to(UART_APP, "\r\nEnd of console/tty demo. Press 0 to show menu\r\n");
             }
         }
     }

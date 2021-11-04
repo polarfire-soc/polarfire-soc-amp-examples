@@ -24,6 +24,8 @@
 #include "timers.h"
 #include "semphr.h"
 
+#define RPMSG_RX_MAX_BUFF_SIZE    256U
+
 /*******************************************************************************
  * Macros
  */
@@ -91,6 +93,23 @@ void start_demo()
 
 }
 
+void clear_rpmsg_buffer(rpmsg_comm_stack_handle_t handle)
+{
+    uint32_t remote_addr;
+    uint32_t len;
+    char buff[RPMSG_RX_MAX_BUFF_SIZE];
+
+    rpmsg_comm_stack_t *rpmsgHandle;
+    rpmsgHandle = (rpmsg_comm_stack_t *)handle;
+
+    while(rpmsg_queue_get_current_size(rpmsgHandle->ctrl_q) > 0)
+    {
+        /* free the rpmsg buffer */
+        rpmsg_queue_recv(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_q, 
+                (uint32_t *)&remote_addr, (char *)&buff, sizeof(buff), &len, RL_BLOCK);
+    }
+}
+
 void freertos_task_one( void *pvParameters )
 {
     uint8_t rx_buff[1];
@@ -126,6 +145,9 @@ void freertos_task_one( void *pvParameters )
         rx_size = MSS_UART_get_rx(UART_APP, rx_buff, sizeof(rx_buff));
         if (rx_size > 0)
         {
+#ifndef RPMSG_MASTER
+            clear_rpmsg_buffer(&my_rpmsg_instance);
+#endif
             switch(rx_buff[0])
             {
                 case '0':

@@ -143,8 +143,6 @@ void rpmsg_echo_demo(rpmsg_comm_stack_handle_t handle)
 
         wait_rx_message(handle);
 
-        vTaskDelay(1);
-
         (void)rpmsg_lite_send(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, 
             rpmsgHandle->remote_addr, HELLO_MSG, strlen(HELLO_MSG), RL_BLOCK);
     }
@@ -159,7 +157,6 @@ void rpmsg_echo_demo(rpmsg_comm_stack_handle_t handle)
 
     for (i = 1; i <= MSG_LIMIT; i++)
     {
-        vTaskDelay(1);
 
         (void)rpmsg_lite_send(rpmsgHandle->my_rpmsg, rpmsgHandle->ctrl_ept, 
             rpmsgHandle->remote_addr, HELLO_MSG, strlen(HELLO_MSG), RL_BLOCK);

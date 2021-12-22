@@ -681,6 +681,8 @@ uint8_t (*ext_irq_handler_table[PLIC_NUM_SOURCES])(void) =
 /*------------------------------------------------------------------------------
  *
  */
+
+volatile int32_t in_ext_isr = 0;
 void handle_m_ext_interrupt(void)
 {
 
@@ -693,7 +695,10 @@ void handle_m_ext_interrupt(void)
 
     uint8_t disable = EXT_IRQ_KEEP_ENABLED;
 #ifndef SIFIVE_HIFIVE_UNLEASHED
+
+    in_ext_isr = 1;
     disable = ext_irq_handler_table[int_num /* + OFFSET_TO_MSS_GLOBAL_INTS Think this was required in early bitfile */]();
+    in_ext_isr = 0;
 #else
     disable = ext_irq_handler_table[int_num]();
 #endif

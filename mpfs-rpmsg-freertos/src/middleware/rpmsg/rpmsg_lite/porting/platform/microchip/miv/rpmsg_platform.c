@@ -210,18 +210,12 @@ void platform_time_delay(uint32_t num_msec)
  * @return True for IRQ, false otherwise.
  *
  */
+
+extern int32_t in_ext_isr;
 int32_t platform_in_isr(void)
 {
-    int32_t ret = 0;
+    return in_ext_isr;
 
-    volatile uintptr_t mcause = read_csr(mcause);
-
-    if(((mcause & MCAUSE_INT) == MCAUSE_INT) && ((mcause & MCAUSE_CAUSE)  == IRQ_M_EXT))
-    {
-        ret = 1;
-    }
-
-    return ret;
 }
 
 /**

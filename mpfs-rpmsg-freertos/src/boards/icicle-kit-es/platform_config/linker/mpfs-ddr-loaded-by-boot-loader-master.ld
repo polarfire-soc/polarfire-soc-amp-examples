@@ -67,7 +67,7 @@ MEMORY
     /* This 1K of DTIM is used to run code when switching the envm clock */
     switch_code_dtim (rx) : ORIGIN = 0x01001c00, LENGTH = 1k 
     /* DDR sections example */
-    ddr_cached_32bit (rwx) : ORIGIN  = 0x80200000, LENGTH = 4M
+    ddr_cached_32bit (rwx) : ORIGIN  = 0x80000000, LENGTH = 4M
     ddr_non_cached_32bit (rwx) : ORIGIN  = 0xC0000000, LENGTH = 256M
     ddr_wcb_32bit (rwx) : ORIGIN  = 0xD0000000, LENGTH = 256M
     ddr_cached_38bit (rwx) : ORIGIN  = 0x1000000000, LENGTH = 1024M

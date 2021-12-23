@@ -29,15 +29,15 @@
 #error "Mi-V IHC CONTEXTA_HARTID and CONTEXTB_HARTID configuration macros are not defined"
 #endif
 
+static int32_t isr_counter     = 0;
+static int32_t disable_counter = 0;
+static void *platform_lock;
+
 #ifdef USING_FREERTOS
 static xTaskHandle task_handle;
 #else
 static uint8_t ack_notify = 0;
 #endif
-
-static int32_t isr_counter     = 0;
-static int32_t disable_counter = 0;
-static void *platform_lock;
 
 static uint32_t rx_handler(uint32_t remote_hart_id, uint32_t * message, uint32_t message_size, bool is_ack, uint32_t *message_storage_ptr );
 static void rpmsg_handler(bool is_ack, uint32_t vring_idx);
@@ -170,19 +170,18 @@ void platform_notify(uint32_t vector_id)
         case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
 
             env_lock_mutex(platform_lock);
-#ifdef IHC_CHANNEL_SIDE_A
+#ifndef USING_FREERTOS
             ack_notify = 1;
-            IHC_tx_message(IHC_CHANNEL_TO_CONTEXTB, (uint32_t *) &ihc_tx_message);
-
-#else
-            ack_notify = 1;
-            IHC_tx_message(IHC_CHANNEL_TO_CONTEXTA, (uint32_t *) &ihc_tx_message);
 #endif
-
-            while(ack_notify ==1);
-
+#ifdef IHC_CHANNEL_SIDE_A
+            (void)IHC_tx_message(IHC_CHANNEL_TO_CONTEXTB, (uint32_t *) &ihc_tx_message);
+#else
+            (void)IHC_tx_message(IHC_CHANNEL_TO_CONTEXTA, (uint32_t *) &ihc_tx_message);
+#endif
 #ifdef USING_FREERTOS
             xTaskNotifyWait(0, 0x0001, NULL, portMAX_DELAY);
+#else
+            while(ack_notify ==1);
 #endif
             env_unlock_mutex(platform_lock);
             break;
@@ -237,6 +236,7 @@ void platform_time_delay(uint32_t num_msec)
  * @return True for IRQ, false otherwise.
  *
  */
+
 extern int32_t in_ext_isr;
 int32_t platform_in_isr(void)
 {

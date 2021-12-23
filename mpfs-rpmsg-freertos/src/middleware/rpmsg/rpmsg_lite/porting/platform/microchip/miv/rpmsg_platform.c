@@ -14,10 +14,12 @@
 #include "mpfs_hal/mss_hal.h"
 #include "miv_ihc.h"
 
+#ifdef USING_FREERTOS
 #include "FreeRTOS.h"
 #include "task.h"
 #include "timers.h"
 #include "semphr.h"
+#endif
 
 #if defined(RL_USE_ENVIRONMENT_CONTEXT) && (RL_USE_ENVIRONMENT_CONTEXT == 1)
 #error "This RPMsg-Lite port requires RL_USE_ENVIRONMENT_CONTEXT set to 0"
@@ -31,7 +33,12 @@ static int32_t isr_counter     = 0;
 static int32_t disable_counter = 0;
 static void *platform_lock;
 
+#ifdef USING_FREERTOS
 static xTaskHandle task_handle;
+#else
+static uint8_t ack_notify = 0;
+#endif
+
 static uint32_t rx_handler(uint32_t remote_hart_id, uint32_t * message, uint32_t message_size, bool is_ack, uint32_t *message_storage_ptr );
 static void rpmsg_handler(bool is_ack, uint32_t vring_idx);
 
@@ -154,13 +161,18 @@ void platform_notify(uint32_t vector_id)
 
     ihc_tx_message[0] = (uint32_t)(vector_id << 16);
 
+#ifdef USING_FREERTOS
     task_handle = xTaskGetCurrentTaskHandle();
+#endif
 
     switch (RL_GET_LINK_ID(vector_id))
     {
         case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
 
             env_lock_mutex(platform_lock);
+#ifndef USING_FREERTOS
+            ack_notify = 1;
+#endif
 #ifdef IHC_CHANNEL_SIDE_A
             (void)IHC_tx_message(IHC_CHANNEL_TO_CONTEXTB, (uint32_t *) &ihc_tx_message);
 #else
@@ -168,6 +180,8 @@ void platform_notify(uint32_t vector_id)
 #endif
 #ifdef USING_FREERTOS
             xTaskNotifyWait(0, 0x0001, NULL, portMAX_DELAY);
+#else
+            while(ack_notify ==1);
 #endif
             env_unlock_mutex(platform_lock);
             break;
@@ -182,6 +196,8 @@ void rpmsg_handler(bool is_ack, uint32_t vring_idx)
     {
 #ifdef USING_FREERTOS
         (void)xTaskNotifyFromISR(task_handle, 0x0001, eSetBits, NULL);
+#else
+        ack_notify = 0;
 #endif
     }
     else
@@ -199,7 +215,17 @@ void rpmsg_handler(bool is_ack, uint32_t vring_idx)
  */
 void platform_time_delay(uint32_t num_msec)
 {
+    /* convert milliseconds to microseconds */
+    num_msec = num_msec * 1000;
 
+    CLINT->MTIME = 0ULL;
+    volatile uint32_t count = 0ULL;
+
+    while(CLINT->MTIME < num_msec)
+    {
+        count++;
+    }
+    return;
 }
 
 /**

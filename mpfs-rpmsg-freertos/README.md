@@ -1,18 +1,20 @@
 # PolarFire SoC RPMsg FreeRTOS Example
 
-This project contains a number of applications demos that showcase the usage of RPMsg (Remote Processor Messaging) framework to send messages between a FreeRTOS context and a remote software context (i.e. Linux or another FreeRTOS context) using the RPMsg-lite framework.
+This project contains a number of applications demos that showcase the usage of RPMsg (Remote Processor Messaging) framework to send messages between a FreeRTOS context and a remote software context (i.e. Linux, bare metal or another FreeRTOS context) using the RPMsg-lite framework.
 
 This project contains two different build configurations:
 
-- Remote Build Configuration: Builds an application in RPMsg Remote mode.
+- Remote Build Configuration: Builds an application in RPMsg Remote mode
 
-- Master Build Configuration: Builds an application in RPMsg Master mode.
+- Master Build Configuration: Builds an application in RPMsg Master mode
 
 Different combinations of operating systems can be supported in a master and remote role. For instance:
 
-- FreeRTOS (master) + FreeRTOS (remote)
+- FreeRTOS + FreeRTOS
 
-- Linux (master) + FreeRTOS (remote)
+- FreeRTOS + Bare Metal
+
+- Linux + FreeRTOS
 
 The project can be compiled using SoftConsole or externally by using the provided Makefile.
 This allows to integrate and build the application in Yocto and Buildroot environments.
@@ -28,9 +30,9 @@ Instructions on how to build and run the Linux + FreeRTOS demo are available [he
 
 ### Other AMP configurations
 
-This project can also be used in a custom AMP software configuration (i.e. FreeRTOS + FreeRTOS) by using the Hart Software Services (HSS) payload generator.
+This project can also be used in a custom AMP software configuration (i.e. FreeRTOS + BM/FreeRTOS) by using the Hart Software Services (HSS) payload generator.
 
-Detailed instructions on how to build the FreeRTOS + FreeRTOS RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#rpmsg-rtos-intro).
+Detailed instructions on how to build the FreeRTOS + BM/FreeRTOS RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#rpmsg-rtos-intro).
 
 #### (Optional) Building the project using the Makefile<a name="makefile-build"></a>
 

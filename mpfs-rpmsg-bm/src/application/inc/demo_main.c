@@ -171,10 +171,7 @@ void rpmsg_setup(rpmsg_comm_stack_handle_t handle)
     rpmsgHandle->my_rpmsg = rpmsg_lite_remote_init(rpmsg_lite_base, RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
     rpmsgHandle->ctrl_q = rpmsg_queue_create(rpmsgHandle->my_rpmsg);
 
-    while(!rpmsg_lite_is_link_up(rpmsgHandle->my_rpmsg))
-    {
-        env_sleep_msec(300);
-    }
+    while(!rpmsg_lite_is_link_up(rpmsgHandle->my_rpmsg));
 
     MSS_UART_polled_tx_string(UART_APP, "\r\nMaster is ready\r\n");
 #endif

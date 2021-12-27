@@ -25,8 +25,10 @@
 #error "This RPMsg-Lite port requires RL_USE_ENVIRONMENT_CONTEXT set to 0"
 #endif
 
-#if !defined(CONTEXTA_HARTID) && !defined(CONTEXTB_HARTID)
-#error "Mi-V IHC CONTEXTA_HARTID and CONTEXTB_HARTID configuration macros are not defined"
+#if !defined(LIBERO_SETTING_CONTEXT_A_HART_EN) || !defined(LIBERO_SETTING_CONTEXT_B_HART_EN)
+#error "LIBERO_SETTING_CONTEXT_A_HART_EN and LIBERO_SETTING_CONTEXT_B_HART_EN macros required for rpmsg communication"
+#elif LIBERO_SETTING_CONTEXT_A_HART_EN == 0 || LIBERO_SETTING_CONTEXT_B_HART_EN == 0
+#error "LIBERO_SETTING_CONTEXT_A_HART_EN and LIBERO_SETTING_CONTEXT_B_HART_EN macros are not setup"
 #endif
 
 static int32_t isr_counter     = 0;
@@ -54,7 +56,9 @@ static void platform_global_isr_enable(void)
 
 int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
 {
+    uint64_t my_hart_id = read_csr(mhartid);
 
+    uint32_t context_hart_id = 0u;
     /* Register ISR to environment layer */
     env_register_isr(vector_id, isr_data);
 
@@ -67,36 +71,30 @@ int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
         {
             case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
                 PLIC_init();
-#ifdef IHC_CHANNEL_SIDE_A
-    #if CONTEXTA_HARTID == 1
-                PLIC_SetPriority(IHCIA_hart1_INT, 2);
-    #elif CONTEXTA_HARTID == 2
-                PLIC_SetPriority(IHCIA_hart2_INT, 2);
-    #elif CONTEXTA_HARTID == 3
-                PLIC_SetPriority(IHCIA_hart3_INT, 2);
-    #elif CONTEXTA_HARTID == 4
-                PLIC_SetPriority(IHCIA_hart4_INT, 2);
-    #else
-        #error Unsupported CONTEXTA_HARTID configuration value
-    #endif
-#else
-    #if CONTEXTB_HARTID == 1
-                PLIC_SetPriority(IHCIA_hart1_INT, 2);
-    #elif CONTEXTB_HARTID == 2
-                PLIC_SetPriority(IHCIA_hart2_INT, 2);
-    #elif CONTEXTB_HARTID == 3
-                PLIC_SetPriority(IHCIA_hart3_INT, 2);
-    #elif CONTEXTB_HARTID == 4
-                PLIC_SetPriority(IHCIA_hart4_INT, 2);
-    #else
-        #error Unsupported CONTEXTB_HARTID configuration value
-    #endif
-#endif
+                uint32_t context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
+                switch(context_hart_id) {
+                    case 1:
+                        PLIC_SetPriority(IHCIA_hart1_INT, 2);
+                        break;
+                    case 2:
+                        PLIC_SetPriority(IHCIA_hart2_INT, 2);
+                        break;
+                    case 3:
+                        PLIC_SetPriority(IHCIA_hart3_INT, 2);
+                        break;
+                    case 4:
+                        PLIC_SetPriority(IHCIA_hart4_INT, 2);
+                        break;
+                    default:
+                        /*  Unsupported configuration value*/
+                        break;
+                }
                 break;
             default:
                 break;
         }
     }
+
     isr_counter++;
 
     env_unlock_mutex(platform_lock);
@@ -106,6 +104,9 @@ int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
 
 int32_t platform_deinit_interrupt(uint32_t vector_id)
 {
+	uint32_t context_hart_id = 0u;
+    uint64_t my_hart_id = read_csr(mhartid);
+
     env_lock_mutex(platform_lock);
 
     RL_ASSERT(0 < isr_counter);
@@ -115,31 +116,26 @@ int32_t platform_deinit_interrupt(uint32_t vector_id)
         switch (RL_GET_LINK_ID(vector_id))
         {
             case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
-#ifdef IHC_CHANNEL_SIDE_A
-    #if CONTEXTA_HARTID == 1
-                PLIC_DisableIRQ(IHCIA_hart1_INT);
-    #elif CONTEXTA_HARTID == 2
-                PLIC_DisableIRQ(IHCIA_hart2_INT);
-    #elif CONTEXTA_HARTID == 3
-                PLIC_DisableIRQ(IHCIA_hart3_INT);
-    #elif CONTEXTA_HARTID == 4
-                PLIC_DisableIRQ(IHCIA_hart4_INT);
-    #else
-        #error Unsupported CONTEXTA_HARTID configuration value
-    #endif
-#else
-    #if CONTEXTB_HARTID == 1
-                PLIC_DisableIRQ(IHCIA_hart1_INT);
-    #elif CONTEXTB_HARTID == 2
-                PLIC_DisableIRQ(IHCIA_hart2_INT);
-    #elif CONTEXTB_HARTID == 3
-                PLIC_DisableIRQ(IHCIA_hart3_INT);
-    #elif CONTEXTB_HARTID == 4
-                PLIC_DisableIRQ(IHCIA_hart4_INT);
-    #else
-        #error Unsupported CONTEXTB_HARTID configuration value
-    #endif
-#endif
+
+                context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
+
+                switch(context_hart_id) {
+                    case 1:
+                        PLIC_DisableIRQ(IHCIA_hart1_INT);
+                        break;
+                    case 2:
+                        PLIC_DisableIRQ(IHCIA_hart2_INT);
+                        break;
+                    case 3:
+                        PLIC_DisableIRQ(IHCIA_hart3_INT);
+                        break;
+                    case 4:
+                        PLIC_DisableIRQ(IHCIA_hart4_INT);
+                        break;
+                    default:
+                        /*  Unsupported configuration value*/
+                        break;
+                }
                 break;
             default:
                 break;
@@ -174,9 +170,9 @@ void platform_notify(uint32_t vector_id)
             ack_notify = 1;
 #endif
 #ifdef IHC_CHANNEL_SIDE_A
-            (void)IHC_tx_message(IHC_CHANNEL_TO_CONTEXTB, (uint32_t *) &ihc_tx_message);
+            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTB, (uint32_t *) &ihc_tx_message);
 #else
-            (void)IHC_tx_message(IHC_CHANNEL_TO_CONTEXTA, (uint32_t *) &ihc_tx_message);
+            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTA, (uint32_t *) &ihc_tx_message);
 #endif
 #ifdef USING_FREERTOS
             xTaskNotifyWait(0, 0x0001, NULL, portMAX_DELAY);
@@ -215,17 +211,7 @@ void rpmsg_handler(bool is_ack, uint32_t vring_idx)
  */
 void platform_time_delay(uint32_t num_msec)
 {
-    /* convert milliseconds to microseconds */
-    num_msec = num_msec * 1000;
 
-    CLINT->MTIME = 0ULL;
-    volatile uint32_t count = 0ULL;
-
-    while(CLINT->MTIME < num_msec)
-    {
-        count++;
-    }
-    return;
 }
 
 /**
@@ -256,6 +242,9 @@ int32_t platform_in_isr(void)
  */
 int32_t platform_interrupt_enable(uint32_t vector_id)
 {
+	uint32_t context_hart_id = 0u;
+    uint64_t my_hart_id = read_csr(mhartid);
+
     RL_ASSERT(0 < disable_counter);
 
     platform_global_isr_disable();
@@ -266,31 +255,26 @@ int32_t platform_interrupt_enable(uint32_t vector_id)
         switch (RL_GET_LINK_ID(vector_id))
         {
             case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
-#ifdef IHC_CHANNEL_SIDE_A
-    #if CONTEXTA_HARTID == 1
-                PLIC_EnableIRQ(IHCIA_hart1_INT);
-    #elif CONTEXTA_HARTID == 2
-                PLIC_EnableIRQ(IHCIA_hart2_INT);
-    #elif CONTEXTA_HARTID == 3
-                PLIC_EnableIRQ(IHCIA_hart3_INT);
-    #elif CONTEXTA_HARTID == 4
-                PLIC_EnableIRQ(IHCIA_hart4_INT);
-    #else
-        #error Unsupported CONTEXTA_HARTID configuration value
-    #endif
-#else
-    #if CONTEXTB_HARTID == 1
-                PLIC_EnableIRQ(IHCIA_hart1_INT);
-    #elif CONTEXTB_HARTID == 2
-                PLIC_EnableIRQ(IHCIA_hart2_INT);
-    #elif CONTEXTB_HARTID == 3
-                PLIC_EnableIRQ(IHCIA_hart3_INT);
-    #elif CONTEXTB_HARTID == 4
-                PLIC_EnableIRQ(IHCIA_hart4_INT);
-    #else
-        #error Unsupported CONTEXTB_HARTID configuration value
-    #endif
-#endif
+
+                context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
+
+                switch(context_hart_id) {
+                    case 1:
+                        PLIC_EnableIRQ(IHCIA_hart1_INT);
+                        break;
+                    case 2:
+                        PLIC_EnableIRQ(IHCIA_hart2_INT);
+                        break;
+                    case 3:
+                        PLIC_EnableIRQ(IHCIA_hart3_INT);
+                        break;
+                    case 4:
+                        PLIC_EnableIRQ(IHCIA_hart4_INT);
+                        break;
+                    default:
+                        /*  Unsupported configuration value*/
+                        break;
+                }
                 break;
             default:
                 break;
@@ -312,6 +296,9 @@ int32_t platform_interrupt_enable(uint32_t vector_id)
  */
 int32_t platform_interrupt_disable(uint32_t vector_id)
 {
+	uint32_t context_hart_id = 0u;
+    uint64_t my_hart_id = read_csr(mhartid);
+
     RL_ASSERT(0 <= disable_counter);
 
     platform_global_isr_disable();
@@ -321,31 +308,24 @@ int32_t platform_interrupt_disable(uint32_t vector_id)
         switch (RL_GET_LINK_ID(vector_id))
         {
             case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
-#ifdef IHC_CHANNEL_SIDE_A
-    #if CONTEXTA_HARTID == 1
-                PLIC_DisableIRQ(IHCIA_hart1_INT);
-    #elif CONTEXTA_HARTID == 2
-                PLIC_DisableIRQ(IHCIA_hart2_INT);
-    #elif CONTEXTA_HARTID == 3
-                PLIC_DisableIRQ(IHCIA_hart3_INT);
-    #elif CONTEXTA_HARTID == 4
-                PLIC_DisableIRQ(IHCIA_hart4_INT);
-    #else
-        #error Unsupported CONTEXTA_HARTID configuration value
-    #endif
-#else
-    #if CONTEXTB_HARTID == 1
-                PLIC_DisableIRQ(IHCIA_hart1_INT);
-    #elif CONTEXTB_HARTID == 2
-                PLIC_DisableIRQ(IHCIA_hart2_INT);
-    #elif CONTEXTB_HARTID == 3
-                PLIC_DisableIRQ(IHCIA_hart3_INT);
-    #elif CONTEXTB_HARTID == 4
-                PLIC_DisableIRQ(IHCIA_hart4_INT);
-    #else
-        #error Unsupported CONTEXTB_HARTID configuration value
-    #endif
-#endif
+                context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
+                switch(context_hart_id) {
+                    case 1:
+                        PLIC_DisableIRQ(IHCIA_hart1_INT);
+                        break;
+                    case 2:
+                        PLIC_DisableIRQ(IHCIA_hart2_INT);
+                        break;
+                    case 3:
+                        PLIC_DisableIRQ(IHCIA_hart3_INT);
+                        break;
+                    case 4:
+                        PLIC_DisableIRQ(IHCIA_hart4_INT);
+                        break;
+                    default:
+                        /*  Unsupported configuration value*/
+                        break;
+                }
                 break;
             default:
                 break;
@@ -419,12 +399,10 @@ int32_t platform_init(void)
 
     IHC_local_context_init((uint32_t)hartid);
 
-#ifdef IHC_CHANNEL_SIDE_A
-        uint32_t remote_hart_id = CONTEXTB_HARTID;
-#else
-        uint32_t remote_hart_id = CONTEXTA_HARTID;
-#endif
-        IHC_local_remote_config((uint32_t)hartid, remote_hart_id, rx_handler, true, true);
+
+    uint32_t remote_hart_id = IHC_partner_context_hart_id(hartid);
+
+    IHC_local_remote_config((uint32_t)hartid, remote_hart_id, rx_handler, true, true);
     
     /* Create lock used in multi-instanced RPMsg */
     if (0 != env_create_mutex(&platform_lock, 1))

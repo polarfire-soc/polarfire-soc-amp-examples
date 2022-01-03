@@ -28,11 +28,17 @@ The application is configured to run from DDR on U54_4 application core.
 
 Instructions on how to build and run the Linux + FreeRTOS demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/tree/master/asymmetric-multiprocessing/amp.md).
 
-### Other AMP configurations
+### FreeRTOS + FreeRTOS AMP Configuration
 
-This project can also be used in a custom AMP software configuration (i.e. FreeRTOS + BM/FreeRTOS) by using the Hart Software Services (HSS) payload generator.
+This project can also be used to build a Bare Metal (RPMsg Master) + Bare Metal (RPMsg Remote) AMP Configuration.
 
-Detailed instructions on how to build the FreeRTOS + BM/FreeRTOS RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#rpmsg-rtos-intro).
+Detailed instructions on how to build the Bare Metal + Bare Metal RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#freertos-freertos-demo).
+
+### FreeRTOS + BM AMP Configuration
+
+This project can also be used to build a FreeRTOS + Bare Metal AMP Configuration.
+
+Detailed instructions on how to build the FreeRTOS + Bare Metal RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#freertos-bm-demo).
 
 #### (Optional) Building the project using the Makefile<a name="makefile-build"></a>
 

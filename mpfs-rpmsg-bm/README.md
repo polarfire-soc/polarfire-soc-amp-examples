@@ -1,6 +1,6 @@
 # PolarFire SoC RPMsg Bare Metal Example
 
-This project contains a number of applications demos that showcase the usage of RPMsg (Remote Processor Messaging) framework to send messages between a BM (bare metal) context and a remote software context (i.e. Linux or another BM/FreeRTOS context) using the RPMsg-lite framework.
+This project contains a number of applications demos that showcase the usage of RPMsg (Remote Processor Messaging) framework to send messages between a BM (bare metal) context and a remote software context (i.e. another BM/FreeRTOS context) using the RPMsg-lite framework.
 
 This project contains two different build configurations:
 
@@ -14,27 +14,24 @@ Different combinations of operating systems can be supported in a master and rem
 
 - Bare metal + Bare Metal
 
-- Linux + Bare Metal
-
 The project can be compiled using SoftConsole or externally by using the provided Makefile.
 This allows to integrate and build the application in Yocto and Buildroot environments.
 
 ## How to build this example
-### Linux + Bare Metal AMP configuration
 
-This project is automatically built by Yocto and Buildroot when using the AMP machine. 
+### BM + BM AMP Configuration
 
-The application is configured to run from DDR on U54_4 application core.
+This project can also be used to build a Bare Metal (RPMsg Master) + Bare Metal (RPMsg Remote) AMP Configuration.
 
-Instructions on how to build and run the Linux + Bare Metal demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/tree/master/asymmetric-multiprocessing/amp.md).
+Detailed instructions on how to build the Bare Metal + Bare Metal RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#bm-bm-demo).
 
-### Other AMP configurations
+### FreeRTOS + BM AMP Configuration
 
-This project can also be used in a custom AMP software configuration (i.e. BM + BM/FreeRTOS) by using the Hart Software Services (HSS) payload generator.
+This project can also be used to build a FreeRTOS + Bare Metal AMP Configuration.
 
-Detailed instructions on how to build the Bare Metal + FreeRTOS RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#rpmsg-rtos-intro).
+Detailed instructions on how to build the FreeRTOS + Bare Metal RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#freertos-bm-demo).
 
-#### (Optional) Building the project using the Makefile<a name="makefile-build"></a>
+### (Optional) Building the project using the Makefile<a name="makefile-build"></a>
 
 If building the project outside of SoftConsole by using the provided Makefile, the system PATH must be configured to include the location of a RISC-V toolchain and Python version 3.x.
 
@@ -78,7 +75,7 @@ Pre-requisites: the Hart Software Services (HSS) should be built and loaded to t
 
 6. Press resume button on the debugger
 
-8. The FreeRTOS RPMsg example project should continue running and displaying messages over the associated UART
+8. The Bare Metal RPMsg example project should continue running and displaying messages over the associated UART
 
 For more information about AMP and inter-core communication using RPMsg on PolarFire SoC, please refer to the [PolarFire SoC RPMsg documentation](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md).
 

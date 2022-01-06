@@ -49,12 +49,12 @@ If using Windows, Python version 3.x should be added to the system path. This co
 
 To use SoftConsole built-in python:
 ```
-copy C:\Microchip\SoftConsole-v2021.1\python\python.exe C:\Microchip\SoftConsole-v2021.1\python\python3.exe
+C:\> copy C:\Microchip\SoftConsole-v2021.1\python3\python.exe C:\Microchip\SoftConsole-v2021.1\python3\python3.exe
 ```
 
-To configure the path con Windows:
+For building on Windows from the command line one must configure the path appropriately, e.g.:
 ```
-path %SystemRoot%;%SystemRoot%;C:\Microchip\SoftConsole-v2021.1\build_tools\bin;C:\Microchip\SoftConsole-v2021.1\python;C:\Microchip\SoftConsole-v2021.1\riscv-unknown-elf-gcc\bin
+C:\> path %SystemRoot%;%SystemRoot%;C:\Microchip\SoftConsole-v2021.1\build_tools\bin;C:\Microchip\SoftConsole-v2021.1\python;C:\Microchip\SoftConsole-v2021.1\riscv-unknown-elf-gcc\bin
 make
 ```
 ## How to debug the application in DDR

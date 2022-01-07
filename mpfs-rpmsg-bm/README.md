@@ -21,15 +21,56 @@ This allows to integrate and build the application in Yocto and Buildroot enviro
 
 ### BM + BM AMP Configuration
 
-This project can also be used to build a Bare Metal (RPMsg Master) + Bare Metal (RPMsg Remote) AMP Configuration.
+This project can be used to build a Bare Metal (RPMsg Master) + Bare Metal (RPMsg Remote) AMP Configuration.
 
-Detailed instructions on how to build the Bare Metal + Bare Metal RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#bm-bm-demo).
+To build a BM + BM AMP configuration:
+
+1. Build the mpfs-rpmsg-bm project in `Master` build mode configuration
+
+2. Build the mpfs-rpmsg-bm project in `Remote` build mode configuration
+
+3. Generate a payload using the reference `hss-payload-bm_bm.yaml` available in the resources directory:
+
+```
+    $ cd polarfire-soc-amp-examples/resources
+    $ hss-payload-generator -c hss-payload-bm_bm.yaml payload_bm_bm.bin
+```
+
+4. Flash the payload from the tools/ directory to eMMC or SD-card following the steps shown in the [Updating PolarFire SoC Icicle-Kit FPGA Design and Linux Image](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/boards/mpfs-icicle-kit-es/updating-icicle-kit/updating-icicle-kit-design-and-linux.md) document to program using USBImager or, for example, using dd on Linux:
+
+```
+sudo dd if=payload_bm_bm.bin of=/dev/sdX
+```
+> Be very careful while picking /dev/sdX device! Look at dmesg, lsblk, GNOME Disks, etc. before and after plugging in your USB flash device/uSD/SD to find a proper device. Double check it to avoid overwriting any of system disks/partitions!
+
+
+Detailed instructions on how to build the Bare Metal + Bare Metal RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#rpmsg-rtos-intro).
 
 ### FreeRTOS + BM AMP Configuration
 
 This project can also be used to build a FreeRTOS + Bare Metal AMP Configuration.
 
-Detailed instructions on how to build the FreeRTOS + Bare Metal RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#freertos-bm-demo).
+To build a FreeRTOS + BM AMP configuration:
+
+1. Build the mpfs-rpmsg-freertos project in `Master` build mode configuration
+
+2. Build the mpfs-rpmsg-bm project in `Remote` build mode configuration
+
+3. Generate a payload using the reference `hss-payload-freertos_bm.yaml` available in the resources directory:
+
+```
+    $ cd polarfire-soc-amp-examples/resources
+    $ hss-payload-generator -c hss-payload-freertos_bm.yaml payload_freertos_bm.bin
+```
+
+4. Flash the payload from the tools/ directory to eMMC or SD-card following the steps shown in the [Updating PolarFire SoC Icicle-Kit FPGA Design and Linux Image](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/boards/mpfs-icicle-kit-es/updating-icicle-kit/updating-icicle-kit-design-and-linux.md) document to program using USBImager or, for example, using dd on Linux:
+
+```
+sudo dd if=payload_freertos_bm.bin of=/dev/sdX
+```
+> Be very careful while picking /dev/sdX device! Look at dmesg, lsblk, GNOME Disks, etc. before and after plugging in your USB flash device/uSD/SD to find a proper device. Double check it to avoid overwriting any of system disks/partitions!
+
+Detailed instructions on how to build the FreeRTOS + Bare Metal RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#rpmsg-rtos-intro).
 
 ### (Optional) Building the project using the Makefile<a name="makefile-build"></a>
 

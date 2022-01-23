@@ -47,11 +47,25 @@
 #include "rpmsg_platform.h"
 #include "virtqueue.h"
 #include "rpmsg_compiler.h"
+#include "tinyalloc.h"
+
+#include "cQueue.h"
 
 #include <stdlib.h>
 #include <string.h>
 
+#define MSGQ_SIZE(num, size) \
+    (sizeof(XosMsgQueue) + ((num) * (size)))
+
+#define TINYALLOC_HEAP_BLOCKS 256u
+#define TINYALLOC_SPLIT_THRESH 16u
+#define TINYALLOC_ALIGNMENT 16u
+
 static int32_t env_init_counter = 0;
+static bool tinyalloc_initialized = false;
+
+extern char __heap_start;
+extern char  __heap_end;
 
 /* Max supported ISR counts */
 #define ISR_COUNT (12U) /* Change for multiple remote cores */
@@ -126,7 +140,12 @@ int32_t env_deinit(void)
  */
 void *env_allocate_memory(uint32_t size)
 {
-    return (malloc(size));
+    if(!tinyalloc_initialized)
+    {
+        ta_init(&__heap_start, &__heap_end, 256, 16, 16);
+        tinyalloc_initialized = 1;
+    }
+    return (ta_alloc(size));
 }
 
 /*!
@@ -138,7 +157,7 @@ void env_free_memory(void *ptr)
 {
     if (ptr != ((void *)0))
     {
-        free(ptr);
+    	ta_free(ptr);
     }
 }
 
@@ -238,7 +257,7 @@ void env_wmb(void)
  *
  * @param address
  */
-uint32_t env_map_vatopa(void *address)
+uint64_t env_map_vatopa(void *address)
 {
     return platform_vatopa(address);
 }
@@ -248,7 +267,7 @@ uint32_t env_map_vatopa(void *address)
  *
  * @param address
  */
-void *env_map_patova(uint32_t address)
+void *env_map_patova(uint64_t address)
 {
     return platform_patova(address);
 }
@@ -412,3 +431,142 @@ void env_isr(uint32_t vector)
         virtqueue_notification((struct virtqueue *)info->data);
     }
 }
+
+/*
+ * env_create_queue
+ *
+ * Creates a message queue.
+ *
+ * @param queue -  pointer to created queue
+ * @param length -  maximum number of elements in the queue
+ * @param element_size - queue element size in bytes
+ *
+ * @return - status of function execution
+ */
+int32_t env_create_queue(void **queue, int32_t length, int32_t element_size)
+{
+    Queue_t *q = env_allocate_memory(sizeof(Queue_t));
+
+    if (q == ((void *)0))
+    {
+        return -1;
+    }
+
+    q_init(q, element_size, length, LIFO, false);
+
+    if (q == ((void *)0))
+    {
+        env_free_memory(q);
+        return -1;
+    }
+
+    *queue = q;
+    return 0;
+}
+
+/*!
+ * env_delete_queue
+ *
+ * Deletes the message queue.
+ *
+ * @param queue - queue to delete
+ */
+
+void env_delete_queue(void *queue)
+{
+    Queue_t *q = queue;
+
+    q_kill(q);
+    env_free_memory(q);
+}
+
+/*!
+ * env_in_isr
+ *
+ * @returns - true, if currently in ISR
+ *
+ */
+static int32_t env_in_isr(void)
+{
+    return platform_in_isr();
+}
+
+
+/*!
+ * env_put_queue
+ *
+ * Put an element in a queue.
+ *
+ * @param queue - queue to put element in
+ * @param msg - pointer to the message to be put into the queue
+ * @param timeout_ms - timeout in ms
+ *
+ * @return - status of function execution
+ */
+
+int32_t env_put_queue(void *queue, void *msg, uint32_t timeout_ms)
+{
+    Queue_t *q = queue;
+    if (env_in_isr() != 0)
+    {
+    	if (q_push(q, msg))
+    	{
+    		return 1;
+    	}
+    }
+    else
+    {
+        while (!q_push(q, msg));
+        return 1;
+    }
+    return 0;
+}
+
+/*!
+ * env_get_queue
+ *
+ * Get an element out of a queue.
+ *
+ * @param queue - queue to get element from
+ * @param msg - pointer to a memory to save the message
+ * @param timeout_ms - timeout in ms
+ *
+ * @return - status of function execution
+ */
+
+int32_t env_get_queue(void *queue, void *msg, uint32_t timeout_ms)
+{
+    Queue_t *q = queue;
+
+    if (env_in_isr() != 0)
+    {
+    	if (q_pop(q, msg))
+    	{
+            return 1;
+        }
+    }
+    else
+    {
+    	while (!q_pop(q, msg));
+        return 1;
+    }
+    return 0;
+}
+
+/*!
+ * env_get_current_queue_size
+ *
+ * Get current queue size.
+ *
+ * @param queue - queue pointer
+ *
+ * @return - Number of queued items in the queue
+ */
+
+int32_t env_get_current_queue_size(void *queue)
+{
+    Queue_t *q = queue;
+
+	return ((int32_t) q_getCount(q));
+}
+

@@ -188,9 +188,9 @@ int32_t env_strncmp(char *dest, const char *src, uint32_t len);
  * @return  - physical address
  */
 #if defined(RL_USE_ENVIRONMENT_CONTEXT) && (RL_USE_ENVIRONMENT_CONTEXT == 1)
-uint32_t env_map_vatopa(void *env, void *address);
+uint64_t env_map_vatopa(void *env, void *address);
 #else
-uint32_t env_map_vatopa(void *address);
+uint64_t env_map_vatopa(void *address);
 #endif
 
 /*!
@@ -205,9 +205,9 @@ uint32_t env_map_vatopa(void *address);
  *
  */
 #if defined(RL_USE_ENVIRONMENT_CONTEXT) && (RL_USE_ENVIRONMENT_CONTEXT == 1)
-void *env_map_patova(void *env, uint32_t address);
+void *env_map_patova(void *env, uint64_t address);
 #else
-void *env_map_patova(uint32_t address);
+void *env_map_patova(uint64_t address);
 #endif
 
 /*!

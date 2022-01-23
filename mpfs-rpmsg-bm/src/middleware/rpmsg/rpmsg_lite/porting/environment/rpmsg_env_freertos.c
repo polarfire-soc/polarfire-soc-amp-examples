@@ -297,7 +297,7 @@ void env_wmb(void)
  *
  * @param address
  */
-uint32_t env_map_vatopa(void *address)
+uint64_t env_map_vatopa(void *address)
 {
     return platform_vatopa(address);
 }
@@ -307,7 +307,7 @@ uint32_t env_map_vatopa(void *address)
  *
  * @param address
  */
-void *env_map_patova(uint32_t address)
+void *env_map_patova(uint64_t address)
 {
     return platform_patova(address);
 }
@@ -355,11 +355,19 @@ void env_delete_mutex(void *lock)
  */
 void env_lock_mutex(void *lock)
 {
+    BaseType_t xTaskWokenByReceive = pdFALSE;
     SemaphoreHandle_t xSemaphore = (SemaphoreHandle_t)lock;
+
     if (env_in_isr() == 0)
     {
-        (void)xSemaphoreTake(xSemaphore, portMAX_DELAY);
+        xSemaphoreTake(xSemaphore, portMAX_DELAY);
     }
+    else
+    {
+        (void)xSemaphoreTakeFromISR(xSemaphore, &xTaskWokenByReceive);
+        portEND_SWITCHING_ISR(xTaskWokenByReceive);
+    }
+    return false;
 }
 
 /*!
@@ -369,11 +377,20 @@ void env_lock_mutex(void *lock)
  */
 void env_unlock_mutex(void *lock)
 {
+    BaseType_t xTaskWokenByReceive = pdFALSE;
     SemaphoreHandle_t xSemaphore = (SemaphoreHandle_t)lock;
+
     if (env_in_isr() == 0)
     {
         (void)xSemaphoreGive(xSemaphore);
     }
+    else
+    {
+        (void)xSemaphoreGiveFromISR(xSemaphore, &xTaskWokenByReceive);
+        portEND_SWITCHING_ISR(xTaskWokenByReceive);
+    }
+
+
 }
 
 /*!

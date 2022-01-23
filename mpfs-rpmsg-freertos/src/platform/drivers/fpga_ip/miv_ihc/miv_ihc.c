@@ -112,7 +112,7 @@ static void  message_present_isr(void);
 static uint32_t parse_incoming_hartid(uint32_t my_hart_id, bool *is_ack, bool polling);
 static uint32_t parse_incoming_context_msg(uint32_t my_hart_id, uint32_t remote_hart_id, bool *is_ack, bool polling);
 static uint32_t rx_message(uint32_t my_hart_id, uint32_t remote_hart_id, QUEUE_IHC_INCOMING handle_incoming, bool is_ack, uint32_t * message_storage_ptr);
-static uint32_t IHC_lowest_hart_in_context(uint32_t mask);
+static uint32_t lowest_hart_in_context(uint32_t mask);
 /******************************************************************************/
 /* Public API Functions                                                       */
 /******************************************************************************/
@@ -225,7 +225,7 @@ void IHC_local_remote_config(uint32_t hart_to_configure, uint32_t remote_hart_id
 }
 
 /***************************************************************************//**
- * IHC_tx_message()
+ * IHC_tx_message_from_context()
  *
  * See miv_ihc.h for details of how to use this
  * function.
@@ -275,7 +275,7 @@ uint32_t IHC_tx_message_from_context(IHC_CHANNEL remote_channel, uint32_t *messa
 }
 
 /***************************************************************************//**
- * IHC_tx_message()
+ * IHC_tx_message_from_hart()
  *
  * See miv_ihc.h for details of how to use this
  * function.
@@ -459,31 +459,6 @@ static uint32_t parse_incoming_context_msg(uint32_t my_hart_id, uint32_t remote_
 }
 
 /***************************************************************************//**
- * IHC_lowest_hart_in_context based on Libero settings()
- *
- * See miv_ihc.h for details of how to use this
- * function.
- */
-uint32_t IHC_lowest_hart_in_context(uint32_t mask)
-{
-    uint32_t lowest_hart = 0u;
-
-    if(mask == LIBERO_SETTING_CONTEXT_A_HART_EN )
-    {
-        lowest_hart = (uint32_t) __builtin_ffs(LIBERO_SETTING_CONTEXT_A_HART_EN);
-    }
-    else
-    {
-        lowest_hart = (uint32_t) __builtin_ffs(LIBERO_SETTING_CONTEXT_B_HART_EN);
-    }
-    
-    if(lowest_hart)
-        return lowest_hart - 1u;
-    else
-        return 0u;
-}
-
-/***************************************************************************//**
  * IHC_context_to_context_hart_id()
  *
  * See miv_ihc.h for details of how to use this
@@ -497,11 +472,11 @@ uint32_t IHC_context_to_context_hart_id(IHC_CHANNEL channel)
     {
         if ( (1U<<channel) & LIBERO_SETTING_CONTEXT_A_HART_EN )
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
         }
         else if ( (1U<<channel) & LIBERO_SETTING_CONTEXT_B_HART_EN )
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
         }
     }
     else
@@ -509,11 +484,11 @@ uint32_t IHC_context_to_context_hart_id(IHC_CHANNEL channel)
         /* Returns the lowest hart in a context */
         if(channel == IHC_CHANNEL_TO_CONTEXTA)
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
         }
         else
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
         }
     }
     return (hart);
@@ -538,11 +513,11 @@ uint32_t IHC_hart_to_context_or_hart_id(IHC_CHANNEL channel)
         /* Returns the lowest hart in a context */
         if(channel == IHC_CHANNEL_TO_CONTEXTA)
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
         }
         else
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
         }
     }
     return (hart);
@@ -561,22 +536,22 @@ uint32_t IHC_partner_context_hart_id(IHC_CHANNEL channel)
     {
         if ((1U<<channel) & LIBERO_SETTING_CONTEXT_A_HART_EN)
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
         }
         else if ((1U<<channel) & LIBERO_SETTING_CONTEXT_B_HART_EN)
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
         }
     }
     else /* in case called using context ID */
     {
         if(channel == IHC_CHANNEL_TO_CONTEXTA)
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_B_HART_EN);
         }
         else
         {
-            hart = IHC_lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
+            hart = lowest_hart_in_context(LIBERO_SETTING_CONTEXT_A_HART_EN);
         }
     }
 
@@ -601,27 +576,10 @@ uint8_t IHCIA_hart0_IRQHandler(void)
  * See miv_ihc.h for details of how to use this
  * function.
  */
-//#define TEST_COMMAND_INDIRECT_ISR
- #ifdef TEST_COMMAND_INDIRECT_ISR
-extern uint8_t IHC_test_command;
-#endif
 uint8_t IHCIA_hart1_IRQHandler(void)
 {
-
-#ifdef TEST_COMMAND_INDIRECT_ISR
-    if(IHC_test_command == 98U) /* test non direct interrupt (used OpenSBI) */
-    {
-        IHC_test_command = 97U;
-    }
-    else if(!(IHC_test_command >= 96U) && (IHC_test_command <= 99U))
-    {
-#endif
     message_present_isr();
-#ifdef TEST_COMMAND_INDIRECT_ISR
-    }
-#endif
     return(EXT_IRQ_KEEP_ENABLED);
-
 }
 
 /***************************************************************************//**
@@ -802,7 +760,27 @@ static uint32_t parse_incoming_hartid(uint32_t my_hart_id, bool *is_ack, bool po
     return(return_hart_id);
 }
 
+/***************************************************************************//**
+ * lowest_hart_in_context based on Libero settings()
+ *
+ * See miv_ihc.h for details of how to use this
+ * function.
+ */
+static uint32_t lowest_hart_in_context(uint32_t mask)
+{
+    uint32_t lowest_hart = 0u;
 
+    if(mask == LIBERO_SETTING_CONTEXT_A_HART_EN )
+    {
+        lowest_hart = (uint32_t) __builtin_ffs(LIBERO_SETTING_CONTEXT_A_HART_EN);
+    }
+    else
+    {
+        lowest_hart = (uint32_t) __builtin_ffs(LIBERO_SETTING_CONTEXT_B_HART_EN);
+    }
 
-
-
+    if(lowest_hart)
+        return lowest_hart - 1u;
+    else
+        return 0u;
+}

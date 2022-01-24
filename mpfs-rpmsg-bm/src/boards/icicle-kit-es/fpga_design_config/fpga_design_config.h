@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2019-2022 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -30,7 +30,7 @@
 #define  LIBERO_SETTING_MSS_CONFIGURATOR_VERSION                    "2021.2"
 #define  LIBERO_SETTING_DESIGN_NAME                                 "ICICLE_MSS"
 #define  LIBERO_SETTING_MPFS_PART                                   "MPFS250T_ES"
-#define  LIBERO_SETTING_GENERATION_DATE                             "08-04-2021_12:27:51"
+#define  LIBERO_SETTING_GENERATION_DATE                             "01-14-2022_13:09:15"
 #define  LIBERO_SETTING_XML_VERSION                                 "0.5.6"
 #define  LIBERO_SETTING_XML_VERSION_MAJOR                           0
 #define  LIBERO_SETTING_XML_VERSION_MINOR                           5

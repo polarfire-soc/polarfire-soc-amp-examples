@@ -94,6 +94,4 @@ $(RISCV_TARGET): $(OBJS)  $(DEPENDENCIES) $(LINKER_SCRIPT)
 	$(CMD_PREFIX)$(NM) -n $(BINDIR)/$@ > $(BINDIR)/`basename $@ .elf`.sym
 	@$(ECHO) " BIN       `basename $@ .elf`.bin"
 	$(CMD_PREFIX)$(OBJCOPY) -O binary $(BINDIR)/$@ $(BINDIR)/`basename $@ .elf`.bin
-	@$(ECHO) " HEX       `basename $@ .elf`.hex";
-	$(CMD_PREFIX)$(OBJCOPY) -O ihex $(BINDIR)/$@ $(BINDIR)/`basename $@ .elf`.hex
 	$(CMD_PREFIX)$(SIZE) $(BINDIR)/$@ 2>/dev/null

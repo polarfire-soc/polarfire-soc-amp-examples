@@ -88,24 +88,24 @@ For example, to use SoftConsole built-in RISC-V toolchain:
 
 On Linux:
 ```
-export PATH=$PATH:$HOME/Microchip/SoftConsole-v2021.1/python3/bin:$HOME/Microchip/SoftConsole-v2021.1/riscv-unknown-elf-gcc/bin
-make
+$ export PATH=$PATH:<SC_INSTALL_DIR>/python3/bin:<SC_INSTALL_DIR>/riscv-unknown-elf-gcc/bin
+$ cd polarfire-soc-amp-examples/mpfs-rpmsg-freertos
+$ make
 ```
+
+where `<SC_INSTALL_DIR>` is as a placeholder for the actual SoftConsole install directory. For example `$HOME/Microchip/SoftConsole-v2021.3-7.0.0.599`.
 
 On Windows:
 
-If using Windows, Python version 3.x should be added to the system path. This could be achieved by installing Python 3 on Windows or by using SoftConsole built-in python.
-
-To use SoftConsole built-in python:
-```
-C:\> copy C:\Microchip\SoftConsole-v2021.1\python3\python.exe C:\Microchip\SoftConsole-v2021.1\python3\python3.exe
-```
-
 For building on Windows from the command line one must configure the path appropriately, e.g.:
 ```
-C:\> path %SystemRoot%;%SystemRoot%;C:\Microchip\SoftConsole-v2021.1\build_tools\bin;C:\Microchip\SoftConsole-v2021.1\python;C:\Microchip\SoftConsole-v2021.1\riscv-unknown-elf-gcc\bin
-make
+C:\> path %SystemRoot%;%SystemRoot%;<SC_INSTALL_DIR>\build_tools\bin;<SC_INSTALL_DIR>\python3;<SC_INSTALL_DIR>\riscv-unknown-elf-gcc\bin
+C:\> cd polarfire-soc-amp-examples\mpfs-rpmsg-freertos
+C:\> make
 ```
+
+where `<SC_INSTALL_DIR>` is as a placeholder for the actual SoftConsole install directory. For example `C:\Microchip\SoftConsole-v2021.3-7.0.0.599`.
+
 ## How to debug the application in DDR
 
 The application is configured to run from DDR. It must be loaded to DDR using a previous stage program such as the HSS.

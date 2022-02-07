@@ -28,7 +28,6 @@
 #
 
 SHELL=/bin/sh
-PYTHON?=python3
 
 #
 # To build the HSS under SoftConsole on Windows, we need to use SoftConsole-provided
@@ -42,12 +41,14 @@ ifeq ($(OS), Windows_NT)
   #TOOLPATH:=${SC_INSTALL_DIR}riscv-unknown-elf-gcc\bin
   #export PATH:="$(TOOLPATH);$(PATH)"
   $(info INFO: Windows detected)
+  PYTHON?=python
   HOST_WINDOWS:=true
 else
   SYSTEM:=$(shell uname -s)
   ifneq (, $(findstring Linux, $(SYSTEM)))         # Linux-specific mods
     # Nothing special needed
     $(info INFO: Linux detected)
+    PYTHON?=python3
     HOST_LINUX:=true
   else
     $(error Unsupported build platform $(SYSTEM))

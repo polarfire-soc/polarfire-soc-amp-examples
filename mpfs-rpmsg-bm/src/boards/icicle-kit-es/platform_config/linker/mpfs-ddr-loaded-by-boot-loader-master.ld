@@ -67,10 +67,10 @@ MEMORY
     /* This 1K of DTIM is used to run code when switching the envm clock */
     switch_code_dtim (rx) : ORIGIN = 0x01001c00, LENGTH = 1k 
     /* DDR sections example */
-    ddr_cached_32bit (rwx) : ORIGIN  = 0x80000000, LENGTH = 32M
+    ddr_cached_32bit (rwx) : ORIGIN  = 0x80000000, LENGTH = 4M
     ddr_non_cached_32bit (rwx) : ORIGIN  = 0xC0000000, LENGTH = 128M
     ddr_wcb_32bit (rwx) : ORIGIN  = 0xD0000000, LENGTH = 128M
-    ddr_cached_38bit (rwx) : ORIGIN  = 0x1000000000, LENGTH = 4M
+    ddr_cached_38bit (rwx) : ORIGIN  = 0x1000000000, LENGTH = 1024M
     ddr_non_cached_38bit (rwx) : ORIGIN  = 0x1400000000, LENGTH = 0k
     ddr_wcb_38bit (rwx) : ORIGIN  = 0x1800000000, LENGTH  = 0k
 }
@@ -88,7 +88,7 @@ STACK_SIZE_U54_APPLICATION = 8k;
 UNITITALISED_MEM = 16B;
 
 /* reset address 0xC0000000 */
-SECTION_START_ADDRESS           = 0x1000000000; 
+SECTION_START_ADDRESS           = 0x80000000; 
 
 
 SECTIONS
@@ -141,7 +141,7 @@ SECTIONS
 
         . = ALIGN(0x10);
         __text_end = .;
-    } > ddr_cached_38bit
+    } > ddr_cached_32bit
 
     /* short/global data section */
     .sdata : ALIGN(0x10)
@@ -154,7 +154,7 @@ SECTIONS
         *(.sdata .sdata.* .gnu.linkonce.s.*)
         . = ALIGN(0x10);
         __sdata_end = .;
-    } > ddr_cached_38bit
+    } > ddr_cached_32bit
  
     /* data section */
     .data : ALIGN(0x10)
@@ -166,7 +166,7 @@ SECTIONS
         *(.data .data.* .gnu.linkonce.d.*)
         . = ALIGN(0x10);
         __data_end = .;
-    } > ddr_cached_38bit
+    } > ddr_cached_32bit
 
     /* sbss section */
     .sbss : ALIGN(0x10)
@@ -176,7 +176,7 @@ SECTIONS
         *(.scommon)
         . = ALIGN(0x10);
         __sbss_end = .;
-    } > ddr_cached_38bit
+    } > ddr_cached_32bit
 
     /* sbss section */
     .bss : ALIGN(0x10)
@@ -187,7 +187,7 @@ SECTIONS
         *(COMMON)
         . = ALIGN(0x10);
         __bss_end = .;
-    } > ddr_cached_38bit
+    } > ddr_cached_32bit
 
     /* End of uninitialized data segment */
         _end = .;
@@ -201,7 +201,7 @@ SECTIONS
         __heap_end = .;
         . = ALIGN(0x10);
         _heap_end = __heap_end;
-    } > ddr_cached_38bit
+    } > ddr_cached_32bit
   
     /* must be on 4k boundary- corresponds to page size */
     .stack : ALIGN(0x1000)
@@ -209,7 +209,7 @@ SECTIONS
         PROVIDE(__app_stack_bottom = .);
         . += STACK_SIZE_U54_APPLICATION;
         PROVIDE(__app_stack_top = .);
-    } > ddr_cached_38bit
+    } > ddr_cached_32bit
     
     /* 
      * used by a program loaded by a bootloader to store information passed 
@@ -224,5 +224,5 @@ SECTIONS
         PROVIDE(__uninit_bottom$ = .);
         . += UNITITALISED_MEM;
         PROVIDE(__uninit_top_h$ = .);
-    } > ddr_cached_38bit
+    } > ddr_cached_32bit
 }

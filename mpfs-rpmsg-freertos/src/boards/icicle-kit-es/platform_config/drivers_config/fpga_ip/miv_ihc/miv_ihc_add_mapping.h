@@ -154,17 +154,28 @@
  * choose the interrupt mapping used in our system
  * Please see miv_ihc_regs.h for the defaults
  */
-#define IHCIA_hart0_int fabric_f2h_63_plic_IRQHandler
-#define IHCIA_hart1_int fabric_f2h_62_plic_IRQHandler
-#define IHCIA_hart2_int fabric_f2h_61_plic_IRQHandler
-#define IHCIA_hart3_int fabric_f2h_60_plic_IRQHandler
-#define IHCIA_hart4_int fabric_f2h_59_plic_IRQHandler
+#define IHCIA_hart0_IRQHandler PLIC_f2m_63_IRQHandler
+#define IHCIA_hart1_IRQHandler PLIC_f2m_62_IRQHandler
+#define IHCIA_hart2_IRQHandler PLIC_f2m_61_IRQHandler
+#define IHCIA_hart3_IRQHandler PLIC_f2m_60_IRQHandler
+#define IHCIA_hart4_IRQHandler PLIC_f2m_59_IRQHandler
 
 #define IHCIA_hart0_INT  FABRIC_F2H_63_PLIC
 #define IHCIA_hart1_INT  FABRIC_F2H_62_PLIC
 #define IHCIA_hart2_INT  FABRIC_F2H_61_PLIC
 #define IHCIA_hart3_INT  FABRIC_F2H_60_PLIC
 #define IHCIA_hart4_INT  FABRIC_F2H_59_PLIC
+
+/* HSS to HART interrupts must use locals */
+#define IHCIA_HSS_to_hart4_IRQHandler U54_f2m_28_local_IRQHandler
+#define IHCIA_HSS_to_hart3_IRQHandler U54_f2m_29_local_IRQHandler
+#define IHCIA_HSS_to_hart2_IRQHandler U54_f2m_30_local_IRQHandler
+#define IHCIA_HSS_to_hart1_IRQHandler U54_f2m_31_local_IRQHandler
+
+#define IHCIA_HSS_TO_HART4_INT   U54_F2M_28_INT_OFFSET
+#define IHCIA_HSS_TO_HART3_INT   U54_F2M_29_INT_OFFSET
+#define IHCIA_HSS_TO_HART2_INT   U54_F2M_30_INT_OFFSET
+#define IHCIA_HSS_TO_HART1_INT   U54_F2M_31_INT_OFFSET
 
 #endif /* MIV_IHC_ADD_MAPPING_H_ */
 

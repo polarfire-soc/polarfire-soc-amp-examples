@@ -23,6 +23,21 @@
 
 #include "miv_ihc_add_mapping.h"
 
+/*
+ * This value not be greater than IP value
+ * MAX value in the IP is 4 bytes in currently released IP (Version 6)
+ * Note: The function IHC_max_message_size() returns the max value supported by
+ * the IP.
+ */
+#define IHC_MESSAGE_SIZE_IN_BYTES           4U
+
+/*
+ * Support pre v6 IHC IP
+ * Pre version 6 did not support local interrupts for HSS transmission.
+ */
+//#define SUPPORT_PRE_LOCAL_HSS_INTS
+
+
 /*------------------------------------------------------------------------------
  * define the monitor hart (HSS hart) used in our system
  */

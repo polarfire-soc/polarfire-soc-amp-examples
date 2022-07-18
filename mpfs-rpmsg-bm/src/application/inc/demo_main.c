@@ -22,7 +22,7 @@
 /*******************************************************************************
  * Macros
  */
-#define RPMSG_SHARED_MEMORY_BASE  ((void*)0x1075FB0000)
+#define RPMSG_SHARED_MEMORY_BASE  ((void*)0x81400000)
 #define RPMSG_SHARED_MEMORY_SIZE (0x50000)
 
 /*******************************************************************************

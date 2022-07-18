@@ -104,11 +104,11 @@ const uint32_t IHCIA_remote_hart_ints[5U] = {
         IHCIA_H4_REMOTE_HARTS_INTS
 };
 
-
 /******************************************************************************/
 /* Private Functions                                                          */
 /******************************************************************************/
 static void  message_present_isr(void);
+static void message_present_from_hss_isr(void);
 static uint32_t parse_incoming_hartid(uint32_t my_hart_id, bool *is_ack, bool polling);
 static uint32_t parse_incoming_context_msg(uint32_t my_hart_id, uint32_t remote_hart_id, bool *is_ack, bool polling);
 static uint32_t rx_message(uint32_t my_hart_id, uint32_t remote_hart_id, QUEUE_IHC_INCOMING handle_incoming, bool is_ack, uint32_t * message_storage_ptr);
@@ -116,6 +116,42 @@ static uint32_t lowest_hart_in_context(uint32_t mask);
 /******************************************************************************/
 /* Public API Functions                                                       */
 /******************************************************************************/
+
+/***************************************************************************//**
+ * IHC_ip_version()
+ *
+ * See miv_ihc.h for details of how to use this
+ * function.
+ */
+uint32_t IHC_ip_version(void)
+{
+    uint32_t remote_hart_id = HSS_HART_ID + 1U;
+    uint64_t my_hart_id = read_csr(mhartid);
+    if (my_hart_id != HSS_HART_ID)
+    {
+        remote_hart_id = HSS_HART_ID;
+    }
+    IHCC_IP_TypeDef * ihcc = (IHCC_IP_TypeDef *)ihc_base_addess[my_hart_id][remote_hart_id];
+    return (ihcc->version);
+}
+
+/***************************************************************************//**
+ * IHC_max_message_size()
+ *
+ * See miv_ihc.h for details of how to use this
+ * function.
+ */
+uint32_t IHC_max_message_size(void)
+{
+    uint32_t remote_hart_id = HSS_HART_ID + 1U;
+    uint64_t my_hart_id = read_csr(mhartid);
+    if (my_hart_id != HSS_HART_ID)
+    {
+        remote_hart_id = HSS_HART_ID;
+    }
+    IHCC_IP_TypeDef * ihcc = (IHCC_IP_TypeDef *)ihc_base_addess[my_hart_id][remote_hart_id];
+    return (ihcc->size_msg);
+}
 
 /***************************************************************************//**
  * IHC_global_init()
@@ -152,6 +188,10 @@ void IHC_global_init(void)
         IHC[my_hart_id]->HART_IHCIA->INT_EN.INT_EN = 0x0U;
         my_hart_id++;
     }
+    /*
+     * Verify software define conforms to IP capability
+     */
+    ASSERT(IHC_max_message_size() <= IHC_MESSAGE_SIZE_IN_BYTES);
 }
 
 /***************************************************************************//**
@@ -559,6 +599,46 @@ uint32_t IHC_partner_context_hart_id(IHC_CHANNEL channel)
 }
 
 /***************************************************************************//**
+ * IHCIA_HSS_to_hart1_IRQHandler
+ * This is the interrupt handler used when receiving messages from the MSS
+ * The mapping defaults to U54_f2m_31_local_IRQHandler()
+ */
+void IHCIA_HSS_to_hart1_IRQHandler(void)
+{
+    message_present_from_hss_isr();
+}
+
+/***************************************************************************//**
+ * IHCIA_HSS_to_hart2_IRQHandler
+ * This is the interrupt handler used when receiving messages from the MSS
+ * The mapping defaults to U54_f2m_31_local_IRQHandler()
+ */
+void IHCIA_HSS_to_hart2_IRQHandler(void)
+{
+    message_present_from_hss_isr();
+}
+
+/***************************************************************************//**
+ * IHCIA_HSS_to_hart3_IRQHandler
+ * This is the interrupt handler used when receiving messages from the MSS
+ * The mapping defaults to U54_f2m_31_local_IRQHandler()
+ */
+void IHCIA_HSS_to_hart3_IRQHandler(void)
+{
+    message_present_from_hss_isr();
+}
+
+/***************************************************************************//**
+ * IHCIA_HSS_to_hart4_IRQHandler
+ * This is the interrupt handler used when receiving messages from the MSS
+ * The mapping defaults to U54_f2m_31_local_IRQHandler()
+ */
+void IHCIA_HSS_to_hart4_IRQHandler(void)
+{
+    message_present_from_hss_isr();
+}
+
+/***************************************************************************//**
  * IHCIA_hart0_IRQHandler()
  *
  * See miv_ihc.h for details of how to use this
@@ -638,6 +718,16 @@ static void message_present_isr(void)
      * Check all our channels
      */
     uint32_t origin_hart = parse_incoming_hartid((uint32_t)my_hart_id, &is_ack, false);
+    /* Newer IP configuration uses local interupts */
+#ifdef SUPPORT_PRE_LOCAL_HSS_INTS
+    if (IHC_ip_version() >= MIN_IP_VERION_SUPPORT_LOCAL_HSS_INTS)
+    {
+        if(origin_hart == HSS_HART_ID)
+        {
+            return;
+        }
+    }
+#endif
     if(origin_hart != NO_CONTEXT_INCOMING_ACK_OR_DATA)
     {
         /*
@@ -649,6 +739,34 @@ static void message_present_isr(void)
             /* clear the ack */
             IHC[my_hart_id]->HART_IHCC[origin_hart]->CTR_REG.CTL_REG &= ~ACK_CLR;
         }
+    }
+}
+
+/**
+ * message_present_from_hss_isr()
+ * This function is called on receipt of a MiV-IHCIA interrupt via the local
+ * interrupts. It parses the incoming message and calls the processing function
+ * which ends up calling the registered application handler, notmally the HSS
+ * handler is the register function.
+ * IHC[my_hart_id]->local_h_setup.msg_in_handler[origin_hart]
+ */
+static void message_present_from_hss_isr(void)
+{
+    bool is_ack = false;
+    uint64_t my_hart_id = read_csr(mhartid);
+    /*
+     * Check all our channels
+     */
+    uint32_t origin_hart = HSS_HART_ID;
+
+    /*
+     * process incoming packet
+     */
+    rx_message((uint32_t)my_hart_id, origin_hart, IHC[my_hart_id]->local_h_setup.msg_in_handler[origin_hart], is_ack, NULL );
+    if(is_ack == true)
+    {
+        /* clear the ack */
+        IHC[my_hart_id]->HART_IHCC[origin_hart]->CTR_REG.CTL_REG &= ~ACK_CLR;
     }
 }
 

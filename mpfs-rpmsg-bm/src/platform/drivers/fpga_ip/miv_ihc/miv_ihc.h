@@ -303,49 +303,75 @@ extern IHC_TypeDef * IHC[];
 
   |driver interrupt name |default mapped fabric interrupt in the ref. design   |
   |---------------------------------| -----------------------------------------|
-  | **IHCIA_hart0_INT**             | fabric_f2h_63_plic_IRQHandler            |
-  | **IHCIA_hart1_INT**             | fabric_f2h_62_plic_IRQHandler            |
-  | **IHCIA_hart2_INT**             | fabric_f2h_61_plic_IRQHandler            |
-  | **IHCIA_hart3_INT**             | fabric_f2h_60_plic_IRQHandler            |
-  | **IHCIA_hart4_INT**             | fabric_f2h_59_plic_IRQHandler            |
+  | **IHCIA_HART0_INT**             | PLIC_f2m_63_IRQHandler                   |
+  | **IHCIA_HART1_INT**             | PLIC_f2m_62_IRQHandler                   |
+  | **IHCIA_HART2_INT**             | PLIC_f2m_61_IRQHandler                   |
+  | **IHCIA_HART3_INT**             | PLIC_f2m_60_IRQHandler                   |
+  | **IHCIA_HART4_INT**             | PLIC_f2m_59_IRQHandler                   |
 
  */
 #ifndef IHCIA_hart0_IRQHandler
-#define IHCIA_hart0_IRQHandler fabric_f2h_63_plic_IRQHandler
+#define IHCIA_hart0_IRQHandler PLIC_f2m_63_IRQHandler
 #endif
 #ifndef IHCIA_hart1_IRQHandler
-#define IHCIA_hart1_IRQHandler fabric_f2h_62_plic_IRQHandler
+#define IHCIA_hart1_IRQHandler PLIC_f2m_62_IRQHandler
 #endif
 #ifndef IHCIA_hart2_IRQHandler
-#define IHCIA_hart2_IRQHandler fabric_f2h_61_plic_IRQHandler
+#define IHCIA_hart2_IRQHandler PLIC_f2m_61_IRQHandler
 #endif
 #ifndef IHCIA_hart3_IRQHandler
-#define IHCIA_hart3_IRQHandler fabric_f2h_60_plic_IRQHandler
+#define IHCIA_hart3_IRQHandler PLIC_f2m_60_IRQHandler
 #endif
 #ifndef IHCIA_hart4_IRQHandler
-#define IHCIA_hart4_IRQHandler fabric_f2h_59_plic_IRQHandler
+#define IHCIA_hart4_IRQHandler PLIC_f2m_59_IRQHandler
 #endif
 
-#ifndef IHCIA_hart0_INT
-#define IHCIA_hart0_INT  FABRIC_F2H_63_PLIC
+#ifndef IHCIA_HART0_INT
+#define IHCIA_HART0_INT  PLIC_F2M_63_INT_OFFSET
 #endif
 
-#ifndef IHCIA_hart1_INT
-#define IHCIA_hart1_INT  FABRIC_F2H_62_PLIC
+#ifndef IHCIA_HART1_INT
+#define IHCIA_HART1_INT  PLIC_F2M_62_INT_OFFSET
 #endif
 
-#ifndef IHCIA_hart2_INT
-#define IHCIA_hart2_INT  FABRIC_F2H_61_PLIC
+#ifndef IHCIA_HART2_INT
+#define IHCIA_HART2_INT  PLIC_F2M_61_INT_OFFSET
 #endif
 
-#ifndef IHCIA_hart3_INT
-#define IHCIA_hart3_INT  FABRIC_F2H_60_PLIC
+#ifndef IHCIA_HART3_INT
+#define IHCIA_HART3_INT  PLIC_F2M_60_INT_OFFSET
 #endif
 
-#ifndef IHCIA_hart4_INT
-#define IHCIA_hart4_INT  FABRIC_F2H_59_PLIC
+#ifndef IHCIA_HART4_INT
+#define IHCIA_HART4_INT  PLIC_F2M_59_INT_OFFSET
 #endif
 
+/* HSS to HART interrupts must use locals */
+#ifndef IHCIA_HSS_to_hart4_IRQHandler
+#define IHCIA_HSS_to_hart4_IRQHandler U54_f2m_28_local_IRQHandler
+#endif
+#ifndef IHCIA_HSS_to_hart3_IRQHandler
+#define IHCIA_HSS_to_hart3_IRQHandler U54_f2m_29_local_IRQHandler
+#endif
+#ifndef IHCIA_HSS_to_hart2_IRQHandler
+#define IHCIA_HSS_to_hart2_IRQHandler U54_f2m_30_local_IRQHandler
+#endif
+#ifndef IHCIA_HSS_to_hart1_IRQHandler
+#define IHCIA_HSS_to_hart1_IRQHandler U54_f2m_31_local_IRQHandler
+#endif
+
+#ifndef IHCIA_HSS_TO_HART4_INT
+#define IHCIA_HSS_TO_HART4_INT   U54_F2M_28_INT_OFFSET
+#endif
+#ifndef IHCIA_HSS_TO_HART3_INT
+#define IHCIA_HSS_TO_HART3_INT   U54_F2M_29_INT_OFFSET
+#endif
+#ifndef IHCIA_HSS_TO_HART2_INT
+#define IHCIA_HSS_TO_HART2_INT   U54_F2M_30_INT_OFFSET
+#endif
+#ifndef IHCIA_HSS_TO_HART1_INT
+#define IHCIA_HSS_TO_HART1_INT   U54_F2M_31_INT_OFFSET
+#endif
 
 /*-------------------------------------------------------------------------*//**
 
@@ -389,6 +415,140 @@ extern IHC_TypeDef                  IHC_H3_IP_GROUP;
 extern IHC_TypeDef                  IHC_H4_IP_GROUP;
 
 /*--------------------------------Public APIs---------------------------------*/
+
+/*-------------------------------------------------------------------------*//**
+  The IHC_ip_version() returns the hardcoded version of the IP, read from the
+  IP.
+
+  @param
+    No parameters
+
+  @return
+    IP version
+
+  @code
+      // Initialization code
+      #include "mss_ihc.h"
+      int main(void)
+      {
+
+        // The IHC_global_init() function initializes the Mi-V IHC subsystem.
+        // It is the first function called that accesses the Mi-V IHC. it must
+        // be called from the monitor hart before other harts try and access
+        // the Mi-V IHC. It assumes access to the full memory map.
+        // It sets up the base address points to reference the Mi-V IHC
+        // subsystem IHCC and IHCIA IP blocks, and sets registers to default
+        // values.
+
+        IHC_global_init();
+
+        uint32_t local_hartid = HSS_HART_ID;
+        IHC_local_context_init((uint32_t)local_hartid);
+
+        {
+            uint32_t remote_hart_id = HART1_ID;
+            bool set_mpie_en = true;
+            bool set_ack_en = false;
+            IHC_local_remote_config((uint32_t)local_hartid, remote_hart_id, queue_incoming_hss_main, set_mpie_en, set_ack_en);
+        }
+
+        {
+            uint32_t remote_hart_id = HART2_ID;
+            bool set_mpie_en = true;
+            bool set_ack_en = false;
+            IHC_local_remote_config((uint32_t)local_hartid, remote_hart_id, queue_incoming_hss_main, set_mpie_en, set_ack_en);
+        }
+
+        {
+            uint32_t remote_hart_id = HART3_ID;
+            bool set_mpie_en = true;
+            bool set_ack_en = false;
+            IHC_local_remote_config((uint32_t)local_hartid, remote_hart_id, queue_incoming_hss_main, set_mpie_en, set_ack_en);
+        }
+
+        {
+            uint32_t remote_hart_id = HART4_ID;
+            bool set_mpie_en = true;
+            bool set_ack_en = false;
+            IHC_local_remote_config((uint32_t)local_hartid, remote_hart_id, queue_incoming_hss_main, set_mpie_en, set_ack_en);
+        }
+        printf("The IP version = %d", IHC_ip_version());
+        return (0u);
+      }
+  @endcode
+ */
+uint32_t
+IHC_ip_version
+(
+    void
+);
+
+/*-------------------------------------------------------------------------*//**
+  The IHC_max_message_size() returns the hardcoded max message size, read from
+  the IP.
+
+  @param
+    No parameters
+
+  @return
+    IP version
+
+  @code
+      // Initialization code
+      #include "mss_ihc.h"
+      int main(void)
+      {
+
+        // The IHC_global_init() function initializes the Mi-V IHC subsystem.
+        // It is the first function called that accesses the Mi-V IHC. it must
+        // be called from the monitor hart before other harts try and access
+        // the Mi-V IHC. It assumes access to the full memory map.
+        // It sets up the base address points to reference the Mi-V IHC
+        // subsystem IHCC and IHCIA IP blocks, and sets registers to default
+        // values.
+
+        IHC_global_init();
+
+        uint32_t local_hartid = HSS_HART_ID;
+        IHC_local_context_init((uint32_t)local_hartid);
+
+        {
+            uint32_t remote_hart_id = HART1_ID;
+            bool set_mpie_en = true;
+            bool set_ack_en = false;
+            IHC_local_remote_config((uint32_t)local_hartid, remote_hart_id, queue_incoming_hss_main, set_mpie_en, set_ack_en);
+        }
+
+        {
+            uint32_t remote_hart_id = HART2_ID;
+            bool set_mpie_en = true;
+            bool set_ack_en = false;
+            IHC_local_remote_config((uint32_t)local_hartid, remote_hart_id, queue_incoming_hss_main, set_mpie_en, set_ack_en);
+        }
+
+        {
+            uint32_t remote_hart_id = HART3_ID;
+            bool set_mpie_en = true;
+            bool set_ack_en = false;
+            IHC_local_remote_config((uint32_t)local_hartid, remote_hart_id, queue_incoming_hss_main, set_mpie_en, set_ack_en);
+        }
+
+        {
+            uint32_t remote_hart_id = HART4_ID;
+            bool set_mpie_en = true;
+            bool set_ack_en = false;
+            IHC_local_remote_config((uint32_t)local_hartid, remote_hart_id, queue_incoming_hss_main, set_mpie_en, set_ack_en);
+        }
+        printf("Max size of message supported = %d", IHC_max_message_size());
+        return (0u);
+      }
+  @endcode
+ */
+uint32_t
+IHC_max_message_size
+(
+    void
+);
 
 /*-------------------------------------------------------------------------*//**
   The IHC_global_init() function initializes the IP. It is the first function

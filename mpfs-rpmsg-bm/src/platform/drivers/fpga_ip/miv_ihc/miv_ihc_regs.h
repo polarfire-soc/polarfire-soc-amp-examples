@@ -181,6 +181,8 @@ typedef struct IHCC_IP_TypeDef_
   __I   uint8_t  reserved[RESREVED_ADDRESS_SPACE_IHC - IHC_USED__ADDRESS_SIZE];  /*!< reserved address space       */
 } IHCC_IP_TypeDef;
 
+#define MIN_IP_VERION_SUPPORT_LOCAL_HSS_INTS    6
+
 /***************************************************************************//**
   Inter hart communication aggregator MSG_AVAIL register
 

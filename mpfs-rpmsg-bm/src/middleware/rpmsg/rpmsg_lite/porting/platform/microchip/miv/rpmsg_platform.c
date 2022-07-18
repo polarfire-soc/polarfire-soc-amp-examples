@@ -71,7 +71,7 @@ int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
         {
             case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
                 PLIC_init();
-                uint32_t context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
+                context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
                 switch(context_hart_id) {
                     case 1:
                         PLIC_SetPriority(IHCIA_hart1_INT, 2);

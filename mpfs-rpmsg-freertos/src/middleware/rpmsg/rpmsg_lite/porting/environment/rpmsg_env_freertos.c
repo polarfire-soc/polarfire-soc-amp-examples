@@ -367,7 +367,6 @@ void env_lock_mutex(void *lock)
         (void)xSemaphoreTakeFromISR(xSemaphore, &xTaskWokenByReceive);
         portEND_SWITCHING_ISR(xTaskWokenByReceive);
     }
-    return false;
 }
 
 /*!

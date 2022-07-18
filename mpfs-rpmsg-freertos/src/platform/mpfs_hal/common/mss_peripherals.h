@@ -76,7 +76,7 @@ typedef enum mss_peripherals_ {
     MSS_PERIPH_GPIO1        = 20U,
     MSS_PERIPH_GPIO2        = 21U,
     MSS_PERIPH_RTC          = 22U,
-    MSS_PERIPH_H2FINT       = 23U,
+    MSS_PERIPH_M2FINT       = 23U,
     MSS_PERIPH_CRYPTO       = 24U,
     MSS_PERIPH_USB          = 25U,
     MSS_PERIPH_QSPIXIP      = 26U,

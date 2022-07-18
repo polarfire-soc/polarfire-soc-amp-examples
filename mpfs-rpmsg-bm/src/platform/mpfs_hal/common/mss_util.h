@@ -41,7 +41,7 @@ extern "C" {
  * Local defines
  */
 #define    LOCAL_INT_OFFSET_IN_MIE          16U  /* Offset from start of MIE for local irq enables */
-#define    LOCAL_INT_F2H_OFFSET             16U  /* Offset from 0 for fabric to MSS local interrupts */
+#define    LOCAL_INT_F2M_OFFSET             16U  /* Offset from 0 for fabric to MSS local interrupts */
 
 /*
  * return mcycle
@@ -81,6 +81,9 @@ static inline void spinlock(volatile long *pLock)
     while(__sync_lock_test_and_set(pLock, 1))
     {
         /* add yield if OS */
+#if defined USING_FREERTOS
+        taskYIELD();
+#endif
     }
 }
 

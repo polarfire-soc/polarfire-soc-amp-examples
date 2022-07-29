@@ -240,4 +240,9 @@ SECTIONS
     {
         KEEP (*(.resource_table*))
     } > ddr_cached_32bit
+
+    /DISCARD/ :
+    {
+        *(.note.gnu.build-id)
+    }
 }

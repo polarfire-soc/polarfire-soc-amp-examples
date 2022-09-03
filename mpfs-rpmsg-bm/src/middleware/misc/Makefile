@@ -33,6 +33,7 @@ SRCS += \
         src/middleware/misc/uart_helper.c \
         src/middleware/misc/tinyalloc.c \
         src/middleware/misc/cQueue.c \
+        src/middleware/misc/utils.c \
 
 INCLUDES += \
 	-Isrc/middleware/misc \

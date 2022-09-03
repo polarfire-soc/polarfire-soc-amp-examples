@@ -19,6 +19,8 @@
 #include "task.h"
 #include "timers.h"
 #include "semphr.h"
+#else
+#include "utils.h"
 #endif
 
 #ifdef REMOTEPROC
@@ -260,7 +262,9 @@ void rpmsg_handler(bool is_ack, uint32_t msg)
  */
 void platform_time_delay(uint32_t num_msec)
 {
-
+#ifndef USING_FREERTOS
+    SpinDelay_MilliSecs(num_msec);
+#endif
 }
 
 /**

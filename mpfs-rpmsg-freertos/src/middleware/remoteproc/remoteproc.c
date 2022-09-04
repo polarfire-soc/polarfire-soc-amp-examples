@@ -21,6 +21,8 @@
 #include "task.h"
 #include "timers.h"
 #include "semphr.h"
+#else
+#include "utils.h"
 #endif
 
 typedef void (*func_t)(void);
@@ -47,6 +49,12 @@ void rproc_setup(void)
     uint32_t remote_hart_id = IHC_partner_context_hart_id(hartid);
 
     IHC_local_remote_config((uint32_t)hartid, remote_hart_id, rx_handler, true, true);
+
+#ifdef USING_FREERTOS
+    vTaskDelay(300);
+#else
+    SpinDelay_MilliSecs(300);
+#endif
 
     PLIC_init();
     context_hart_id = IHC_context_to_context_hart_id(hartid);

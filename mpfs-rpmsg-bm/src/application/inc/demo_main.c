@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "inc/demo_main.h"
+#include "utils.h"
 #ifdef REMOTEPROC
 #include "remoteproc.h"
 #include "rsc_table.h"
@@ -191,7 +192,10 @@ void rpmsg_setup(rpmsg_comm_stack_handle_t handle)
     /* RPMsg Remote Mode */
     MSS_UART_polled_tx_string(UART_APP, "\r\nWaiting for master to get ready...\r\n");
 
-    while(!rpmsg_lite_is_link_up(rpmsgHandle->my_rpmsg));
+    while(!rpmsg_lite_is_link_up(rpmsgHandle->my_rpmsg)) {
+        MSS_UART_polled_tx_string(UART_APP,".");
+        SpinDelay_MilliSecs(300);
+    }
 
     MSS_UART_polled_tx_string(UART_APP, "\r\nMaster is ready\r\n");
 #endif

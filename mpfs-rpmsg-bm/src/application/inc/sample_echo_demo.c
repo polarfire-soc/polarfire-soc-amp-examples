@@ -19,6 +19,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include "inc/demo_main.h"
+#include "utils.h"
 
 #ifdef RPMSG_MASTER
 #define RPMSG_ECHO_EPT_ADDR (5U)
@@ -129,6 +130,8 @@ void rpmsg_echo_demo(rpmsg_comm_stack_handle_t handle)
             (uint32_t *)&remote_addr, (char *)&buff, sizeof(buff), &len, RL_BLOCK);
 
         rpmsgHandle->remote_addr = remote_addr;
+
+        SpinDelay_MilliSecs(10);
 #endif
 
 #ifdef RPMSG_MASTER

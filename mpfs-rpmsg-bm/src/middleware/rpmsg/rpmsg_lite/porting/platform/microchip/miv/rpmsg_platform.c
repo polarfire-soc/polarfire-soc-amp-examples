@@ -456,7 +456,9 @@ int32_t platform_init(void)
     uint32_t remote_hart_id = IHC_partner_context_hart_id(hartid);
 
     IHC_local_remote_config((uint32_t)hartid, remote_hart_id, rx_handler, true, true);
-    
+
+    SpinDelay_MilliSecs(100);
+
     /* Create lock used in multi-instanced RPMsg */
     if (0 != env_create_mutex(&platform_lock, 1))
     {

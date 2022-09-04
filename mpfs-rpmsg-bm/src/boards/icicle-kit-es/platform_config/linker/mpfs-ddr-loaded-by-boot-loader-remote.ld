@@ -67,10 +67,10 @@ MEMORY
     /* This 1K of DTIM is used to run code when switching the envm clock */
     switch_code_dtim (rx) : ORIGIN = 0x01001c00, LENGTH = 1k 
     /* DDR sections example */
-    ddr_cached_32bit (rwx) : ORIGIN  = 0x81000000, LENGTH = 32M
+    ddr_cached_32bit (rwx) : ORIGIN  = 0x81000000, LENGTH = 4M
     ddr_non_cached_32bit (rwx) : ORIGIN  = 0xC0000000, LENGTH = 128M
     ddr_wcb_32bit (rwx) : ORIGIN  = 0xD0000000, LENGTH = 128M
-    ddr_cached_38bit (rwx) : ORIGIN  = 0x1000000000, LENGTH = 4M
+    ddr_cached_38bit (rwx) : ORIGIN  = 0x1000000000, LENGTH = 1024M
     ddr_non_cached_38bit (rwx) : ORIGIN  = 0x1400000000, LENGTH = 0k
     ddr_wcb_38bit (rwx) : ORIGIN  = 0x1800000000, LENGTH  = 0k
 }
@@ -88,11 +88,13 @@ STACK_SIZE_U54_APPLICATION = 8k;
 UNITITALISED_MEM = 16B;
 
 /* reset address 0xC0000000 */
-SECTION_START_ADDRESS           = 0x81000000; 
+SECTION_START_ADDRESS           = 0x81000000;
 
 
 SECTIONS
 {
+
+    PROVIDE(__scratchpad_start         = ORIGIN(scratchpad));
 
     /* text: test code section */
     . = SECTION_START_ADDRESS;
@@ -224,5 +226,18 @@ SECTIONS
         PROVIDE(__uninit_bottom$ = .);
         . += UNITITALISED_MEM;
         PROVIDE(__uninit_top_h$ = .);
+    } > ddr_cached_32bit
+
+    .rel.dyn : ALIGN(0x10)
+    {
+        start_of_rel_data_section = .;
+        *(.rel.data)
+        *(.rel.data .rel.data.* .rel.gnu.linkonce.d.*)
+        end_of_rel_data_section = .;
+    } > ddr_cached_32bit
+
+    .resource_table : ALIGN(0x10)
+    {
+        KEEP (*(.resource_table*))
     } > ddr_cached_32bit
 }

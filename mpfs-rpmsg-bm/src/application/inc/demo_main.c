@@ -16,6 +16,10 @@
 #include <stdio.h>
 #include <string.h>
 #include "inc/demo_main.h"
+#ifdef REMOTEPROC
+#include "remoteproc.h"
+#include "rsc_table.h"
+#endif
 
 #define RPMSG_RX_MAX_BUFF_SIZE    256U
 
@@ -92,7 +96,16 @@ void start_demo()
 
     MSS_UART_polled_tx(UART_APP, g_message, sizeof(g_message));
 
-	rpmsg_setup(&my_rpmsg_instance);
+    /* 
+    If remoteproc is enabled, configure the IHC so that we can receive control
+    messages. This function is useful for scenarios where we would
+    like to start/stop a bare metal/RTOS application from Linux
+    */
+#ifdef REMOTEPROC
+    rproc_setup();
+#endif
+
+    rpmsg_setup(&my_rpmsg_instance);
 
     MSS_UART_polled_tx(UART_APP, g_menu, sizeof(g_menu));
 
@@ -165,11 +178,18 @@ void rpmsg_setup(rpmsg_comm_stack_handle_t handle)
     /* Wait until the second context issues the nameservice isr and the remote endpoint address is known. */
     while (0xFFFFFFFF == rpmsgHandle->remote_addr);
 #else
-    /* RPMsg Remote Mode */
-    MSS_UART_polled_tx_string(UART_APP, "\r\nWaiting for master to get ready...\r\n");
 
     rpmsgHandle->my_rpmsg = rpmsg_lite_remote_init(rpmsg_lite_base, RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
     rpmsgHandle->ctrl_q = rpmsg_queue_create(rpmsgHandle->my_rpmsg);
+
+#ifdef REMOTEPROC
+    copyResourceTable();
+    /* Notify master context fw has booted up and is ready for rpmsg communication */
+    platform_ready();
+#endif
+
+    /* RPMsg Remote Mode */
+    MSS_UART_polled_tx_string(UART_APP, "\r\nWaiting for master to get ready...\r\n");
 
     while(!rpmsg_lite_is_link_up(rpmsgHandle->my_rpmsg));
 

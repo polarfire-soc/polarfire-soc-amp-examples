@@ -21,6 +21,10 @@
 #include "semphr.h"
 #endif
 
+#ifdef REMOTEPROC
+#include "remoteproc.h"
+#endif
+
 #if defined(RL_USE_ENVIRONMENT_CONTEXT) && (RL_USE_ENVIRONMENT_CONTEXT == 1)
 #error "This RPMsg-Lite port requires RL_USE_ENVIRONMENT_CONTEXT set to 0"
 #endif
@@ -35,6 +39,13 @@ static int32_t isr_counter     = 0;
 static int32_t disable_counter = 0;
 static void *platform_lock;
 
+enum miv_rp_mbox_messages {
+	MIV_RP_MBOX_READY = 0xFFFFFF00,
+	MIV_RP_MBOX_PENDING_MSG = 0xFFFFFF01,
+    MIV_RP_MBOX_STOP = 0xFFFFFF02,
+    MIV_RP_MBOX_END_MSG = 0xFFFFFF03,
+};
+
 #ifdef USING_FREERTOS
 static xTaskHandle task_handle;
 #else
@@ -42,7 +53,7 @@ static uint8_t ack_notify = 0;
 #endif
 
 static uint32_t rx_handler(uint32_t remote_hart_id, uint32_t * message, uint32_t message_size, bool is_ack, uint32_t *message_storage_ptr );
-static void rpmsg_handler(bool is_ack, uint32_t vring_idx);
+static void rpmsg_handler(bool is_ack, uint32_t msg);
 
 static void platform_global_isr_disable(void)
 {
@@ -150,6 +161,32 @@ int32_t platform_deinit_interrupt(uint32_t vector_id)
     return 0;
 }
 
+#ifdef REMOTEPROC
+void platform_ready(void)
+{
+    uint32_t ihc_tx_message[IHC_MAX_MESSAGE_SIZE];
+    ihc_tx_message[0] = MIV_RP_MBOX_READY;
+
+#ifdef USING_FREERTOS
+    task_handle = xTaskGetCurrentTaskHandle();
+#else
+    ack_notify = 1;
+#endif
+
+#ifdef IHC_CHANNEL_SIDE_A
+            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTB, (uint32_t *) &ihc_tx_message);
+#else
+            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTA, (uint32_t *) &ihc_tx_message);
+#endif
+
+#ifdef USING_FREERTOS
+            xTaskNotifyWait(0, 0x0001, NULL, portMAX_DELAY);
+#else
+            while(ack_notify ==1);
+#endif
+}
+#endif
+
 void platform_notify(uint32_t vector_id)
 {
     uint32_t tx_status;
@@ -170,9 +207,11 @@ void platform_notify(uint32_t vector_id)
             ack_notify = 1;
 #endif
 #ifdef IHC_CHANNEL_SIDE_A
-            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTB, (uint32_t *) &ihc_tx_message);
+            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTB,
+                                              (uint32_t *) &ihc_tx_message);
 #else
-            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTA, (uint32_t *) &ihc_tx_message);
+            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTA,
+                                              (uint32_t *) &ihc_tx_message);
 #endif
 #ifdef USING_FREERTOS
             xTaskNotifyWait(0, 0x0001, NULL, portMAX_DELAY);
@@ -186,7 +225,7 @@ void platform_notify(uint32_t vector_id)
     }
 }
 
-void rpmsg_handler(bool is_ack, uint32_t vring_idx)
+void rpmsg_handler(bool is_ack, uint32_t msg)
 {
     if(is_ack)
     {
@@ -195,10 +234,20 @@ void rpmsg_handler(bool is_ack, uint32_t vring_idx)
 #else
         ack_notify = 0;
 #endif
+        return;
     }
-    else
-    {
-        env_isr((uint32_t) (vring_idx >> 16));
+
+    switch(msg) {
+        case MIV_RP_MBOX_STOP:
+#ifdef REMOTEPROC
+            rproc_stop();
+#endif
+            break;
+        default:
+            /* silently handle all other valid messages */
+            if (msg >= MIV_RP_MBOX_READY && msg < MIV_RP_MBOX_END_MSG)
+                return;
+            env_isr((uint32_t) (msg >> 16));
     }
 }
 

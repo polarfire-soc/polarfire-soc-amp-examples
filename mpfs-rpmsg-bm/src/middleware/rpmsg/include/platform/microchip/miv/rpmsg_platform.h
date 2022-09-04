@@ -42,6 +42,10 @@ int32_t platform_interrupt_disable(uint32_t vector_id);
 int32_t platform_in_isr(void);
 void platform_notify(uint32_t vector_id);
 
+#ifdef REMOTEPROC
+void platform_ready(void);
+#endif
+
 /* platform low-level time-delay (busy loop) */
 void platform_time_delay(uint32_t num_msec);
 

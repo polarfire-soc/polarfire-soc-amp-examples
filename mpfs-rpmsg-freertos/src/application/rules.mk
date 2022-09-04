@@ -58,6 +58,12 @@ ifdef MASTER
 CORE_CFLAGS+= -DRPMSG_MASTER
 endif
 
+ifdef REMOTEPROC
+ifndef MASTER
+CORE_CFLAGS+= -DREMOTEPROC
+endif
+endif
+
 CORE_CFLAGS+=-msmall-data-limit=8 -mstrict-align -mno-save-restore -O0 \
     -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections  -g3
 

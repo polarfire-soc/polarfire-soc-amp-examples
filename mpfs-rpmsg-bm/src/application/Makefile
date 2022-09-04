@@ -36,9 +36,13 @@ SRCS += \
 	src/application/hart4/u54_4.c \
 	src/application/inc/demo_main.c \
 	src/application/inc/pingpong_demo.c \
-    src/application/inc/sample_echo_demo.c \
-    src/application/inc/console_demo.c \
-    
+	src/application/inc/sample_echo_demo.c \
+	src/application/inc/console_demo.c \
+
+ifdef REMOTEPROC
+SRCS += src/application/inc/rsc_table.c
+endif
+
 INCLUDES += \
 	-Isrc/application \
 

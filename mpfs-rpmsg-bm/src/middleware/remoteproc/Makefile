@@ -1,7 +1,7 @@
 #
 # MPFS Embedded Software
 #
-# Copyright 2019 Microchip FPGA Embedded Systems Solutions.
+# Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
 #
 # SPDX-License-Identifier: MIT
 #
@@ -24,25 +24,14 @@
 # IN THE SOFTWARE.
 #
 #
-# Application code
-
-all: $(SOC_CONFIG_FILES) $(TARGET)
+# Remoteproc Functionality
 
 SRCS += \
-	src/application/hart0/e51.c \
-	src/application/hart1/u54_1.c \
-	src/application/hart2/u54_2.c \
-	src/application/hart3/u54_3.c \
-	src/application/hart4/u54_4.c \
-	src/application/inc/demo_main.c \
-	src/application/inc/pingpong_demo.c \
-	src/application/inc/console_demo.c \
-	src/application/inc/sample_echo_demo.c \
-
-ifdef REMOTEPROC
-SRCS += src/application/inc/rsc_table.c
-endif
+        src/middleware/remoteproc/remoteproc.c \
 
 INCLUDES += \
-	-Isrc/application \
+	-Isrc/middleware/remoteproc \
+
+
+
 

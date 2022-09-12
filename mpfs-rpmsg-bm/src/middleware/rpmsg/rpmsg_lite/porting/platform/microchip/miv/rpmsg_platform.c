@@ -194,7 +194,7 @@ void platform_notify(uint32_t vector_id)
     uint32_t tx_status;
     uint32_t ihc_tx_message[IHC_MAX_MESSAGE_SIZE];
 
-    ihc_tx_message[0] = (uint32_t)(vector_id << 16);
+    ihc_tx_message[0] = (uint32_t)(vector_id);
 
 #ifdef USING_FREERTOS
     task_handle = xTaskGetCurrentTaskHandle();
@@ -249,7 +249,7 @@ void rpmsg_handler(bool is_ack, uint32_t msg)
             /* silently handle all other valid messages */
             if (msg >= MIV_RP_MBOX_READY && msg < MIV_RP_MBOX_END_MSG)
                 return;
-            env_isr((uint32_t) (msg >> 16));
+            env_isr((uint32_t) (msg));
     }
 }
 

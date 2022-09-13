@@ -1,6 +1,6 @@
 # PolarFire SoC RPMsg Bare Metal Example
 
-This project contains a number of applications demos that showcase the usage of RPMsg (Remote Processor Messaging) framework to send messages between a BM (bare metal) context and a remote software context (i.e. another BM/FreeRTOS context) using the RPMsg-lite framework.
+This project contains a number of applications demos that showcase the usage of RPMsg (Remote Processor Messaging) framework to send messages between a BM (bare metal) context and a remote software context (i.e. Linux, FreeRTOS or another Bare Metal context) using the RPMsg-lite framework.
 
 This project contains two different build configurations:
 
@@ -14,10 +14,20 @@ Different combinations of operating systems can be supported in a master and rem
 
 - Bare metal + Bare Metal
 
+- Linux + Bare Metal
+
 The project can be compiled using SoftConsole or externally by using the provided Makefile.
 This allows to integrate and build the application in Yocto and Buildroot environments.
 
 ## How to build this example
+
+### Linux + Bare Metal AMP configuration
+
+This project can be built using Yocto or Buildroot when using the Icicle Kit AMP machine.
+
+The application is configured to run from DDR on U54_4 application core.
+
+Instructions on how to build and run the Linux + Bare Metal demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/tree/master/asymmetric-multiprocessing/amp.md).
 
 ### BM + BM AMP Configuration
 

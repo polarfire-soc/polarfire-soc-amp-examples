@@ -22,11 +22,16 @@ This allows to integrate and build the application in Yocto and Buildroot enviro
 ## How to build this example
 ### Linux + FreeRTOS AMP configuration
 
-This project is automatically built by Yocto and Buildroot when using the AMP machine. 
+When using this AMP configuration, this project should be build with remoteproc support.
+
+Remoteproc allows control over the life cycle (start, stop and load firmware) the remote context from Linux.
+For more information on remoteproc support on PolarFire SoC, please refer to the [remoteproc documentation](https://mi-v-ecosystem.github.io/redirects/asymmetric-multiprocessing_remoteproc).
+
+This project is automatically built with remoteproc support by Yocto and Buildroot when using the Icicle Kit AMP machine.
 
 The application is configured to run from DDR on U54_4 application core.
 
-Instructions on how to build and run the Linux + FreeRTOS demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/tree/master/asymmetric-multiprocessing/amp.md).
+Instructions on how to build and run the Linux + FreeRTOS demo are available in the [AMP documentation](https://mi-v-ecosystem.github.io/redirects/asymmetric-multiprocessing_amp).
 
 ### FreeRTOS + FreeRTOS AMP Configuration
 
@@ -45,14 +50,14 @@ To build a FreeRTOS + FreeRTOS AMP configuration:
     $ hss-payload-generator -c hss-payload-freertos_freertos.yaml payload_freertos_freertos.bin
 ```
 
-4. Flash the payload from the tools/ directory to eMMC or SD-card following the steps shown in the [Updating PolarFire SoC Icicle-Kit FPGA Design and Linux Image](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/boards/mpfs-icicle-kit-es/updating-icicle-kit/updating-icicle-kit-design-and-linux.md) document to program using USBImager or, for example, using dd on Linux:
+4. Flash the payload from the tools/ directory to eMMC or SD-card using a tool such as USBImager or, for example, using dd on Linux:
 
 ```
 sudo dd if=payload_freertos_freertos.bin of=/dev/sdX
 ```
 > Be very careful while picking /dev/sdX device! Look at dmesg, lsblk, GNOME Disks, etc. before and after plugging in your USB flash device/uSD/SD to find a proper device. Double check it to avoid overwriting any of system disks/partitions!
 
-Detailed instructions on how to build the FreeRTOS + FreeRTOS RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#rpmsg-rtos-intro).
+Detailed instructions on how to build the FreeRTOS + FreeRTOS RPMsg demo are available in the "FreeRTOS + FreeRTOS RPMsg Communication" section of the [RPMsg documentation](https://mi-v-ecosystem.github.io/redirects/asymmetric-multiprocessing_rpmsg).
 
 ### FreeRTOS + BM AMP Configuration
 
@@ -71,14 +76,14 @@ To build a FreeRTOS + BM AMP configuration:
     $ hss-payload-generator -c hss-payload-freertos_bm.yaml payload_freertos_bm.bin
 ```
 
-4. Flash the payload from the tools/ directory to eMMC or SD-card following the steps shown in the [Updating PolarFire SoC Icicle-Kit FPGA Design and Linux Image](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/boards/mpfs-icicle-kit-es/updating-icicle-kit/updating-icicle-kit-design-and-linux.md) document to program using USBImager or, for example, using dd on Linux:
+4. Flash the payload from the tools/ directory to eMMC or SD-card using a tool such as USBImager or, for example, using dd on Linux:
 
 ```
 sudo dd if=payload_freertos_bm.bin of=/dev/sdX
 ```
 > Be very careful while picking /dev/sdX device! Look at dmesg, lsblk, GNOME Disks, etc. before and after plugging in your USB flash device/uSD/SD to find a proper device. Double check it to avoid overwriting any of system disks/partitions!
 
-Detailed instructions on how to build the FreeRTOS + Bare Metal RPMsg demo are available [here](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#rpmsg-rtos-intro).
+Detailed instructions on how to build the FreeRTOS + Bare Metal RPMsg demo are available in the "FreeRTOS + Bare Metal RPMsg Communication" section of the [RPMsg documentation](https://mi-v-ecosystem.github.io/redirects/asymmetric-multiprocessing_rpmsg).
 
 #### (Optional) Building the project using the Makefile<a name="makefile-build"></a>
 
@@ -112,7 +117,7 @@ The application is configured to run from DDR. It must be loaded to DDR using a 
 
 Pre-requisites: the Hart Software Services (HSS) should be built and loaded to the Icicle Kit before following the debugging steps described below.
 
-1. Generate a HSS payload containing the mpfs-rpmsg-freertos ELF file. Please see the [HSS AMP payloads](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md#amp-payloads) documentation section for instructions on how to generate a HSS AMP payload
+1. Generate a HSS payload containing the mpfs-rpmsg-remote or rpmsg-remote-master ELF file. Please see the "PolarFire SoC RPMsg on FreeRTOS/Bare Metal documentation" section in the [RPMsg documentation](https://mi-v-ecosystem.github.io/redirects/asymmetric-multiprocessing_rpmsg) for instructions on how to generate a HSS AMP payload
 
 2. Flash the generated payload in a non-volatile off chip memory such as eMMC or SD-card
 
@@ -126,5 +131,5 @@ Pre-requisites: the Hart Software Services (HSS) should be built and loaded to t
 
 8. The FreeRTOS RPMsg example project should continue running and displaying messages over the associated UART
 
-For more information about AMP and inter-core communication using RPMsg on PolarFire SoC, please refer to the [PolarFire SoC RPMsg documentation](https://github.com/polarfire-soc/polarfire-soc-documentation/blob/master/asymmetric-multiprocessing/rpmsg.md).
+For more information about AMP and inter-hart communication using RPMsg on PolarFire SoC, please refer to the [PolarFire SoC RPMsg documentation](https://mi-v-ecosystem.github.io/redirects/asymmetric-multiprocessing_rpmsg).
 

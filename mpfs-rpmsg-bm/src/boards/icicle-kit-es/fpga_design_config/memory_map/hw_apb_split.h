@@ -45,9 +45,9 @@ extern  "C" {
 #endif
 #if !defined (LIBERO_SETTING_APBBUS_CR)
 /*AMP Mode peripheral mapping register. When the register bit is '0' the
-peripheral is mapped into the 0x2000000 address range using AXI bus 5 from the
-Coreplex. When the register bit is '1' the peripheral is mapped into the
-0x28000000 address range using AXI bus 6 from the Coreplex. */
+peripheral is mapped into the 0x2000_0000 address range using AXI bus 5 from
+the Coreplex. When the register bit is '1' the peripheral is mapped into the
+0x2800_0000 address range using AXI bus 6 from the Coreplex. */
 #define LIBERO_SETTING_APBBUS_CR    0x00000000UL
     /* MMUART0                           [0:1]   RW value= 0x0 */
     /* MMUART1                           [1:1]   RW value= 0x0 */

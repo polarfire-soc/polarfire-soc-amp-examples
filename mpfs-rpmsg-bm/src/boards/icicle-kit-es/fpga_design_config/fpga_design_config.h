@@ -27,14 +27,14 @@
 #ifndef FPGA_DESIGN_CONFIG_H_
 #define FPGA_DESIGN_CONFIG_H_
 
-#define  LIBERO_SETTING_MSS_CONFIGURATOR_VERSION                    "2021.2"
+#define  LIBERO_SETTING_MSS_CONFIGURATOR_VERSION                    "2022.2"
 #define  LIBERO_SETTING_DESIGN_NAME                                 "ICICLE_MSS"
 #define  LIBERO_SETTING_MPFS_PART                                   "MPFS250T_ES"
-#define  LIBERO_SETTING_GENERATION_DATE                             "01-14-2022_13:09:15"
-#define  LIBERO_SETTING_XML_VERSION                                 "0.5.6"
+#define  LIBERO_SETTING_GENERATION_DATE                             "08-08-2022_14:45:01"
+#define  LIBERO_SETTING_XML_VERSION                                 "0.6.5"
 #define  LIBERO_SETTING_XML_VERSION_MAJOR                           0
-#define  LIBERO_SETTING_XML_VERSION_MINOR                           5
-#define  LIBERO_SETTING_XML_VERSION_PATCH                           6
+#define  LIBERO_SETTING_XML_VERSION_MINOR                           6
+#define  LIBERO_SETTING_XML_VERSION_PATCH                           5
 #define  LIBERO_SETTING_HEADER_GENERATOR_VERSION                    "0.6.4"
 #define  LIBERO_SETTING_HEADER_GENERATOR_VERSION_MAJOR              0
 #define  LIBERO_SETTING_HEADER_GENERATOR_VERSION_MINOR              6

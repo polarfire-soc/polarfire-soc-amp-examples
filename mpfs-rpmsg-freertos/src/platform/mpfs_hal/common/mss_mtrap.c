@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2019-2022 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -626,20 +626,15 @@ void handle_m_ext_interrupt(void)
 
     volatile uint32_t int_num  = PLIC_ClaimIRQ();
 
-    if (INVALID_IRQn == int_num)
+    if (PLIC_INVALID_INT_OFFSET == int_num)
     {
        return;
     }
 
-    uint8_t disable = EXT_IRQ_KEEP_ENABLED;
-#ifndef SIFIVE_HIFIVE_UNLEASHED
-
     in_ext_isr = 1;
+    uint8_t disable = EXT_IRQ_KEEP_ENABLED;
     disable = ext_irq_handler_table[int_num /* + OFFSET_TO_MSS_GLOBAL_INTS Think this was required in early bitfile */]();
     in_ext_isr = 0;
-#else
-    disable = ext_irq_handler_table[int_num]();
-#endif
 
     PLIC_CompleteIRQ(int_num);
 

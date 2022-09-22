@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2021-2021 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2021-2022 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -405,77 +405,77 @@ extern "C" {
 
 #define     reserved_104_plic_IRQHandler PLIC_reserved_104_IRQHandler
 
-#define     mss_int_f2m_0_plic_IRQHandler    PLIC_f2m_0_IRQHandler
-#define     mss_int_f2m_1_plic_IRQHandler    PLIC_f2m_1_IRQHandler
-#define     mss_int_f2m_2_plic_IRQHandler    PLIC_f2m_2_IRQHandler
-#define     mss_int_f2m_3_plic_IRQHandler    PLIC_f2m_3_IRQHandler
-#define     mss_int_f2m_4_plic_IRQHandler    PLIC_f2m_4_IRQHandler
-#define     mss_int_f2m_5_plic_IRQHandler    PLIC_f2m_5_IRQHandler
-#define     mss_int_f2m_6_plic_IRQHandler    PLIC_f2m_6_IRQHandler
-#define     mss_int_f2m_7_plic_IRQHandler    PLIC_f2m_7_IRQHandler
-#define     mss_int_f2m_8_plic_IRQHandler    PLIC_f2m_8_IRQHandler
-#define     mss_int_f2m_9_plic_IRQHandler    PLIC_f2m_9_IRQHandler
+#define     fabric_f2h_0_plic_IRQHandler    PLIC_f2m_0_IRQHandler
+#define     fabric_f2h_1_plic_IRQHandler    PLIC_f2m_1_IRQHandler
+#define     fabric_f2h_2_plic_IRQHandler    PLIC_f2m_2_IRQHandler
+#define     fabric_f2h_3_plic_IRQHandler    PLIC_f2m_3_IRQHandler
+#define     fabric_f2h_4_plic_IRQHandler    PLIC_f2m_4_IRQHandler
+#define     fabric_f2h_5_plic_IRQHandler    PLIC_f2m_5_IRQHandler
+#define     fabric_f2h_6_plic_IRQHandler    PLIC_f2m_6_IRQHandler
+#define     fabric_f2h_7_plic_IRQHandler    PLIC_f2m_7_IRQHandler
+#define     fabric_f2h_8_plic_IRQHandler    PLIC_f2m_8_IRQHandler
+#define     fabric_f2h_9_plic_IRQHandler    PLIC_f2m_9_IRQHandler
 
-#define     mss_int_f2m_10_plic_IRQHandler   PLIC_f2m_10_IRQHandler
-#define     mss_int_f2m_11_plic_IRQHandler   PLIC_f2m_11_IRQHandler
-#define     mss_int_f2m_12_plic_IRQHandler   PLIC_f2m_12_IRQHandler
-#define     mss_int_f2m_13_plic_IRQHandler   PLIC_f2m_13_IRQHandler
-#define     mss_int_f2m_14_plic_IRQHandler   PLIC_f2m_14_IRQHandler
-#define     mss_int_f2m_15_plic_IRQHandler   PLIC_f2m_15_IRQHandler
-#define     mss_int_f2m_16_plic_IRQHandler   PLIC_f2m_16_IRQHandler
-#define     mss_int_f2m_17_plic_IRQHandler   PLIC_f2m_17_IRQHandler
-#define     mss_int_f2m_18_plic_IRQHandler   PLIC_f2m_18_IRQHandler
-#define     mss_int_f2m_19_plic_IRQHandler   PLIC_f2m_19_IRQHandler
+#define     fabric_f2h_10_plic_IRQHandler   PLIC_f2m_10_IRQHandler
+#define     fabric_f2h_11_plic_IRQHandler   PLIC_f2m_11_IRQHandler
+#define     fabric_f2h_12_plic_IRQHandler   PLIC_f2m_12_IRQHandler
+#define     fabric_f2h_13_plic_IRQHandler   PLIC_f2m_13_IRQHandler
+#define     fabric_f2h_14_plic_IRQHandler   PLIC_f2m_14_IRQHandler
+#define     fabric_f2h_15_plic_IRQHandler   PLIC_f2m_15_IRQHandler
+#define     fabric_f2h_16_plic_IRQHandler   PLIC_f2m_16_IRQHandler
+#define     fabric_f2h_17_plic_IRQHandler   PLIC_f2m_17_IRQHandler
+#define     fabric_f2h_18_plic_IRQHandler   PLIC_f2m_18_IRQHandler
+#define     fabric_f2h_19_plic_IRQHandler   PLIC_f2m_19_IRQHandler
 
-#define     mss_int_f2m_20_plic_IRQHandler   PLIC_f2m_20_IRQHandler
-#define     mss_int_f2m_21_plic_IRQHandler   PLIC_f2m_21_IRQHandler
-#define     mss_int_f2m_22_plic_IRQHandler   PLIC_f2m_22_IRQHandler
-#define     mss_int_f2m_23_plic_IRQHandler   PLIC_f2m_23_IRQHandler
-#define     mss_int_f2m_24_plic_IRQHandler   PLIC_f2m_24_IRQHandler
-#define     mss_int_f2m_25_plic_IRQHandler   PLIC_f2m_25_IRQHandler
-#define     mss_int_f2m_26_plic_IRQHandler   PLIC_f2m_26_IRQHandler
-#define     mss_int_f2m_27_plic_IRQHandler   PLIC_f2m_27_IRQHandler
-#define     mss_int_f2m_28_plic_IRQHandler   PLIC_f2m_28_IRQHandler
-#define     mss_int_f2m_29_plic_IRQHandler   PLIC_f2m_29_IRQHandler
+#define     fabric_f2h_20_plic_IRQHandler   PLIC_f2m_20_IRQHandler
+#define     fabric_f2h_21_plic_IRQHandler   PLIC_f2m_21_IRQHandler
+#define     fabric_f2h_22_plic_IRQHandler   PLIC_f2m_22_IRQHandler
+#define     fabric_f2h_23_plic_IRQHandler   PLIC_f2m_23_IRQHandler
+#define     fabric_f2h_24_plic_IRQHandler   PLIC_f2m_24_IRQHandler
+#define     fabric_f2h_25_plic_IRQHandler   PLIC_f2m_25_IRQHandler
+#define     fabric_f2h_26_plic_IRQHandler   PLIC_f2m_26_IRQHandler
+#define     fabric_f2h_27_plic_IRQHandler   PLIC_f2m_27_IRQHandler
+#define     fabric_f2h_28_plic_IRQHandler   PLIC_f2m_28_IRQHandler
+#define     fabric_f2h_29_plic_IRQHandler   PLIC_f2m_29_IRQHandler
 
-#define     mss_int_f2m_30_plic_IRQHandler   PLIC_f2m_30_IRQHandler
-#define     mss_int_f2m_31_plic_IRQHandler   PLIC_f2m_31_IRQHandler
+#define     fabric_f2h_30_plic_IRQHandler   PLIC_f2m_30_IRQHandler
+#define     fabric_f2h_31_plic_IRQHandler   PLIC_f2m_31_IRQHandler
 
-#define     mss_int_f2m_32_plic_IRQHandler   PLIC_f2m_32_IRQHandler
-#define     mss_int_f2m_33_plic_IRQHandler   PLIC_f2m_33_IRQHandler
-#define     mss_int_f2m_34_plic_IRQHandler   PLIC_f2m_34_IRQHandler
-#define     mss_int_f2m_35_plic_IRQHandler   PLIC_f2m_35_IRQHandler
-#define     mss_int_f2m_36_plic_IRQHandler   PLIC_f2m_36_IRQHandler
-#define     mss_int_f2m_37_plic_IRQHandler   PLIC_f2m_37_IRQHandler
-#define     mss_int_f2m_38_plic_IRQHandler   PLIC_f2m_38_IRQHandler
-#define     mss_int_f2m_39_plic_IRQHandler   PLIC_f2m_39_IRQHandler
-#define     mss_int_f2m_40_plic_IRQHandler   PLIC_f2m_40_IRQHandler
-#define     mss_int_f2m_41_plic_IRQHandler   PLIC_f2m_41_IRQHandler
+#define     fabric_f2h_32_plic_IRQHandler   PLIC_f2m_32_IRQHandler
+#define     fabric_f2h_33_plic_IRQHandler   PLIC_f2m_33_IRQHandler
+#define     fabric_f2h_34_plic_IRQHandler   PLIC_f2m_34_IRQHandler
+#define     fabric_f2h_35_plic_IRQHandler   PLIC_f2m_35_IRQHandler
+#define     fabric_f2h_36_plic_IRQHandler   PLIC_f2m_36_IRQHandler
+#define     fabric_f2h_37_plic_IRQHandler   PLIC_f2m_37_IRQHandler
+#define     fabric_f2h_38_plic_IRQHandler   PLIC_f2m_38_IRQHandler
+#define     fabric_f2h_39_plic_IRQHandler   PLIC_f2m_39_IRQHandler
+#define     fabric_f2h_40_plic_IRQHandler   PLIC_f2m_40_IRQHandler
+#define     fabric_f2h_41_plic_IRQHandler   PLIC_f2m_41_IRQHandler
 
-#define     mss_int_f2m_42_plic_IRQHandler   PLIC_f2m_42_IRQHandler
-#define     mss_int_f2m_43_plic_IRQHandler   PLIC_f2m_43_IRQHandler
-#define     mss_int_f2m_44_plic_IRQHandler   PLIC_f2m_44_IRQHandler
-#define     mss_int_f2m_45_plic_IRQHandler   PLIC_f2m_45_IRQHandler
-#define     mss_int_f2m_46_plic_IRQHandler   PLIC_f2m_46_IRQHandler
-#define     mss_int_f2m_47_plic_IRQHandler   PLIC_f2m_47_IRQHandler
-#define     mss_int_f2m_48_plic_IRQHandler   PLIC_f2m_48_IRQHandler
-#define     mss_int_f2m_49_plic_IRQHandler   PLIC_f2m_49_IRQHandler
-#define     mss_int_f2m_50_plic_IRQHandler   PLIC_f2m_50_IRQHandler
-#define     mss_int_f2m_51_plic_IRQHandler   PLIC_f2m_51_IRQHandler
+#define     fabric_f2h_42_plic_IRQHandler   PLIC_f2m_42_IRQHandler
+#define     fabric_f2h_43_plic_IRQHandler   PLIC_f2m_43_IRQHandler
+#define     fabric_f2h_44_plic_IRQHandler   PLIC_f2m_44_IRQHandler
+#define     fabric_f2h_45_plic_IRQHandler   PLIC_f2m_45_IRQHandler
+#define     fabric_f2h_46_plic_IRQHandler   PLIC_f2m_46_IRQHandler
+#define     fabric_f2h_47_plic_IRQHandler   PLIC_f2m_47_IRQHandler
+#define     fabric_f2h_48_plic_IRQHandler   PLIC_f2m_48_IRQHandler
+#define     fabric_f2h_49_plic_IRQHandler   PLIC_f2m_49_IRQHandler
+#define     fabric_f2h_50_plic_IRQHandler   PLIC_f2m_50_IRQHandler
+#define     fabric_f2h_51_plic_IRQHandler   PLIC_f2m_51_IRQHandler
 
-#define     mss_int_f2m_52_plic_IRQHandler   PLIC_f2m_52_IRQHandler
-#define     mss_int_f2m_53_plic_IRQHandler   PLIC_f2m_53_IRQHandler
-#define     mss_int_f2m_54_plic_IRQHandler   PLIC_f2m_54_IRQHandler
-#define     mss_int_f2m_55_plic_IRQHandler   PLIC_f2m_55_IRQHandler
-#define     mss_int_f2m_56_plic_IRQHandler   PLIC_f2m_56_IRQHandler
-#define     mss_int_f2m_57_plic_IRQHandler   PLIC_f2m_57_IRQHandler
-#define     mss_int_f2m_58_plic_IRQHandler   PLIC_f2m_58_IRQHandler
-#define     mss_int_f2m_59_plic_IRQHandler   PLIC_f2m_59_IRQHandler
-#define     mss_int_f2m_60_plic_IRQHandler   PLIC_f2m_60_IRQHandler
-#define     mss_int_f2m_61_plic_IRQHandler   PLIC_f2m_61_IRQHandler
+#define     fabric_f2h_52_plic_IRQHandler   PLIC_f2m_52_IRQHandler
+#define     fabric_f2h_53_plic_IRQHandler   PLIC_f2m_53_IRQHandler
+#define     fabric_f2h_54_plic_IRQHandler   PLIC_f2m_54_IRQHandler
+#define     fabric_f2h_55_plic_IRQHandler   PLIC_f2m_55_IRQHandler
+#define     fabric_f2h_56_plic_IRQHandler   PLIC_f2m_56_IRQHandler
+#define     fabric_f2h_57_plic_IRQHandler   PLIC_f2m_57_IRQHandler
+#define     fabric_f2h_58_plic_IRQHandler   PLIC_f2m_58_IRQHandler
+#define     fabric_f2h_59_plic_IRQHandler   PLIC_f2m_59_IRQHandler
+#define     fabric_f2h_60_plic_IRQHandler   PLIC_f2m_60_IRQHandler
+#define     fabric_f2h_61_plic_IRQHandler   PLIC_f2m_61_IRQHandler
 
-#define     mss_int_f2m_62_plic_IRQHandler   PLIC_f2m_62_IRQHandler
-#define     mss_int_f2m_63_plic_IRQHandler   PLIC_f2m_63_IRQHandler
+#define     fabric_f2h_62_plic_IRQHandler   PLIC_f2m_62_IRQHandler
+#define     fabric_f2h_63_plic_IRQHandler   PLIC_f2m_63_IRQHandler
 
 #define     bus_error_unit_hart_0_plic_IRQHandler    PLIC_E51_bus_error_unit_hart_0_IRQHandler
 #define     bus_error_unit_hart_1_plic_IRQHandler    PLIC_U54_1_bus_error_unit_IRQHandler

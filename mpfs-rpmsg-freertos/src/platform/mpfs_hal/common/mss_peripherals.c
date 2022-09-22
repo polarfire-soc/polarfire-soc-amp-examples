@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2019-2022 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -153,5 +153,39 @@ __attribute__((weak))  uint8_t mss_config_clk_rst(mss_peripherals peripheral, ui
         peripheral_on_off(PERIPHERAL_SETUP[peripheral][CONTEXT_SUBCLK_INDEX_OFFSET] , req_state);
     }
     return result;
+}
+
+/***************************************************************************//**
+ * See mss_peripherals.h for details of how to use this function.
+ */
+__attribute__((weak)) void mss_enable_fabric(void)
+{
+    /* Remove soft reset */
+    SYSREG->SOFT_RESET_CR &= (uint32_t)~(SOFT_RESET_CR_FPGA_MASK);
+}
+
+/***************************************************************************//**
+ * See mss_peripherals.h for details of how to use this function.
+ */
+__attribute__((weak)) void mss_disable_fabric(void)
+{
+    /* Apply reset */
+    SYSREG->SOFT_RESET_CR |= SOFT_RESET_CR_FPGA_MASK;
+}
+
+/***************************************************************************//**
+ * See mss_peripherals.h for details of how to use this function.
+ */
+__attribute__((weak)) void mss_set_apb_bus_cr(uint32_t reg_value)
+{
+    SYSREG->APBBUS_CR = reg_value;
+}
+
+/***************************************************************************//**
+ * See mss_peripherals.h for details of how to use this function.
+ */
+__attribute__((weak)) uint32_t mss_get_apb_bus_cr(void)
+{
+    return (SYSREG->APBBUS_CR);
 }
 

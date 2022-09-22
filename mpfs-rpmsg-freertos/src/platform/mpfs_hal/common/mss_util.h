@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright 2019-2021 Microchip FPGA Embedded Systems Solutions.
+ * Copyright 2019-2022 Microchip FPGA Embedded Systems Solutions.
  *
  * SPDX-License-Identifier: MIT
  *
@@ -70,6 +70,8 @@ void __disable_all_irqs(void);
 void __enable_irq(void);
 void __enable_local_irq(uint8_t local_interrupt);
 void __disable_local_irq(uint8_t local_interrupt);
+void disable_branch_prediction(void);
+void enable_branch_prediction(void);
 
 static inline void spinunlock(volatile long *pLock)
 {
@@ -81,6 +83,9 @@ static inline void spinlock(volatile long *pLock)
     while(__sync_lock_test_and_set(pLock, 1))
     {
         /* add yield if OS */
+/* #if defined USING_FREERTOS
+        taskYIELD();
+#endif */
     }
 }
 

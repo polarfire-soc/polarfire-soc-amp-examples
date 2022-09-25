@@ -1,12 +1,12 @@
 ## The PolarFire SoC AMP Bare Metal Example License
 
 In addition to the software licences mentioned in the LICENSE file in the root 
-folder of the repository, the PolarFIre SoC AMP Bare metal example project is released
+folder of the repository, the PolarFire SoC AMP Bare metal example project is released
 under the following software license:
 
 The PolarFire SoC AMP examples project is released under the following software license:
 
- Copyright 2019-2021 Microchip Corporation.
+ Copyright 2019-2022 Microchip Corporation.
 
  SPDX-License-Identifier: MIT
 

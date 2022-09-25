@@ -2,7 +2,7 @@
 
 The PolarFire SoC AMP examples project is released under the following software license:
 
- Copyright 2019-2021 Microchip Corporation.
+ Copyright 2019-2022 Microchip Corporation.
 
  SPDX-License-Identifier: MIT
 

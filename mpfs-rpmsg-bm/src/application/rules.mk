@@ -65,7 +65,8 @@ endif
 endif
 
 CORE_CFLAGS+=-msmall-data-limit=8 -mstrict-align -mno-save-restore -O0 \
-    -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections  -g3
+    -fmessage-length=0 -fsigned-char -ffunction-sections -fdata-sections \
+    -fno-stack-protector -g3
 
 CFLAGS=-std=gnu11 $(CORE_CFLAGS) $(PLATFORM_CFLAGS)
 

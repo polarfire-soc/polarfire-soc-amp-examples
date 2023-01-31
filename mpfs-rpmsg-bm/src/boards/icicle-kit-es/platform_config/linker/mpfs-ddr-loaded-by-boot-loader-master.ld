@@ -65,9 +65,9 @@ MEMORY
     l2lim (rwx)        : ORIGIN = 0x08000000, LENGTH = 256k
     scratchpad(rwx)    : ORIGIN = 0x0A000000, LENGTH = 256k
     /* DDR sections example */
-    ddr_cached_32bit (rwx) : ORIGIN  = 0x80000000, LENGTH = 4M
-    ddr_non_cached_32bit (rwx) : ORIGIN  = 0xC0000000, LENGTH = 128M
-    ddr_wcb_32bit (rwx) : ORIGIN  = 0xD0000000, LENGTH = 128M
+    ddr_cached_32bit (rwx) : ORIGIN  = 0x91800000, LENGTH = 1M
+    ddr_non_cached_32bit (rwx) : ORIGIN  = 0xC0000000, LENGTH = 256M
+    ddr_wcb_32bit (rwx) : ORIGIN  = 0xD0000000, LENGTH = 256M
     ddr_cached_38bit (rwx) : ORIGIN  = 0x1000000000, LENGTH = 1024M
     ddr_non_cached_38bit (rwx) : ORIGIN  = 0x1400000000, LENGTH = 0k
     ddr_wcb_38bit (rwx) : ORIGIN  = 0x1800000000, LENGTH  = 0k
@@ -106,7 +106,7 @@ STACK_SIZE_U54_4_APPLICATION = 8k;
 
 
 /* reset address 0xC0000000 */
-SECTION_START_ADDRESS           = 0x80000000; 
+SECTION_START_ADDRESS           = 0x91800000; 
 
 
 SECTIONS

@@ -17,8 +17,8 @@
 #define NUM_VRINGS 0x02
 
 /* Shared memory base for RPMsg communication. */
-#define VDEV0_VRING_BASE      (0x81400000)
-#define RESOURCE_TABLE_OFFSET (0xFF000)
+#define VDEV0_VRING_BASE      (0x91D00000)
+#define RESOURCE_TABLE_OFFSET (0x50000)
 #define VIRTIO_ID_RPMSG       (0x7)
 
 const struct remote_resource_table __attribute__((section(".resource_table"))) resources = {

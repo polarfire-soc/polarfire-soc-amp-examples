@@ -28,7 +28,7 @@
 #define RPMSG_CONSOLE_EPT_ADDR (4u)
 #endif
 
-#define RPMSG_TTY_CHANNEL_NAME "rpmsg-virtual-tty-channel"
+#define RPMSG_TTY_CHANNEL_NAME "rpmsg-tty"
 
 #define UART_RX_BUFF_SIZE    2U
 #define RPMSG_RX_MAX_BUFF_SIZE    256U

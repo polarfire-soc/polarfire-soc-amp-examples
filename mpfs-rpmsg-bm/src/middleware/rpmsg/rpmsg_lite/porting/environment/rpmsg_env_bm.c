@@ -452,7 +452,7 @@ int32_t env_create_queue(void **queue, int32_t length, int32_t element_size)
         return -1;
     }
 
-    q_init(q, element_size, length, LIFO, false);
+    q_init(q, element_size, length, FIFO, false);
 
     if (q == ((void *)0))
     {

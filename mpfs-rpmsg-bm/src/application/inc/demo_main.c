@@ -57,10 +57,10 @@ void start_demo()
 
 #ifdef RPMSG_MASTER
     const uint8_t g_message[] =
-    "\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP RPMsg Master Bare Metal Example ****\r\n\r\n\r\n";
+    "\r\n\r\n\r\n **** PolarFire SoC AMP RPMsg Master Bare Metal Example ****\r\n\r\n\r\n";
 #else
     const uint8_t g_message[] =
-    "\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP RPMsg Remote Bare Metal Example ****\r\n\r\n\r\n";
+    "\r\n\r\n\r\n **** PolarFire SoC AMP RPMsg Remote Bare Metal Example ****\r\n\r\n\r\n";
 #endif
 
     const uint8_t g_menu[] =
@@ -85,9 +85,21 @@ void start_demo()
 #endif
 
 #ifdef RPMSG_MASTER
+# if defined(BOARD_MPFS_DISCO_KIT_AMP)
+#  define UART_APP &g_mss_uart4_lo
+    (void)mss_config_clk_rst(MSS_PERIPH_MMUART4, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
+# else
     (void)mss_config_clk_rst(MSS_PERIPH_MMUART1, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
+#  define UART_APP &g_mss_uart1_lo
+# endif
 #else
+# if defined(BOARD_MPFS_DISCO_KIT_AMP)
+    (void)mss_config_clk_rst(MSS_PERIPH_MMUART0, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
+#  define UART_APP &g_mss_uart0_lo
+# else
     (void)mss_config_clk_rst(MSS_PERIPH_MMUART3, (uint8_t) MPFS_HAL_FIRST_HART, PERIPHERAL_ON);
+#  define UART_APP &g_mss_uart3_lo
+# endif
 #endif
 
     PLIC_init();

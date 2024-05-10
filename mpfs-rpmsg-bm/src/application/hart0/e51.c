@@ -16,7 +16,7 @@
 volatile uint32_t count_sw_ints_h0 = 0U;
 
 const uint8_t g_info_string[] =
-"\r\n\r\n\r\n **** PolarFire SoC Icicle Kit AMP FreeRTOS example  ****\r\n\r\n\r\n\
+"\r\n\r\n\r\n **** PolarFire SoC AMP FreeRTOS example  ****\r\n\r\n\r\n\
 This program should be run from an application core (U54) in an AMP build.\r\n\r\n\
 For more information refer to the project's README\r\n\
 \r\n";

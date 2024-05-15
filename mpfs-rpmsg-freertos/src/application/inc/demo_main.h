@@ -17,9 +17,17 @@
 #define printf_to(...) ee_printf_to(__VA_ARGS__)
 
 #ifdef RPMSG_MASTER
-#define UART_APP &g_mss_uart1_lo
+# if defined(BOARD_MPFS_DISCO_KIT_AMP)
+#  define UART_APP &g_mss_uart4_lo
+# else
+#  define UART_APP &g_mss_uart1_lo
+# endif
 #else
-#define UART_APP &g_mss_uart3_lo
+# if defined(BOARD_MPFS_DISCO_KIT_AMP)
+#  define UART_APP &g_mss_uart0_lo
+# else
+#  define UART_APP &g_mss_uart3_lo
+# endif
 #endif
 
 typedef void *rpmsg_comm_stack_handle_t;

@@ -103,7 +103,11 @@ void start_demo()
     like to start/stop a bare metal/RTOS application from Linux
     */
 #ifdef REMOTEPROC
-    rproc_setup();
+#ifdef RPMSG_MASTER
+    rproc_setup(RL_PLATFORM_MIV_IHC_CH8_LINK_ID);
+#else
+    rproc_setup(RL_PLATFORM_MIV_IHC_CH21_LINK_ID);
+#endif
 #endif
 
     rpmsg_setup(&my_rpmsg_instance);
@@ -171,7 +175,7 @@ void rpmsg_setup(rpmsg_comm_stack_handle_t handle)
 #ifdef RPMSG_MASTER
 
     /* RPMsg Master Mode */
-    rpmsgHandle->my_rpmsg = rpmsg_lite_master_init(rpmsg_lite_base, RPMSG_SHARED_MEMORY_SIZE, RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
+    rpmsgHandle->my_rpmsg = rpmsg_lite_master_init(rpmsg_lite_base, RPMSG_SHARED_MEMORY_SIZE, RL_PLATFORM_MIV_IHC_CH8_LINK_ID, RL_NO_FLAGS);
     rpmsgHandle->ctrl_q = rpmsg_queue_create(rpmsgHandle->my_rpmsg);
     rpmsgHandle->ns_handle = rpmsg_ns_bind(rpmsgHandle->my_rpmsg, app_nameservice_isr_cb, (void *)&(rpmsgHandle->remote_addr));
     MSS_UART_polled_tx_string(UART_APP, "\r\nWaiting for remote to send name service announcement..\r\n");
@@ -180,13 +184,13 @@ void rpmsg_setup(rpmsg_comm_stack_handle_t handle)
     while (0xFFFFFFFF == rpmsgHandle->remote_addr);
 #else
 
-    rpmsgHandle->my_rpmsg = rpmsg_lite_remote_init(rpmsg_lite_base, RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID, RL_NO_FLAGS);
+    rpmsgHandle->my_rpmsg = rpmsg_lite_remote_init(rpmsg_lite_base, RL_PLATFORM_MIV_IHC_CH21_LINK_ID, RL_NO_FLAGS);
     rpmsgHandle->ctrl_q = rpmsg_queue_create(rpmsgHandle->my_rpmsg);
 
 #ifdef REMOTEPROC
     copyResourceTable();
     /* Notify master context fw has booted up and is ready for rpmsg communication */
-    platform_ready();
+    platform_ready(RL_PLATFORM_MIV_IHC_CH21_LINK_ID);
 #endif
 
     /* RPMsg Remote Mode */

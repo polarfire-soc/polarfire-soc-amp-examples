@@ -17,7 +17,7 @@
 #define printf_to(...) ee_printf_to(__VA_ARGS__)
 
 #ifdef RPMSG_MASTER
-#define UART_APP &g_mss_uart1_lo
+#define UART_APP &g_mss_uart2_lo
 #else
 #define UART_APP &g_mss_uart3_lo
 #endif

@@ -335,8 +335,8 @@ struct fw_rsc_vendor
     uint32_t len;
 } METAL_PACKED_END;
 
-void rproc_setup(void);
-void rproc_stop(void);
+void rproc_setup(uint32_t link_id);
+void rproc_stop(uint32_t channel);
 
 #if defined __cplusplus
 }

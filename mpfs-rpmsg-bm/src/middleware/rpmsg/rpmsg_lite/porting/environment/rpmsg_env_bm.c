@@ -68,7 +68,7 @@ extern char __heap_start;
 extern char  __heap_end;
 
 /* Max supported ISR counts */
-#define ISR_COUNT (12U) /* Change for multiple remote cores */
+#define ISR_COUNT (300U) /* Change for multiple remote cores */
                         /*!
                          * Structure to keep track of registered ISR's.
                          */

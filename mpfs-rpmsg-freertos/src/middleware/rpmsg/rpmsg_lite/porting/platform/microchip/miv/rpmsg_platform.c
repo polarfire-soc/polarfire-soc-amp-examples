@@ -31,14 +31,32 @@
 #error "This RPMsg-Lite port requires RL_USE_ENVIRONMENT_CONTEXT set to 0"
 #endif
 
-#if !defined(LIBERO_SETTING_CONTEXT_A_HART_EN) || !defined(LIBERO_SETTING_CONTEXT_B_HART_EN)
-#error "LIBERO_SETTING_CONTEXT_A_HART_EN and LIBERO_SETTING_CONTEXT_B_HART_EN macros required for rpmsg communication"
-#elif LIBERO_SETTING_CONTEXT_A_HART_EN == 0 || LIBERO_SETTING_CONTEXT_B_HART_EN == 0
-#error "LIBERO_SETTING_CONTEXT_A_HART_EN and LIBERO_SETTING_CONTEXT_B_HART_EN macros are not setup"
+#ifndef IHC_COM_ID_MASTER
+#define IHC_COM_ID_MASTER RL_PLATFORM_MIV_IHC_CH8_ID
 #endif
 
-static int32_t isr_counter     = 0;
-static int32_t disable_counter = 0;
+#ifndef IHC_COM_ID_REMOTE
+#define IHC_COM_ID_REMOTE RL_PLATFORM_MIV_IHC_CH21_ID
+#endif
+
+#define IHC_APP_X_H0_IRQ  FABRIC_F2H_63_PLIC
+#define IHC_APP_X_H1_IRQ  FABRIC_F2H_62_PLIC
+#define IHC_APP_X_H2_IRQ  FABRIC_F2H_61_PLIC
+#define IHC_APP_X_H3_IRQ  FABRIC_F2H_60_PLIC
+#define IHC_APP_X_H4_IRQ  FABRIC_F2H_59_PLIC
+
+static int32_t isr_counter0 = 0;
+static int32_t isr_counter1 = 0;
+static int32_t isr_counter2 = 0;
+static int32_t isr_counter3 = 0;
+static int32_t isr_counter4 = 0;
+
+static int32_t disable_counter0 = 0;
+static int32_t disable_counter1 = 0;
+static int32_t disable_counter2 = 0;
+static int32_t disable_counter3 = 0;
+static int32_t disable_counter4 = 0;
+
 static void *platform_lock;
 
 enum miv_rp_mbox_messages {
@@ -54,8 +72,8 @@ static xTaskHandle task_handle;
 static uint8_t ack_notify = 0;
 #endif
 
-static uint32_t rx_handler(uint32_t remote_hart_id, uint32_t * message, uint32_t message_size, bool is_ack, uint32_t *message_storage_ptr );
-static void rpmsg_handler(bool is_ack, uint32_t msg);
+static uint32_t QUEUE_IHC_MP_ISR_CALLBACK(uint8_t channel, const uint32_t *message, uint32_t message_size, uint32_t * ext_msg_ptr);
+static uint32_t QUEUE_IHC_MC_ISR_CALLBACK(uint8_t channel, const uint32_t *message, uint32_t message_size, uint32_t * ext_msg_ptr);
 
 static void platform_global_isr_disable(void)
 {
@@ -69,46 +87,77 @@ static void platform_global_isr_enable(void)
 
 int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
 {
-    uint64_t my_hart_id = read_csr(mhartid);
-
-    uint32_t context_hart_id = 0u;
     /* Register ISR to environment layer */
     env_register_isr(vector_id, isr_data);
 
     env_lock_mutex(platform_lock);
 
-    RL_ASSERT(0 <= isr_counter);
-    if (isr_counter == 0)
-    {
-        switch (RL_GET_LINK_ID(vector_id))
-        {
-            case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
-                PLIC_init();
-                context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
-                switch(context_hart_id) {
-                    case 1:
-                        PLIC_SetPriority(IHCIA_hart1_INT, 2);
-                        break;
-                    case 2:
-                        PLIC_SetPriority(IHCIA_hart2_INT, 2);
-                        break;
-                    case 3:
-                        PLIC_SetPriority(IHCIA_hart3_INT, 2);
-                        break;
-                    case 4:
-                        PLIC_SetPriority(IHCIA_hart4_INT, 2);
-                        break;
-                    default:
-                        /*  Unsupported configuration value*/
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
-    }
+    PLIC_init();
 
-    isr_counter++;
+    switch (RL_GET_COM_ID(vector_id))
+    {
+        case RL_PLATFORM_MIV_IHC_CH0_ID:
+        case RL_PLATFORM_MIV_IHC_CH1_ID:
+        case RL_PLATFORM_MIV_IHC_CH2_ID:
+        case RL_PLATFORM_MIV_IHC_CH3_ID:
+        case RL_PLATFORM_MIV_IHC_CH4_ID:
+            RL_ASSERT(0 <= isr_counter0);
+            if (isr_counter0 == 0)
+            {
+                PLIC_SetPriority(IHC_APP_X_H0_IRQ,2);
+            }
+            isr_counter0++;
+        case RL_PLATFORM_MIV_IHC_CH5_ID:
+        case RL_PLATFORM_MIV_IHC_CH6_ID:
+        case RL_PLATFORM_MIV_IHC_CH7_ID:
+        case RL_PLATFORM_MIV_IHC_CH8_ID:
+        case RL_PLATFORM_MIV_IHC_CH9_ID:
+            RL_ASSERT(0 <= isr_counter1);
+            if (isr_counter1 == 0)
+            {
+               PLIC_SetPriority(IHC_APP_X_H1_IRQ,2);
+            }
+            isr_counter1++;
+            break;
+        case RL_PLATFORM_MIV_IHC_CH10_ID:
+        case RL_PLATFORM_MIV_IHC_CH11_ID:
+        case RL_PLATFORM_MIV_IHC_CH12_ID:
+        case RL_PLATFORM_MIV_IHC_CH13_ID:
+        case RL_PLATFORM_MIV_IHC_CH14_ID:
+            RL_ASSERT(0 <= isr_counter2);
+            if (isr_counter2 == 0)
+            {
+                PLIC_SetPriority(IHC_APP_X_H2_IRQ,2);
+            }
+            isr_counter2++;
+        case RL_PLATFORM_MIV_IHC_CH15_ID:
+        case RL_PLATFORM_MIV_IHC_CH16_ID:
+        case RL_PLATFORM_MIV_IHC_CH17_ID:
+        case RL_PLATFORM_MIV_IHC_CH18_ID:
+        case RL_PLATFORM_MIV_IHC_CH19_ID:
+            RL_ASSERT(0 <= isr_counter3);
+            if (isr_counter3 == 0)
+            {
+               PLIC_SetPriority(IHC_APP_X_H3_IRQ,2);
+            }
+            isr_counter3++;
+            break;
+        case RL_PLATFORM_MIV_IHC_CH20_ID:
+        case RL_PLATFORM_MIV_IHC_CH21_ID:
+        case RL_PLATFORM_MIV_IHC_CH22_ID:
+        case RL_PLATFORM_MIV_IHC_CH23_ID:
+        case RL_PLATFORM_MIV_IHC_CH24_ID:
+            RL_ASSERT(0 <= isr_counter4);
+            if (isr_counter4 == 0)
+            {
+               PLIC_SetPriority(IHC_APP_X_H4_IRQ,2);
+            }
+            isr_counter4++;
+            break;
+        default:
+            /* All the cases have been listed above, the default clause should not be reached. */
+            break;
+    }
 
     env_unlock_mutex(platform_lock);
 
@@ -117,42 +166,71 @@ int32_t platform_init_interrupt(uint32_t vector_id, void *isr_data)
 
 int32_t platform_deinit_interrupt(uint32_t vector_id)
 {
-	uint32_t context_hart_id = 0u;
-    uint64_t my_hart_id = read_csr(mhartid);
-
     env_lock_mutex(platform_lock);
 
-    RL_ASSERT(0 < isr_counter);
-    isr_counter--;
-    if (isr_counter == 0)
+    switch (RL_GET_COM_ID(vector_id))
     {
-        switch (RL_GET_LINK_ID(vector_id))
-        {
-            case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
-
-                context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
-
-                switch(context_hart_id) {
-                    case 1:
-                        PLIC_DisableIRQ(IHCIA_hart1_INT);
-                        break;
-                    case 2:
-                        PLIC_DisableIRQ(IHCIA_hart2_INT);
-                        break;
-                    case 3:
-                        PLIC_DisableIRQ(IHCIA_hart3_INT);
-                        break;
-                    case 4:
-                        PLIC_DisableIRQ(IHCIA_hart4_INT);
-                        break;
-                    default:
-                        /*  Unsupported configuration value*/
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
+        case RL_PLATFORM_MIV_IHC_CH0_ID:
+        case RL_PLATFORM_MIV_IHC_CH1_ID:
+        case RL_PLATFORM_MIV_IHC_CH2_ID:
+        case RL_PLATFORM_MIV_IHC_CH3_ID:
+        case RL_PLATFORM_MIV_IHC_CH4_ID:
+            RL_ASSERT(0 <= isr_counter0);
+            isr_counter0--;
+            if (isr_counter0 == 0)
+            {
+                PLIC_DisableIRQ(IHC_APP_X_H0_IRQ);
+            }
+        case RL_PLATFORM_MIV_IHC_CH5_ID:
+        case RL_PLATFORM_MIV_IHC_CH6_ID:
+        case RL_PLATFORM_MIV_IHC_CH7_ID:
+        case RL_PLATFORM_MIV_IHC_CH8_ID:
+        case RL_PLATFORM_MIV_IHC_CH9_ID:
+            RL_ASSERT(0 <= isr_counter1);
+            isr_counter1--;
+            if (isr_counter1 == 0)
+            {
+               PLIC_DisableIRQ(IHC_APP_X_H1_IRQ);
+            }
+            break;
+        case RL_PLATFORM_MIV_IHC_CH10_ID:
+        case RL_PLATFORM_MIV_IHC_CH11_ID:
+        case RL_PLATFORM_MIV_IHC_CH12_ID:
+        case RL_PLATFORM_MIV_IHC_CH13_ID:
+        case RL_PLATFORM_MIV_IHC_CH14_ID:
+            RL_ASSERT(0 <= isr_counter2);
+            isr_counter2--;
+            if (isr_counter2 == 0)
+            {
+                PLIC_DisableIRQ(IHC_APP_X_H2_IRQ);
+            }
+        case RL_PLATFORM_MIV_IHC_CH15_ID:
+        case RL_PLATFORM_MIV_IHC_CH16_ID:
+        case RL_PLATFORM_MIV_IHC_CH17_ID:
+        case RL_PLATFORM_MIV_IHC_CH18_ID:
+        case RL_PLATFORM_MIV_IHC_CH19_ID:
+            RL_ASSERT(0 <= isr_counter3);
+            isr_counter3--;
+            if (isr_counter3 == 0)
+            {
+               PLIC_DisableIRQ(IHC_APP_X_H3_IRQ);
+            }
+            break;
+        case RL_PLATFORM_MIV_IHC_CH20_ID:
+        case RL_PLATFORM_MIV_IHC_CH21_ID:
+        case RL_PLATFORM_MIV_IHC_CH22_ID:
+        case RL_PLATFORM_MIV_IHC_CH23_ID:
+        case RL_PLATFORM_MIV_IHC_CH24_ID:
+            RL_ASSERT(0 <= isr_counter4);
+            isr_counter4--;
+            if (isr_counter4 == 0)
+            {
+               PLIC_DisableIRQ(IHC_APP_X_H4_IRQ);
+            }
+            break;
+        default:
+            /* All the cases have been listed above, the default clause should not be reached. */
+            break;
     }
 
     /* Unregister ISR from environment layer */
@@ -164,10 +242,9 @@ int32_t platform_deinit_interrupt(uint32_t vector_id)
 }
 
 #ifdef REMOTEPROC
-void platform_ready(void)
+void platform_ready(uint32_t link_id)
 {
-    uint32_t ihc_tx_message[IHC_MAX_MESSAGE_SIZE];
-    ihc_tx_message[0] = MIV_RP_MBOX_READY;
+    uint32_t msg = MIV_RP_MBOX_READY;
 
 #ifdef USING_FREERTOS
     task_handle = xTaskGetCurrentTaskHandle();
@@ -175,82 +252,40 @@ void platform_ready(void)
     ack_notify = 1;
 #endif
 
-#ifdef IHC_CHANNEL_SIDE_A
-            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTB, (uint32_t *) &ihc_tx_message);
-#else
-            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTA, (uint32_t *) &ihc_tx_message);
-#endif
+(void)IHC_tx_message(RL_GET_COM_ID_FROM_LINK_ID(link_id), (uint32_t *) &msg, sizeof(msg));
 
-#ifdef USING_FREERTOS
+/* #ifdef USING_FREERTOS
             xTaskNotifyWait(0, 0x0001, NULL, portMAX_DELAY);
 #else
-            while(ack_notify ==1);
-#endif
+            while(ack_notify ==1); */
+//#endif
 }
 #endif
 
 void platform_notify(uint32_t vector_id)
 {
-    uint32_t tx_status;
-    uint32_t ihc_tx_message[IHC_MAX_MESSAGE_SIZE];
-
-    ihc_tx_message[0] = (uint32_t)(vector_id);
+    /* Only vring id and queue id is needed in msg */
+    uint32_t msg = RL_GEN_MU_MSG(vector_id);
 
 #ifdef USING_FREERTOS
     task_handle = xTaskGetCurrentTaskHandle();
 #endif
 
-    switch (RL_GET_LINK_ID(vector_id))
-    {
-        case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
+    env_lock_mutex(platform_lock);
 
-            env_lock_mutex(platform_lock);
 #ifndef USING_FREERTOS
             ack_notify = 1;
 #endif
-#ifdef IHC_CHANNEL_SIDE_A
-            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTB,
-                                              (uint32_t *) &ihc_tx_message);
-#else
-            (void)IHC_tx_message_from_context(IHC_CHANNEL_TO_CONTEXTA,
-                                              (uint32_t *) &ihc_tx_message);
-#endif
+
+    IHC_tx_message(RL_GET_COM_ID(vector_id), (uint32_t *) &msg, sizeof(msg));
+
 #ifdef USING_FREERTOS
             xTaskNotifyWait(0, 0x0001, NULL, portMAX_DELAY);
-#else
+#else 
             while(ack_notify ==1);
 #endif
-            env_unlock_mutex(platform_lock);
-            break;
-        default:
-            break;
-    }
-}
 
-void rpmsg_handler(bool is_ack, uint32_t msg)
-{
-    if(is_ack)
-    {
-#ifdef USING_FREERTOS
-        (void)xTaskNotifyFromISR(task_handle, 0x0001, eSetBits, NULL);
-#else
-        ack_notify = 0;
-#endif
-        return;
-    }
-
-    switch(msg) {
-        case MIV_RP_MBOX_STOP:
-#ifdef REMOTEPROC
-            rproc_stop();
-#endif
-            break;
-        default:
-            /* silently handle all other valid messages */
-            if (msg >= MIV_RP_MBOX_READY && msg < MIV_RP_MBOX_END_MSG)
-                return;
-            env_isr((uint32_t) (msg));
-    }
+    env_unlock_mutex(platform_lock);
 }
 
 /**
@@ -295,44 +330,73 @@ int32_t platform_in_isr(void)
  */
 int32_t platform_interrupt_enable(uint32_t vector_id)
 {
-	uint32_t context_hart_id = 0u;
-    uint64_t my_hart_id = read_csr(mhartid);
-
-    RL_ASSERT(0 < disable_counter);
-
     platform_global_isr_disable();
-    disable_counter--;
 
-    if (disable_counter == 0)
+    switch (RL_GET_COM_ID(vector_id))
     {
-        switch (RL_GET_LINK_ID(vector_id))
-        {
-            case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
-
-                context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
-
-                switch(context_hart_id) {
-                    case 1:
-                        PLIC_EnableIRQ(IHCIA_hart1_INT);
-                        break;
-                    case 2:
-                        PLIC_EnableIRQ(IHCIA_hart2_INT);
-                        break;
-                    case 3:
-                        PLIC_EnableIRQ(IHCIA_hart3_INT);
-                        break;
-                    case 4:
-                        PLIC_EnableIRQ(IHCIA_hart4_INT);
-                        break;
-                    default:
-                        /*  Unsupported configuration value*/
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
+        case RL_PLATFORM_MIV_IHC_CH0_ID:
+        case RL_PLATFORM_MIV_IHC_CH1_ID:
+        case RL_PLATFORM_MIV_IHC_CH2_ID:
+        case RL_PLATFORM_MIV_IHC_CH3_ID:
+        case RL_PLATFORM_MIV_IHC_CH4_ID:
+            RL_ASSERT(0 <= disable_counter0);
+            disable_counter0--;
+            if (disable_counter0 == 0)
+            {
+                PLIC_EnableIRQ(IHC_APP_X_H0_IRQ);
+            }
+        case RL_PLATFORM_MIV_IHC_CH5_ID:
+        case RL_PLATFORM_MIV_IHC_CH6_ID:
+        case RL_PLATFORM_MIV_IHC_CH7_ID:
+        case RL_PLATFORM_MIV_IHC_CH8_ID:
+        case RL_PLATFORM_MIV_IHC_CH9_ID:
+            RL_ASSERT(0 <= disable_counter1);
+            disable_counter1--;
+            if (disable_counter1 == 0)
+            {
+               PLIC_EnableIRQ(IHC_APP_X_H1_IRQ);
+            }
+            break;
+        case RL_PLATFORM_MIV_IHC_CH10_ID:
+        case RL_PLATFORM_MIV_IHC_CH11_ID:
+        case RL_PLATFORM_MIV_IHC_CH12_ID:
+        case RL_PLATFORM_MIV_IHC_CH13_ID:
+        case RL_PLATFORM_MIV_IHC_CH14_ID:
+            RL_ASSERT(0 <= disable_counter2);
+            disable_counter2--;
+            if (disable_counter2 == 0)
+            {
+                PLIC_EnableIRQ(IHC_APP_X_H2_IRQ);
+            }
+        case RL_PLATFORM_MIV_IHC_CH15_ID:
+        case RL_PLATFORM_MIV_IHC_CH16_ID:
+        case RL_PLATFORM_MIV_IHC_CH17_ID:
+        case RL_PLATFORM_MIV_IHC_CH18_ID:
+        case RL_PLATFORM_MIV_IHC_CH19_ID:
+            RL_ASSERT(0 <= disable_counter3);
+            disable_counter3--;
+            if (disable_counter3 == 0)
+            {
+               PLIC_EnableIRQ(IHC_APP_X_H3_IRQ);
+            }
+            break;
+        case RL_PLATFORM_MIV_IHC_CH20_ID:
+        case RL_PLATFORM_MIV_IHC_CH21_ID:
+        case RL_PLATFORM_MIV_IHC_CH22_ID:
+        case RL_PLATFORM_MIV_IHC_CH23_ID:
+        case RL_PLATFORM_MIV_IHC_CH24_ID:
+            RL_ASSERT(0 <= disable_counter4);
+            disable_counter4--;
+            if (disable_counter4 == 0)
+            {
+               PLIC_EnableIRQ(IHC_APP_X_H4_IRQ);
+            }
+            break;
+        default:
+            /* All the cases have been listed above, the default clause should not be reached. */
+            break;
     }
+
     platform_global_isr_enable();
     return ((int32_t)vector_id);
 }
@@ -349,42 +413,73 @@ int32_t platform_interrupt_enable(uint32_t vector_id)
  */
 int32_t platform_interrupt_disable(uint32_t vector_id)
 {
-	uint32_t context_hart_id = 0u;
-    uint64_t my_hart_id = read_csr(mhartid);
-
-    RL_ASSERT(0 <= disable_counter);
-
     platform_global_isr_disable();
 
-    if (disable_counter == 0)
+    switch (RL_GET_COM_ID(vector_id))
     {
-        switch (RL_GET_LINK_ID(vector_id))
-        {
-            case RL_PLATFORM_MIV_IHC_CONTEXT_A_B_LINK_ID:
-                context_hart_id = IHC_context_to_context_hart_id(my_hart_id);
-                switch(context_hart_id) {
-                    case 1:
-                        PLIC_DisableIRQ(IHCIA_hart1_INT);
-                        break;
-                    case 2:
-                        PLIC_DisableIRQ(IHCIA_hart2_INT);
-                        break;
-                    case 3:
-                        PLIC_DisableIRQ(IHCIA_hart3_INT);
-                        break;
-                    case 4:
-                        PLIC_DisableIRQ(IHCIA_hart4_INT);
-                        break;
-                    default:
-                        /*  Unsupported configuration value*/
-                        break;
-                }
-                break;
-            default:
-                break;
-        }
+        case RL_PLATFORM_MIV_IHC_CH0_ID:
+        case RL_PLATFORM_MIV_IHC_CH1_ID:
+        case RL_PLATFORM_MIV_IHC_CH2_ID:
+        case RL_PLATFORM_MIV_IHC_CH3_ID:
+        case RL_PLATFORM_MIV_IHC_CH4_ID:
+            RL_ASSERT(0 <= disable_counter0);
+            disable_counter0++;
+            if (disable_counter0 == 0)
+            {
+                PLIC_DisableIRQ(IHC_APP_X_H0_IRQ);
+            }
+        case RL_PLATFORM_MIV_IHC_CH5_ID:
+        case RL_PLATFORM_MIV_IHC_CH6_ID:
+        case RL_PLATFORM_MIV_IHC_CH7_ID:
+        case RL_PLATFORM_MIV_IHC_CH8_ID:
+        case RL_PLATFORM_MIV_IHC_CH9_ID:
+            RL_ASSERT(0 <= disable_counter1);
+            disable_counter1++;
+            if (disable_counter1 == 0)
+            {
+               PLIC_DisableIRQ(IHC_APP_X_H1_IRQ);
+            }
+            break;
+        case RL_PLATFORM_MIV_IHC_CH10_ID:
+        case RL_PLATFORM_MIV_IHC_CH11_ID:
+        case RL_PLATFORM_MIV_IHC_CH12_ID:
+        case RL_PLATFORM_MIV_IHC_CH13_ID:
+        case RL_PLATFORM_MIV_IHC_CH14_ID:
+            RL_ASSERT(0 <= disable_counter2);
+            disable_counter2++;
+            if (disable_counter2 == 0)
+            {
+                PLIC_DisableIRQ(IHC_APP_X_H2_IRQ);
+            }
+        case RL_PLATFORM_MIV_IHC_CH15_ID:
+        case RL_PLATFORM_MIV_IHC_CH16_ID:
+        case RL_PLATFORM_MIV_IHC_CH17_ID:
+        case RL_PLATFORM_MIV_IHC_CH18_ID:
+        case RL_PLATFORM_MIV_IHC_CH19_ID:
+            RL_ASSERT(0 <= disable_counter3);
+            disable_counter3++;
+            if (disable_counter3 == 0)
+            {
+               PLIC_DisableIRQ(IHC_APP_X_H3_IRQ);
+            }
+            break;
+        case RL_PLATFORM_MIV_IHC_CH20_ID:
+        case RL_PLATFORM_MIV_IHC_CH21_ID:
+        case RL_PLATFORM_MIV_IHC_CH22_ID:
+        case RL_PLATFORM_MIV_IHC_CH23_ID:
+        case RL_PLATFORM_MIV_IHC_CH24_ID:
+            RL_ASSERT(0 <= disable_counter4);
+            disable_counter4++;
+            if (disable_counter4 == 0)
+            {
+               PLIC_DisableIRQ(IHC_APP_X_H4_IRQ);
+            }
+            break;
+        default:
+            /* All the cases have been listed above, the default clause should not be reached. */
+            break;
     }
-    disable_counter++;
+
     platform_global_isr_enable();
     return ((int32_t)vector_id);
 }
@@ -448,14 +543,19 @@ void *platform_patova(uint64_t addr)
  */
 int32_t platform_init(void)
 {
-    uint64_t hartid = read_csr(mhartid);
-
-    IHC_local_context_init((uint32_t)hartid);
-
-
-    uint32_t remote_hart_id = IHC_partner_context_hart_id(hartid);
-
-    IHC_local_remote_config((uint32_t)hartid, remote_hart_id, rx_handler, true, true);
+#ifdef RPMSG_MASTER
+    IHC_init(IHC_COM_ID_MASTER);
+    IHC_config_mp_callback_handler(IHC_COM_ID_MASTER, QUEUE_IHC_MP_ISR_CALLBACK);
+    IHC_config_mc_callback_handler(IHC_COM_ID_MASTER, QUEUE_IHC_MC_ISR_CALLBACK);
+    IHC_enable_mp_interrupt(IHC_COM_ID_MASTER);
+    IHC_enable_mc_interrupt(IHC_COM_ID_MASTER);
+#else
+    IHC_init(IHC_COM_ID_REMOTE);
+    IHC_config_mp_callback_handler(IHC_COM_ID_REMOTE, QUEUE_IHC_MP_ISR_CALLBACK);
+    IHC_config_mc_callback_handler(IHC_COM_ID_REMOTE, QUEUE_IHC_MC_ISR_CALLBACK);
+    IHC_enable_mp_interrupt(IHC_COM_ID_REMOTE);
+    IHC_enable_mc_interrupt(IHC_COM_ID_REMOTE); //ojo
+#endif 
 
     /* Create lock used in multi-instanced RPMsg */
     if (0 != env_create_mutex(&platform_lock, 1))
@@ -479,22 +579,38 @@ int32_t platform_deinit(void)
     return 0;
 }
 
-/**
- *
- * CoreIHC Rx handler
- */
-static uint32_t rx_handler( uint32_t remote_hart_id, uint32_t * message, uint32_t message_size, bool is_ack, uint32_t *message_storage_ptr )
+static uint32_t QUEUE_IHC_MP_ISR_CALLBACK(uint8_t channel,
+                           const uint32_t *message,
+                           uint32_t message_size, uint32_t * ext_msg_ptr)
 {
-    (void)remote_hart_id; /* message coming from here */
+    uint32_t msg = message[0];
 
-    if( is_ack == true )
-    {
-        rpmsg_handler(true, 0);
-    }
-    else
-    {
-        rpmsg_handler(false, (uint32_t) *message);
+    switch(msg) {
+         case MIV_RP_MBOX_STOP:
+#ifdef REMOTEPROC
+            rproc_stop(channel);
+#endif
+            break;
+        default:
+            if (msg >= MIV_RP_MBOX_READY && msg < MIV_RP_MBOX_END_MSG)
+                return 0;
+            env_isr((uint32_t)((msg) | (channel << 3)));
     }
 
-    return(0U);
+    return 0;
 }
+
+
+static uint32_t QUEUE_IHC_MC_ISR_CALLBACK(uint8_t channel,
+                           const uint32_t *message,
+                           uint32_t message_size, uint32_t * ext_msg_ptr)
+{
+
+#ifdef USING_FREERTOS
+        (void)xTaskNotifyFromISR(task_handle, 0x0001, eSetBits, NULL);
+#else
+        ack_notify = 0;
+#endif
+        return 0;
+}
+

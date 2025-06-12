@@ -539,11 +539,12 @@ trap_vector:
     # Invoke the handler.
     mv a0, sp                          # a0 <- regs
     # Please note: mtval is the newer name for register mbadaddr
-    # If you get a compile failure here, use the newer name
-    # At this point (2019), both are supported in latest compiler
-    # older compiler versions only support mbadaddr, so going with this.
+    # If you get a compile failure here, use the older name
+    # At this point (2025), mbadaddr is not supported in the latest
+    # compiler. Newer compiler versions only support mtval, so going
+    # with this.
     # See: https://github.com/riscv/riscv-gcc/issues/133
-    csrr a1, mbadaddr                 # useful for anaysis when things go wrong
+    csrr a1, mtval           # useful for anaysis when things go wrong
     csrr a2, mepc
     jal trap_from_machine_mode
 

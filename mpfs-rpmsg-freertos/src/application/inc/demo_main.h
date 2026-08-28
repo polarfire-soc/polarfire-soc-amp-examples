@@ -17,9 +17,17 @@
 #define printf_to(...) ee_printf_to(__VA_ARGS__)
 
 #ifdef RPMSG_MASTER
+#if (LIBERO_SETTING_APBBUS_CR & APBBUS_CR_MMUART1_MASK)
+#define UART_APP &g_mss_uart1_hi
+#else
 #define UART_APP &g_mss_uart1_lo
+#endif
+#else
+#if (LIBERO_SETTING_APBBUS_CR & APBBUS_CR_MMUART3_MASK)
+#define UART_APP &g_mss_uart3_hi
 #else
 #define UART_APP &g_mss_uart3_lo
+#endif
 #endif
 
 typedef void *rpmsg_comm_stack_handle_t;

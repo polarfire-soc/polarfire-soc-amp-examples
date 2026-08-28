@@ -19,22 +19,46 @@ static inline mss_uart_instance_t *get_uart_instance(int hartid)
 
     switch (hartid) {
     case HART_E51:
+#if (LIBERO_SETTING_APBBUS_CR & APBBUS_CR_MMUART0_MASK)
+        pUart = &g_mss_uart0_hi;
+#else
         pUart = &g_mss_uart0_lo;
+#endif
         break;
     case HART_U54_1:
+#if (LIBERO_SETTING_APBBUS_CR & APBBUS_CR_MMUART1_MASK)
+        pUart = &g_mss_uart1_hi;
+#else
         pUart = &g_mss_uart1_lo;
+#endif
         break;
     case HART_U54_2:
+#if (LIBERO_SETTING_APBBUS_CR & APBBUS_CR_MMUART2_MASK)
+        pUart = &g_mss_uart2_hi;
+#else
         pUart = &g_mss_uart2_lo;
+#endif
         break;
     case HART_U54_3:
+#if (LIBERO_SETTING_APBBUS_CR & APBBUS_CR_MMUART3_MASK)
+        pUart = &g_mss_uart3_hi;
+#else
         pUart = &g_mss_uart3_lo;
+#endif
         break;
     case HART_U54_4:
+#if (LIBERO_SETTING_APBBUS_CR & APBBUS_CR_MMUART4_MASK)
+        pUart = &g_mss_uart4_hi;
+#else
         pUart = &g_mss_uart4_lo;
+#endif
         break;
     default:
+#if (LIBERO_SETTING_APBBUS_CR & APBBUS_CR_MMUART0_MASK)
+        pUart = &g_mss_uart0_hi;
+#else
         pUart = &g_mss_uart0_lo;
+#endif
         break;
     }
 
